@@ -107,16 +107,19 @@ Completed foundation work:
 - Next.js app scaffold.
 - Arabic-first visual direction and route skeletons.
 - Landing, pricing, onboarding, brief, archive, settings, and admin shells.
+- Firebase project and Web app config for `zubda-d075c`.
 - Firebase client/admin helpers.
 - Firestore collection constants and draft rules.
 - Firebase Auth client flows for Google and email magic links.
 - Authenticated `/api/me` token-verification path.
+- Auth-guarded onboarding wizard with profile persistence API.
+- Stripe Checkout, webhook, and Customer Portal API routes.
 - Basic plan entitlement constants and tests.
 
 Next implementation priorities:
 
-1. Add real Firebase env vars and verify Google/magic-link auth.
-2. Implement Firestore user/profile creation after sign-in.
-3. Build the onboarding persistence flow.
-4. Create Stripe products/prices and wire Checkout.
-5. Implement Stripe webhook entitlement updates.
+1. Enable Firestore API / confirm Firestore database region, then deploy rules.
+2. Configure Firebase Auth providers for Google and email-link sign-in.
+3. Add Firebase Admin service-account env vars locally and in Vercel.
+4. Create Stripe products/prices and fill Stripe env vars.
+5. Verify full sign-in → onboarding save → checkout → webhook entitlement flow.

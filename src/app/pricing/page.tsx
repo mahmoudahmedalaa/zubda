@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { BrandHeader } from "@/components/BrandHeader";
+import { CheckoutButton } from "@/components/billing/CheckoutButton";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -10,6 +11,7 @@ const plans = [
     price: "$0",
     cta: "ابدأ مجانًا",
     href: "/login?plan=free",
+    checkoutPlan: null,
     features: ["1 daily brief", "Up to 3 interests", "Limited archive", "Source links"]
   },
   {
@@ -18,6 +20,7 @@ const plans = [
     price: "$7.99 / AED 29 / SAR 29",
     cta: "جرّب Pro",
     href: "/login?plan=pro_monthly",
+    checkoutPlan: "pro_monthly",
     featured: true,
     features: ["Full personalization", "Larger watchlist", "Full archive", "Currency conversion"]
   },
@@ -27,9 +30,10 @@ const plans = [
     price: "$99 / AED 399 / SAR 399",
     cta: "انضم للمؤسسين",
     href: "/login?plan=founder_lifetime",
+    checkoutPlan: "founder_lifetime",
     features: ["Pro forever", "Limited founder offer", "Lifetime archive", "Early supporter status"]
   }
-];
+] as const;
 
 export default function PricingPage(): ReactElement {
   return (
@@ -45,7 +49,9 @@ export default function PricingPage(): ReactElement {
           {plans.map((plan) => (
             <Card
               className={`flex flex-col p-6 ${
-                plan.featured ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)]" : ""
+                "featured" in plan && plan.featured
+                  ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)]"
+                  : ""
               }`}
               key={plan.name}
             >
@@ -59,9 +65,17 @@ export default function PricingPage(): ReactElement {
                   <li key={feature}>{feature}</li>
                 ))}
               </ul>
-              <ButtonLink className="mt-6 w-full" href={plan.href}>
-                {plan.cta}
-              </ButtonLink>
+              {plan.checkoutPlan ? (
+                <CheckoutButton
+                  featured={"featured" in plan && plan.featured}
+                  label={plan.cta}
+                  plan={plan.checkoutPlan}
+                />
+              ) : (
+                <ButtonLink className="mt-6 w-full" href={plan.href}>
+                  {plan.cta}
+                </ButtonLink>
+              )}
             </Card>
           ))}
         </div>

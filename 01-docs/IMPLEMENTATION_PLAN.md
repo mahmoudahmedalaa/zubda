@@ -61,7 +61,7 @@
 - `01-docs/BACKEND_STRUCTURE.md`
 
 **Tasks**
-- [ ] Create/use Firebase project for Zubda.
+- [x] Create/use Firebase project for Zubda.
 - [x] Add Firebase client config.
 - [x] Add Firebase Admin SDK server helper.
 - [x] Create typed Firestore collection constants.
@@ -73,6 +73,11 @@
 - [ ] Server route can verify admin credentials.
 - [ ] Firestore read/write smoke test passes in dev.
 - [x] No secrets are committed.
+
+**Status Note**
+- Firebase project `zubda-d075c` and Web app `Zubda Web` exist.
+- Public SDK config is wired in `.env.example` and local `.env.local`.
+- Firestore API currently returns disabled/403 from CLI; enable Firestore API and confirm database region before rules/read-write smoke tests.
 
 ### Step 1.3 — Base Design System
 **Duration**: 0.5-1 day  
@@ -130,9 +135,9 @@
 
 **Tasks**
 - [ ] Seed `interestModules`.
-- [ ] Build onboarding wizard: language, region, role, goal, interests, watchlist, currency, depth, delivery, preview.
-- [ ] Save profile to Firestore.
-- [ ] Enforce Free plan limits in UI and server validation.
+- [x] Build onboarding wizard: language, region, role, goal, interests, watchlist, currency, depth, delivery, preview.
+- [x] Save profile to Firestore.
+- [x] Enforce Free plan limits in UI and server validation.
 - [ ] Add profile settings screen for edits.
 
 **Success Criteria**
@@ -157,10 +162,10 @@
 **Tasks**
 - [ ] Create Stripe products and prices for Pro Monthly and Founder Lifetime.
 - [ ] Add configured price IDs to env.
-- [ ] Build pricing page.
-- [ ] Implement `/api/stripe/checkout`.
-- [ ] Create/reuse Stripe customer and store `stripeCustomerId`.
-- [ ] Start Checkout Session for subscription or one-time payment.
+- [x] Build pricing page.
+- [x] Implement `/api/stripe/checkout`.
+- [x] Create/reuse Stripe customer and store `stripeCustomerId`.
+- [x] Start Checkout Session for subscription or one-time payment.
 
 **Success Criteria**
 - [ ] Free plan CTA starts signup.
@@ -176,14 +181,13 @@
 - `01-docs/BACKEND_STRUCTURE.md` `users`, `stripeEvents`, Entitlement Rules
 - Stripe skill guidance: Checkout Sessions for payments/subscriptions; webhooks as source of truth
 
-**Tasks**
-- [ ] Implement raw-body Stripe webhook route.
-- [ ] Verify Stripe webhook signatures.
-- [ ] Store `stripeEvents/{eventId}` idempotently.
-- [ ] Handle required subscription and payment events.
-- [ ] Update `users/{userId}` plan and entitlement fields.
-- [ ] Add billing settings page.
-- [ ] Add Customer Portal route if configuration is ready.
+- [x] Implement raw-body Stripe webhook route.
+- [x] Verify Stripe webhook signatures.
+- [x] Store `stripeEvents/{eventId}` idempotently.
+- [x] Handle required subscription and payment events.
+- [x] Update `users/{userId}` plan and entitlement fields.
+- [x] Add billing settings page.
+- [x] Add Customer Portal route if configuration is ready.
 - [ ] Add entitlement helper used by UI/API gates.
 
 **Success Criteria**

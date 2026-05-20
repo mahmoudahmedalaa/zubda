@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { PortalButton } from "@/components/billing/PortalButton";
 import { Card } from "@/components/ui/Card";
 
 export default function BillingSettingsPage(): ReactElement {
@@ -10,6 +11,7 @@ export default function BillingSettingsPage(): ReactElement {
         <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
           هذه الصفحة ستعرض plan، entitlementStatus، subscriptionStatus، ورابط Stripe Customer Portal.
         </p>
+        <PortalButton />
       </Card>
     </main>
   );

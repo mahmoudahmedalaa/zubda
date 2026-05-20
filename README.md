@@ -45,6 +45,11 @@ Stripe account/resources:
 - Founder Lifetime product: `prod_UYIOkBBGs9SKd1`
 - Price IDs are included in `.env.example`; secret and publishable keys still need to be added from Stripe Dashboard.
 
+Domain check through Vercel:
+
+- `zubda.ai` is not available for purchase.
+- Available fallbacks: `zubda.app`, `getzubda.com`, `tryzubda.com`, `zubda.co`.
+
 ## Local Development
 
 ```bash

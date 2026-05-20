@@ -16,8 +16,8 @@ export function Chip({
     <button
       className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition ${
         selected
-          ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-paper)]"
-          : "border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:border-[var(--color-zubda-500)] hover:text-[var(--color-ink)]"
+          ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-500)] text-white"
+          : "border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:border-[var(--color-zubda-300)] hover:text-[var(--color-zubda-700)]"
       } ${className}`}
       type={type}
       {...props}

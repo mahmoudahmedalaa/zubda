@@ -27,15 +27,16 @@
 ## 3. Visual Direction
 
 ### Chosen Direction
-Warm editorial GCC intelligence.
+Drahim-inspired Arabic clarity with Zubda intelligence.
 
 The UI should combine:
-- warm off-white reading surfaces
-- ink-black typography
-- amber/gold emphasis for "the zubda"
-- deep green/teal trust accents
-- burgundy only for risk or pressure
-- subtle card depth and paper-like layering
+- pale blue/lavender app background
+- crisp white cards
+- large rounded Arabic typography
+- bright cobalt/blue primary action color
+- teal trust accents
+- generous spacing and pill-shaped controls
+- short Arabic copy that is easy to scan on mobile
 
 Avoid:
 - generic SaaS purple gradients
@@ -54,23 +55,23 @@ Use HSL tokens so implementation can tune lightness while preserving hue. The ba
 
 ```css
 :root {
-  --color-paper: hsl(42 45% 97%);
-  --color-surface: hsl(42 38% 99%);
-  --color-surface-raised: hsl(42 32% 100%);
-  --color-ink: hsl(210 17% 9%);
-  --color-ink-muted: hsl(210 9% 35%);
-  --color-line: hsl(42 18% 84%);
+  --color-paper: hsl(232 100% 99%);
+  --color-surface: hsl(0 0% 100%);
+  --color-surface-raised: hsl(0 0% 100%);
+  --color-ink: hsl(228 25% 9%);
+  --color-ink-muted: hsl(221 13% 55%);
+  --color-line: hsl(225 31% 89%);
 
-  --color-zubda-50: hsl(43 100% 96%);
-  --color-zubda-100: hsl(43 96% 90%);
-  --color-zubda-200: hsl(42 94% 80%);
-  --color-zubda-300: hsl(41 92% 68%);
-  --color-zubda-400: hsl(39 88% 56%);
-  --color-zubda-500: hsl(38 84% 47%);
-  --color-zubda-600: hsl(34 82% 39%);
-  --color-zubda-700: hsl(31 74% 31%);
-  --color-zubda-800: hsl(28 65% 24%);
-  --color-zubda-900: hsl(26 58% 18%);
+  --color-zubda-50: hsl(235 100% 97%);
+  --color-zubda-100: hsl(236 100% 93%);
+  --color-zubda-200: hsl(236 96% 86%);
+  --color-zubda-300: hsl(236 94% 76%);
+  --color-zubda-400: hsl(237 97% 68%);
+  --color-zubda-500: hsl(237 97% 61%);
+  --color-zubda-600: hsl(238 78% 53%);
+  --color-zubda-700: hsl(239 66% 45%);
+  --color-zubda-800: hsl(240 58% 36%);
+  --color-zubda-900: hsl(241 53% 27%);
 
   --color-trust-50: hsl(166 54% 95%);
   --color-trust-100: hsl(166 48% 88%);
@@ -108,9 +109,9 @@ Use HSL tokens so implementation can tune lightness while preserving hue. The ba
 ## 5. Typography
 
 ### Font Strategy
-- Arabic primary: `IBM Plex Sans Arabic` for UI and body text.
-- Arabic editorial/display option: `Noto Kufi Arabic` for section titles if it feels polished in implementation.
-- English/Latin companion: `Satoshi` or `Manrope`.
+- Arabic primary: `Noto Kufi Arabic` for UI and display text.
+- Arabic companion: `Readex Pro` for Latin/company names and mixed labels where needed.
+- Drahim uses a rounded Montserrat-Arabic style; Zubda approximates that readability with licensed Google fonts for MVP.
 - Monospace/numbers: `JetBrains Mono` for aligned amounts, FX values, timestamps, and IDs.
 
 If a premium Arabic font such as Thmanyah's font is used, confirm licensing and loading performance before adopting it. Do not block MVP on custom font complexity.
@@ -173,7 +174,7 @@ Rules:
 ```
 
 Rules:
-- Cards should usually use `8px` radius.
+- Cards should usually use large friendly radii (`24px-32px`) on mobile.
 - Do not put cards inside cards.
 - Use full-width page bands or unframed sections rather than floating section cards.
 - Brief content should be constrained to a comfortable reading width on desktop.

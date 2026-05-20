@@ -17,14 +17,15 @@ type ButtonLinkProps = BaseProps &
   };
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-[#11161a] text-[#fffaf0] shadow-sm hover:bg-black",
+  primary:
+    "bg-[var(--color-zubda-500)] text-white shadow-[0_14px_32px_hsl(237_97%_61%/0.24)] hover:bg-[var(--color-zubda-600)]",
   secondary:
-    "border border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-ink)] hover:border-[var(--color-zubda-500)]",
+    "border border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-zubda-600)] shadow-sm hover:border-[var(--color-zubda-300)] hover:bg-[var(--color-zubda-50)]",
   ghost: "text-[var(--color-ink-muted)] hover:bg-[var(--color-zubda-50)] hover:text-[var(--color-ink)]"
 };
 
 const baseClass =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-[var(--radius-card)] px-5 py-2.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-control)] px-6 py-3 text-sm font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] disabled:pointer-events-none disabled:opacity-50";
 
 export function Button({
   children,

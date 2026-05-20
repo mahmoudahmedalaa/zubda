@@ -5,7 +5,7 @@ import { ArrowLeft, CheckCircle2, Plus, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type ReactElement, useEffect, useMemo, useState } from "react";
 import { authedFetch } from "@/lib/api/client";
-import { getFirebaseAuth } from "@/lib/firebase/client";
+import { getFirebaseAuth, hasFirebaseClientConfig } from "@/lib/firebase/client";
 import { planLimits } from "@/lib/plans";
 import {
   briefDepths,
@@ -50,9 +50,9 @@ type DraftProfile = {
 const initialDraft: DraftProfile = {
   languageMode: "mixed",
   region: "UAE",
-  role: "Consultant",
+  role: "مستشار",
   mainGoals: [mainGoals[0]],
-  interestModuleIds: ["Finance and investing", "AI and technology", "GCC business"],
+  interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: [],
   preferredCurrency: "AED",
   briefDepth: "standard",
@@ -85,6 +85,14 @@ export function OnboardingWizard(): ReactElement {
   const progress = Math.round(((stepIndex + 1) / steps.length) * 100);
 
   useEffect(() => {
+    if (!hasFirebaseClientConfig()) {
+      queueMicrotask(() => {
+        setAuthReady(true);
+        setError("Firebase غير مضبوط لهذه البيئة.");
+      });
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (user) => {
       setAuthReady(true);
 

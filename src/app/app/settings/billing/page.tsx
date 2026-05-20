@@ -1,18 +1,14 @@
 import type { ReactElement } from "react";
-import { PortalButton } from "@/components/billing/PortalButton";
-import { Card } from "@/components/ui/Card";
+import { BillingSettingsClient } from "@/components/settings/BillingSettingsClient";
 
 export default function BillingSettingsPage(): ReactElement {
   return (
     <main className="page-shell py-8 text-right">
-      <h1 className="text-4xl font-black">الخطة والفوترة</h1>
-      <Card className="mt-8 p-5">
-        <p className="font-mono text-xs uppercase text-[var(--color-ink-muted)]">Stripe required</p>
-        <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-          هذه الصفحة ستعرض plan، entitlementStatus، subscriptionStatus، ورابط Stripe Customer Portal.
-        </p>
-        <PortalButton />
-      </Card>
+      <h1 className="text-4xl font-black leading-[1.45]">الخطة والفوترة</h1>
+      <p className="arabic-copy mt-3 max-w-2xl text-[var(--color-ink-muted)]">
+        تابع خطتك الحالية، حالة التفعيل، ورابط إدارة الفوترة من Stripe.
+      </p>
+      <BillingSettingsClient />
     </main>
   );
 }

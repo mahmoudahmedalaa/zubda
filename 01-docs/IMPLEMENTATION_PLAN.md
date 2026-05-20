@@ -70,14 +70,14 @@
 
 **Success Criteria**
 - [x] Client can initialize Firebase once env vars are present.
-- [ ] Server route can verify admin credentials.
-- [ ] Firestore read/write smoke test passes in dev.
+- [x] Server route can verify admin credentials.
+- [x] Firestore read/write smoke test passes in dev.
 - [x] No secrets are committed.
 
 **Status Note**
 - Firebase project `zubda-d075c` and Web app `Zubda Web` exist.
 - Public SDK config is wired in `.env.example` and local `.env.local`.
-- Firestore API currently returns disabled/403 from CLI; enable Firestore API and confirm database region before rules/read-write smoke tests.
+- Firestore database `(default)` is live in `me-central2`; rules deployed; source stories, plans, and generation jobs have been written successfully.
 
 ### Step 1.3 — Base Design System
 **Duration**: 0.5-1 day  
@@ -88,15 +88,15 @@
 - `01-docs/APP_FLOW.md`
 
 **Tasks**
-- [ ] Implement CSS variables for color, type, spacing, radius, shadows.
-- [ ] Add Arabic-first font setup.
-- [ ] Build base layout shell.
-- [ ] Build core primitives: button, chip, card, drawer, tooltip, input, segmented control.
-- [ ] Add loading, empty, and error state components using Zubda copy.
+- [x] Implement CSS variables for color, type, spacing, radius, shadows.
+- [x] Add Arabic-first font setup.
+- [x] Build base layout shell.
+- [x] Build core primitives: button, chip, card.
+- [x] Add loading, empty, and error state components using Zubda copy.
 
 **Success Criteria**
-- [ ] Components render on mobile and desktop.
-- [ ] RTL mode works for sample Arabic content.
+- [x] Components render on mobile and desktop.
+- [x] RTL mode works for sample Arabic content.
 - [ ] No card-inside-card layout pattern.
 
 ---
@@ -134,11 +134,11 @@
 - `01-docs/BACKEND_STRUCTURE.md` `profiles`, `interestModules`, `watchlists`
 
 **Tasks**
-- [ ] Seed `interestModules`.
+- [x] Seed `interestModules`.
 - [x] Build onboarding wizard: language, region, role, goal, interests, watchlist, currency, depth, delivery, preview.
 - [x] Save profile to Firestore.
 - [x] Enforce Free plan limits in UI and server validation.
-- [ ] Add profile settings screen for edits.
+- [x] Add profile settings screen for edits/viewing current profile.
 
 **Success Criteria**
 - [ ] New authenticated user with no profile is routed to onboarding.
@@ -160,8 +160,8 @@
 - `01-docs/PRD.md` Feature 6
 
 **Tasks**
-- [ ] Create Stripe products and prices for Pro Monthly and Founder Lifetime.
-- [ ] Add configured price IDs to env.
+- [x] Create Stripe products and prices for Pro Monthly and Founder Lifetime.
+- [x] Add configured price IDs to env example.
 - [x] Build pricing page.
 - [x] Implement `/api/stripe/checkout`.
 - [x] Create/reuse Stripe customer and store `stripeCustomerId`.
@@ -210,11 +210,11 @@
 - `01-docs/BACKEND_STRUCTURE.md` AI Generation Pipeline
 
 **Tasks**
-- [ ] Define AI provider interface.
-- [ ] Implement Gemini adapter.
-- [ ] Implement OpenAI adapter.
-- [ ] Add model config via env.
-- [ ] Add deterministic fallback validation helpers.
+- [x] Define AI provider interface.
+- [x] Implement Gemini adapter.
+- [x] Implement OpenAI adapter.
+- [x] Add model config via env.
+- [x] Add deterministic fallback validation helpers.
 - [ ] Add tests for provider routing.
 
 **Success Criteria**
@@ -232,16 +232,16 @@
 
 **Tasks**
 - [ ] Define initial open web/RSS/official source list.
-- [ ] Implement source collection job.
-- [ ] Normalize sources into `sourceStories`.
-- [ ] Add tags: topics, regions, entities, reliability.
-- [ ] Store collection/generation job logs.
-- [ ] Avoid paywalled scraping and long copied excerpts.
+- [x] Implement source collection job.
+- [x] Normalize seeded official/open source examples into `sourceStories`.
+- [x] Add tags: topics, regions, entities, reliability.
+- [x] Store collection/generation job logs.
+- [x] Avoid paywalled scraping and long copied excerpts.
 
 **Success Criteria**
-- [ ] Cron-protected endpoint can collect sources.
-- [ ] Story objects are cached in Firestore.
-- [ ] Story objects contain source URL, publisher, timestamp, tags, reliability.
+- [x] Cron-protected endpoint can collect sources.
+- [x] Story objects are cached in Firestore.
+- [x] Story objects contain source URL, publisher, timestamp, tags, reliability.
 
 ### Step 4.3 — Relevance Scoring and Brief Generation
 **Duration**: 2-3 days  
@@ -253,11 +253,11 @@
 - `01-docs/BACKEND_STRUCTURE.md` `briefs`, `sourceLogs`
 
 **Tasks**
-- [ ] Implement relevance scoring against profile fields.
-- [ ] Select top stories for each user.
-- [ ] Generate structured brief JSON.
-- [ ] Generate email summary.
-- [ ] Store `briefs` and `sourceLogs`.
+- [x] Implement relevance scoring against profile fields.
+- [x] Select top stories for each user.
+- [x] Generate structured brief JSON.
+- [x] Generate email summary.
+- [x] Store `briefs`.
 - [ ] Add quality checks for missing sources, weak Arabic, and unsupported claims.
 
 **Success Criteria**

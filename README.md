@@ -29,13 +29,21 @@ The MVP is a mobile-first web/PWA experience with:
 - Auth and database: Firebase Auth + Firestore.
 - Payments: Stripe Checkout + Stripe webhooks.
 - Email: Resend.
-- AI: Gemini/OpenAI adapters planned behind a provider abstraction.
+- AI: Gemini/OpenAI adapters behind a provider abstraction.
 - Tests and verification: ESLint, TypeScript, Vitest, Playwright.
 
 Firebase project:
 
 - Project ID: `zubda-d075c`
+- Firestore database: `(default)` in `me-central2`
 - Console: `https://console.firebase.google.com/u/0/project/zubda-d075c/overview`
+
+Stripe account/resources:
+
+- Account display name: `PinkySwear`
+- Pro Monthly product: `prod_UYIOIqnk4xP9rD`
+- Founder Lifetime product: `prod_UYIOkBBGs9SKd1`
+- Price IDs are included in `.env.example`; secret and publishable keys still need to be added from Stripe Dashboard.
 
 ## Local Development
 
@@ -86,6 +94,9 @@ Required systems for the full MVP:
 - `/api/health/firebase`.
 - `/api/stripe/checkout`.
 - `/api/stripe/webhook`.
+- `/api/cron/source-collection`.
+- `/api/cron/generate-briefs`.
+- `/api/cron/send-brief-emails`.
 
 ## Docs
 
@@ -105,21 +116,25 @@ Agent workflow starts from `AGENTS.md`.
 Completed foundation work:
 
 - Next.js app scaffold.
-- Arabic-first visual direction and route skeletons.
-- Landing, pricing, onboarding, brief, archive, settings, and admin shells.
+- Arabic-first Drahim-inspired visual direction with clearer typography, larger Arabic copy, blue/lavender palette, and cleaner Arabic-only UI language.
+- Landing, pricing, onboarding, brief, archive, settings, and admin screens.
 - Firebase project and Web app config for `zubda-d075c`.
 - Firebase client/admin helpers.
-- Firestore collection constants and draft rules.
+- Firestore database created in `me-central2`, rules deployed, system collections seeded.
 - Firebase Auth client flows for Google and email magic links.
 - Authenticated `/api/me` token-verification path.
 - Auth-guarded onboarding wizard with profile persistence API.
 - Stripe Checkout, webhook, and Customer Portal API routes.
+- Stripe products/prices created for Pro Monthly and Founder Lifetime in USD/AED/SAR.
+- AI provider abstraction with Gemini, OpenAI, and deterministic fallback.
+- Cron routes for source story seeding, profile-based brief generation, generation job logging, and Resend email delivery.
+- Authenticated private brief APIs, archive APIs, feedback API, and Firestore-backed brief reader UI.
 - Basic plan entitlement constants and tests.
 
 Next implementation priorities:
 
-1. Enable Firestore API / confirm Firestore database region, then deploy rules.
-2. Configure Firebase Auth providers for Google and email-link sign-in.
-3. Add Firebase Admin service-account env vars locally and in Vercel.
-4. Create Stripe products/prices and fill Stripe env vars.
-5. Verify full sign-in → onboarding save → checkout → webhook entitlement flow.
+1. Configure Firebase Auth providers for Google and email-link sign-in in Firebase Console.
+2. Add Stripe secret key, publishable key, and webhook secret locally/Vercel.
+3. Add Resend API key and verify `morning@zubda.ai`.
+4. Add Gemini/OpenAI API keys for real AI generation beyond deterministic seeded stories.
+5. Verify full sign-in → onboarding save → checkout → webhook entitlement → brief generation flow with a real test user.

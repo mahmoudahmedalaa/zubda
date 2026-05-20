@@ -1,19 +1,19 @@
 export const interestModules = [
-  "Finance and investing",
-  "AI and technology",
-  "GCC business",
-  "Global economy",
-  "Energy and oil",
-  "Sustainability and climate",
-  "Startups and VC",
-  "Real estate",
-  "Fashion and luxury",
-  "Retail and consumer trends",
-  "Geopolitics",
-  "Public sector and policy",
-  "Sports business",
-  "Healthcare",
-  "User-defined topics"
+  "المال والاستثمار",
+  "الذكاء الاصطناعي والتقنية",
+  "أعمال الخليج",
+  "الاقتصاد العالمي",
+  "الطاقة والنفط",
+  "الاستدامة والمناخ",
+  "الشركات الناشئة والاستثمار الجريء",
+  "العقار",
+  "الموضة والرفاهية",
+  "التجزئة والمستهلك",
+  "الجغرافيا السياسية",
+  "السياسات والقطاع العام",
+  "رياضة الأعمال",
+  "الصحة",
+  "مواضيع تختارها"
 ] as const;
 
 export const currencies = ["USD", "AED", "SAR", "EGP", "QAR", "KWD", "BHD", "OMR"] as const;
@@ -27,15 +27,15 @@ export const languageModes = [
 export const regions = ["UAE", "Saudi", "Egypt", "Qatar", "Kuwait", "Bahrain", "Oman", "MENA", "Global"] as const;
 
 export const roles = [
-  "Consultant",
-  "Founder",
-  "Investor",
-  "Corporate / Strategy",
-  "Tech / Product",
-  "Government / Policy",
-  "Student",
-  "Creator",
-  "Other"
+  "مستشار",
+  "مؤسس",
+  "مستثمر",
+  "استراتيجية أو إدارة",
+  "تقنية أو منتج",
+  "قطاع حكومي أو سياسات",
+  "طالب",
+  "صانع محتوى",
+  "غير ذلك"
 ] as const;
 
 export const mainGoals = [
@@ -47,9 +47,9 @@ export const mainGoals = [
 ] as const;
 
 export const briefDepths = [
-  { label: "Quick", value: "quick" },
-  { label: "Standard", value: "standard" },
-  { label: "Deep", value: "deep" }
+  { label: "سريع", value: "quick" },
+  { label: "متوازن", value: "standard" },
+  { label: "عميق", value: "deep" }
 ] as const;
 
 export const deliveryTimes = ["06:30", "07:00", "07:30", "08:00", "09:00"] as const;

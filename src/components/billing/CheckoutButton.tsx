@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { type ReactElement, useEffect, useState } from "react";
 import { authedFetch } from "@/lib/api/client";
-import { getFirebaseAuth } from "@/lib/firebase/client";
+import { getFirebaseAuth, hasFirebaseClientConfig } from "@/lib/firebase/client";
 import type { CheckoutCurrency, CheckoutPlan } from "@/lib/stripe/prices";
 import { Button } from "@/components/ui/Button";
 
@@ -15,6 +15,11 @@ type CheckoutButtonProps = {
 };
 
 const currencies: CheckoutCurrency[] = ["USD", "AED", "SAR"];
+const currencyLabels: Record<CheckoutCurrency, string> = {
+  USD: "دولار",
+  AED: "درهم",
+  SAR: "ريال"
+};
 
 export function CheckoutButton({ plan, label, featured = false }: CheckoutButtonProps): ReactElement {
   const router = useRouter();
@@ -25,6 +30,14 @@ export function CheckoutButton({ plan, label, featured = false }: CheckoutButton
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!hasFirebaseClientConfig()) {
+      queueMicrotask(() => {
+        setAuthReady(true);
+        setError("Firebase غير مضبوط لهذه البيئة.");
+      });
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (user) => {
       setAuthReady(true);
       setSignedIn(Boolean(user));
@@ -74,7 +87,7 @@ export function CheckoutButton({ plan, label, featured = false }: CheckoutButton
             onClick={() => setCurrency(option)}
             type="button"
           >
-            {option}
+            {currencyLabels[option]}
           </button>
         ))}
       </div>
@@ -90,4 +103,3 @@ export function CheckoutButton({ plan, label, featured = false }: CheckoutButton
     </div>
   );
 }
-

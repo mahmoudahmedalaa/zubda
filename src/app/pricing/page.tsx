@@ -6,32 +6,32 @@ import { Card } from "@/components/ui/Card";
 
 const plans = [
   {
-    name: "Free",
+    name: "مجاني",
     title: "زبدة يومية بسيطة",
     price: "$0",
     cta: "ابدأ مجانًا",
     href: "/login?plan=free",
     checkoutPlan: null,
-    features: ["1 daily brief", "Up to 3 interests", "Limited archive", "Source links"]
+    features: ["ملخص يومي واحد", "حتى ٣ اهتمامات", "أرشيف محدود", "مصادر واضحة"]
   },
   {
-    name: "Pro Monthly",
+    name: "برو شهري",
     title: "زبدة أعمق ومخصصة أكثر",
-    price: "$7.99 / AED 29 / SAR 29",
+    price: "$7.99 / 29 درهم / 29 ريال",
     cta: "جرّب Pro",
     href: "/login?plan=pro_monthly",
     checkoutPlan: "pro_monthly",
     featured: true,
-    features: ["Full personalization", "Larger watchlist", "Full archive", "Currency conversion"]
+    features: ["تخصيص كامل", "قائمة متابعة أكبر", "أرشيف كامل", "تحويل العملات داخل الملخص"]
   },
   {
-    name: "Founder Lifetime",
+    name: "المؤسس",
     title: "ادفع مرة وخلك من أوائل المؤسسين",
-    price: "$99 / AED 399 / SAR 399",
+    price: "$99 / 399 درهم / 399 ريال",
     cta: "انضم للمؤسسين",
     href: "/login?plan=founder_lifetime",
     checkoutPlan: "founder_lifetime",
-    features: ["Pro forever", "Limited founder offer", "Lifetime archive", "Early supporter status"]
+    features: ["برو مدى الحياة", "عرض محدود", "أرشيف كامل", "شارة داعم مبكر"]
   }
 ] as const;
 
@@ -40,10 +40,9 @@ export default function PricingPage(): ReactElement {
     <>
       <BrandHeader />
       <main className="page-shell py-12 text-right">
-        <h1 className="text-4xl font-black">اختر الزبدة اللي تناسبك</h1>
-        <p className="arabic-copy mt-4 max-w-2xl text-[var(--color-ink-muted)]">
-          الدفع في Zubda حقيقي من اليوم الأول: Stripe Checkout، اشتراك شهري، وخطة مؤسس
-          Lifetime.
+        <h1 className="text-4xl font-black leading-[1.45]">اختر الخطة اللي تناسبك</h1>
+        <p className="arabic-copy mt-4 max-w-2xl font-medium text-[var(--color-ink-muted)]">
+          ابدأ مجانًا، وإذا صارت زبدة جزء من صباحك فعّل برو أو خطة المؤسس.
         </p>
         <div className="mt-10 grid gap-5 lg:grid-cols-3">
           {plans.map((plan) => (
@@ -55,12 +54,12 @@ export default function PricingPage(): ReactElement {
               }`}
               key={plan.name}
             >
-              <p className="font-mono text-xs uppercase text-[var(--color-ink-muted)]">
+              <p className="text-sm font-bold text-[var(--color-zubda-600)]">
                 {plan.name}
               </p>
-              <h2 className="mt-3 min-h-16 text-2xl font-black">{plan.title}</h2>
-              <p className="tabular mt-4 text-2xl font-bold">{plan.price}</p>
-              <ul className="mt-6 flex-1 space-y-3 text-sm text-[var(--color-ink-muted)]">
+              <h2 className="mt-3 min-h-16 text-2xl font-black leading-[1.45]">{plan.title}</h2>
+              <p className="tabular mt-4 text-xl font-black">{plan.price}</p>
+              <ul className="mt-6 flex-1 space-y-3 text-sm font-medium text-[var(--color-ink-muted)]">
                 {plan.features.map((feature) => (
                   <li key={feature}>{feature}</li>
                 ))}

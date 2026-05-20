@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import type { ReactElement, ReactNode } from "react";
-import { IBM_Plex_Sans_Arabic, Manrope, JetBrains_Mono } from "next/font/google";
+import { Noto_Kufi_Arabic, Readex_Pro, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const arabic = IBM_Plex_Sans_Arabic({
+const arabic = Noto_Kufi_Arabic({
   subsets: ["arabic"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-arabic"
 });
 
-const latin = Manrope({
-  subsets: ["latin"],
+const latin = Readex_Pro({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-latin"
 });
 

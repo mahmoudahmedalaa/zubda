@@ -2,6 +2,7 @@ export type ApiErrorCode =
   | "NOT_IMPLEMENTED"
   | "UNAUTHORIZED"
   | "FORBIDDEN"
+  | "NOT_FOUND"
   | "CONFIGURATION_ERROR"
   | "VALIDATION_ERROR"
   | "SERVER_ERROR";

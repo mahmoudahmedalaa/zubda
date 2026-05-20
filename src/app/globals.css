@@ -2,32 +2,33 @@
 
 :root {
   color-scheme: light;
-  --color-paper: hsl(42 45% 97%);
-  --color-surface: hsl(42 38% 99%);
-  --color-surface-raised: hsl(42 32% 100%);
-  --color-ink: hsl(210 17% 9%);
-  --color-ink-muted: hsl(210 9% 35%);
-  --color-line: hsl(42 18% 84%);
-  --color-zubda-50: hsl(43 100% 96%);
-  --color-zubda-100: hsl(43 96% 90%);
-  --color-zubda-200: hsl(42 94% 80%);
-  --color-zubda-300: hsl(41 92% 68%);
-  --color-zubda-400: hsl(39 88% 56%);
-  --color-zubda-500: hsl(38 84% 47%);
-  --color-zubda-600: hsl(34 82% 39%);
-  --color-zubda-700: hsl(31 74% 31%);
-  --color-zubda-800: hsl(28 65% 24%);
-  --color-zubda-900: hsl(26 58% 18%);
-  --color-trust-50: hsl(166 54% 95%);
-  --color-trust-100: hsl(166 48% 88%);
-  --color-trust-500: hsl(169 64% 31%);
-  --color-trust-700: hsl(172 78% 19%);
+  --color-paper: hsl(232 100% 99%);
+  --color-surface: hsl(0 0% 100%);
+  --color-surface-raised: hsl(0 0% 100%);
+  --color-ink: hsl(231 26% 9%);
+  --color-ink-muted: hsl(220 13% 54%);
+  --color-line: hsl(226 33% 91%);
+  --color-zubda-50: hsl(235 100% 97%);
+  --color-zubda-100: hsl(235 100% 94%);
+  --color-zubda-200: hsl(235 100% 88%);
+  --color-zubda-300: hsl(236 100% 78%);
+  --color-zubda-400: hsl(236 100% 67%);
+  --color-zubda-500: hsl(237 97% 61%);
+  --color-zubda-600: hsl(237 80% 55%);
+  --color-zubda-700: hsl(238 65% 45%);
+  --color-zubda-800: hsl(239 55% 34%);
+  --color-zubda-900: hsl(240 46% 24%);
+  --color-trust-50: hsl(188 78% 96%);
+  --color-trust-100: hsl(188 76% 90%);
+  --color-trust-500: hsl(190 91% 38%);
+  --color-trust-700: hsl(193 87% 25%);
   --color-risk: hsl(350 58% 42%);
   --color-warning: hsl(32 90% 48%);
   --color-success: hsl(153 57% 34%);
   --color-info: hsl(205 62% 38%);
-  --radius-card: 8px;
-  --shadow-card: 0 1px 2px hsl(210 17% 9% / 0.06), 0 8px 24px hsl(210 17% 9% / 0.06);
+  --radius-card: 28px;
+  --radius-control: 999px;
+  --shadow-card: 0 8px 28px hsl(237 65% 42% / 0.09), 0 1px 3px hsl(231 26% 9% / 0.04);
 }
 
 @layer base {
@@ -44,11 +45,13 @@
     min-height: 100%;
     margin: 0;
     background:
-      radial-gradient(circle at top right, hsl(43 100% 90% / 0.58), transparent 28rem),
-      linear-gradient(180deg, var(--color-paper), hsl(42 38% 95%));
+      radial-gradient(circle at top right, hsl(235 100% 93% / 0.78), transparent 28rem),
+      radial-gradient(circle at 10% 35%, hsl(190 80% 94% / 0.72), transparent 24rem),
+      linear-gradient(180deg, hsl(232 100% 99%), hsl(232 88% 97%));
     color: var(--color-ink);
     font-family: var(--font-arabic), var(--font-latin), system-ui, sans-serif;
     letter-spacing: 0;
+    text-rendering: optimizeLegibility;
   }
 
   a {
@@ -70,14 +73,18 @@
 }
 
 .page-shell {
-  width: min(1120px, calc(100% - 32px));
+  width: min(1120px, calc(100% - 36px));
   margin: 0 auto;
 }
 
 .arabic-copy {
-  line-height: 1.75;
+  line-height: 1.95;
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+.latin {
+  font-family: var(--font-latin), var(--font-arabic), system-ui, sans-serif;
 }

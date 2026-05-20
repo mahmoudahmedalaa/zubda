@@ -81,9 +81,8 @@ export function LoginForm(): ReactElement {
         onClick={handleGoogle}
         variant="secondary"
       >
-        {status === "google" ? "نفتح جوجل..." : "Continue with Google"}
+        {status === "google" ? "نفتح جوجل..." : "الدخول بحساب Google"}
       </Button>
     </>
   );
 }
-

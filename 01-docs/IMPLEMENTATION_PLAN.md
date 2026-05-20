@@ -1,213 +1,436 @@
-# Implementation Plan & Build Sequence
+# Implementation Plan & Build Sequence — Zubda / زبدة
 
-> The exact order to build things. Each step is testable. No guessing what comes next.
+> This is the execution plan for a professional MVP: Firebase backend, Stripe from day one, mobile-first PWA, daily private web brief, source-backed AI pipeline.
 
 ## Overview
 
 | Field | Value |
 |:------|:------|
-| **Project** | [App Name] |
-| **MVP Target** | [Date] |
-| **Approach** | Documentation-first, iterative, test-after-every-step |
+| **Project** | Zubda / زبدة |
+| **Prototype Target** | 2 weeks |
+| **MVP Target** | 6 weeks |
+| **Approach** | Documentation-first, verify after every step, ship a real payment/auth/data foundation |
+| **Primary Platform** | Mobile-first Next.js web/PWA |
+| **Backend** | Firebase Auth + Firestore + Firebase Admin in Next.js API routes |
+| **Payments** | Stripe Checkout + Billing + webhooks from day one |
+| **AI** | Gemini/OpenAI provider abstraction with cached source-story pipeline |
 
-### Build Rules
-1. Code follows documentation (not the reverse)
-2. Test after every step — don't batch
-3. Deploy to staging after each milestone
-4. Each step produces a verifiable result
-5. **One task per conversation** — fresh AI context = maximum quality
+## Build Rules
 
----
-
-## Task Decomposition (Fresh Context Strategy)
-
-After all documentation is generated (Phases 1-6 below), the AI breaks this plan into a **numbered task list**. Each task is designed to be executed in a **fresh conversation** for maximum AI quality.
-
-### Task Format
-Each task must include:
-
-```
-## Task [N]: [Name]
-
-### Context (read these files first)
-- 01-docs/PRD.md — Feature [X]
-- 01-docs/APP_FLOW.md — Screen [Y]
-- 01-docs/TECH_STACK.md — Section [Z]
-
-### What to Build
-- [ ] Create [file/component]
-- [ ] Implement [specific functionality]
-- [ ] Connect to [dependency]
-
-### Success Criteria
-- [ ] tsc --noEmit passes
-- [ ] Feature works on device/browser
-- [ ] All states handled (loading, empty, error)
-
-### Kickoff Prompt
-> Read AGENTS.md, then execute this task. Reference the files listed
-> in Context above. Iterate until all Success Criteria pass.
-```
-
-### Why Fresh Contexts?
-- Full AI context window per task → better output quality
-- No accumulated confusion from earlier mistakes
-- Each task has all context it needs → no dependencies on chat history
-- If one task goes wrong, it doesn't pollute the next
-
-### How It Works
-1. AI generates the full task list from this Implementation Plan
-2. User opens a **new conversation** for each task
-3. Pastes the task's kickoff prompt
-4. AI reads the relevant docs and executes
-5. AI iterates until all verification checks pass
-6. User moves to next task in a new conversation
+1. Code follows `01-docs/`, not chat memory.
+2. Stripe webhooks are the source of truth for plan entitlements.
+3. Firebase is the source of truth for users, profiles, briefs, source logs, events, and billing state.
+4. Do not build manual payment workarounds.
+5. Do not hardcode OpenAI-only architecture.
+6. Build one primary profile per user with many interest modules.
+7. Test after every step: typecheck, lint, unit tests where relevant, browser smoke test for UI.
+8. Keep the product mobile-first and Arabic-first.
 
 ---
 
 ## Phase 1: Foundation
 
-### Step 1.1 — Project Setup
-**Duration**: 1 hour  
-**Goal**: Running project with linting configured
+### Step 1.1 — Next.js Project Setup
+**Duration**: 0.5-1 day  
+**Goal**: Running Next.js app with pinned dependencies and quality tooling.
 
-- [ ] Initialize git repository
-- [ ] Initialize project (framework-specific)
-- [ ] Install all dependencies from `TECH_STACK.md` (exact versions)
-- [ ] Configure linter + formatter
-- [ ] Verify: project runs locally, no lint errors
+**Context**
+- `01-docs/TECH_STACK.md`
+- `01-docs/FRONTEND_GUIDELINES.md`
 
-### Step 1.2 — Environment Setup
-**Duration**: 30 min  
-**Goal**: All secrets and configs in place
+**Tasks**
+- [x] Initialize Next.js app with TypeScript.
+- [x] Install pinned dependencies from `TECH_STACK.md`.
+- [x] Configure Tailwind CSS tokens and RTL-friendly base styles.
+- [x] Configure ESLint, Prettier, Vitest, and Playwright.
+- [x] Add `.env.example` using `TECH_STACK.md`.
+- [x] Add route skeletons from `APP_FLOW.md`.
 
-- [ ] Create `.env` with all vars from `TECH_STACK.md`
-- [ ] Create `.env.example` (no secrets)
-- [ ] Add `.env` to `.gitignore`
-- [ ] Verify: app reads env vars correctly
+**Success Criteria**
+- [x] `pnpm install` succeeds.
+- [x] `pnpm lint` succeeds.
+- [x] `pnpm typecheck` succeeds.
+- [x] Local dev server loads landing route.
 
-### Step 1.3 — Database / Backend Setup
-**Duration**: 1 hour  
-**Goal**: Database connected, schema applied
+### Step 1.2 — Firebase Project and App Wiring
+**Duration**: 0.5-1 day  
+**Goal**: Firebase Auth, Firestore, and Admin SDK ready.
 
-- [ ] Set up database (local or cloud)
-- [ ] Configure connection
-- [ ] Apply initial schema from `BACKEND_STRUCTURE.md`
-- [ ] Verify: tables created, can query
+**Context**
+- `01-docs/TECH_STACK.md`
+- `01-docs/BACKEND_STRUCTURE.md`
 
----
+**Tasks**
+- [ ] Create/use Firebase project for Zubda.
+- [x] Add Firebase client config.
+- [x] Add Firebase Admin SDK server helper.
+- [x] Create typed Firestore collection constants.
+- [x] Add emulator-friendly config if practical.
+- [x] Draft initial Firestore security rules.
 
-## Phase 2: Design System
+**Success Criteria**
+- [x] Client can initialize Firebase once env vars are present.
+- [ ] Server route can verify admin credentials.
+- [ ] Firestore read/write smoke test passes in dev.
+- [x] No secrets are committed.
 
-### Step 2.1 — Design Tokens
-**Duration**: 1-2 hours  
-**Goal**: Colors, fonts, spacing configured
+### Step 1.3 — Base Design System
+**Duration**: 0.5-1 day  
+**Goal**: Zubda visual system exists before feature UI.
 
-- [ ] Apply all tokens from `FRONTEND_GUIDELINES.md`
-- [ ] Test in a sample component
-- [ ] Verify: custom styles work, no console errors
+**Context**
+- `01-docs/FRONTEND_GUIDELINES.md`
+- `01-docs/APP_FLOW.md`
 
-### Step 2.2 — Core Components
-**Duration**: 3-4 hours  
-**Goal**: Reusable component library
+**Tasks**
+- [ ] Implement CSS variables for color, type, spacing, radius, shadows.
+- [ ] Add Arabic-first font setup.
+- [ ] Build base layout shell.
+- [ ] Build core primitives: button, chip, card, drawer, tooltip, input, segmented control.
+- [ ] Add loading, empty, and error state components using Zubda copy.
 
-For each component from `FRONTEND_GUIDELINES.md`:
-- [ ] Create component file
-- [ ] Implement all variants and states
-- [ ] Add TypeScript types
-- [ ] Verify: all variants render correctly
-
----
-
-## Phase 3: Authentication
-
-### Step 3.1 — Auth Backend
-**Duration**: 2-3 hours  
-**Goal**: Register + Login endpoints working
-
-- [ ] Implement registration (per `BACKEND_STRUCTURE.md`)
-- [ ] Implement login with token generation
-- [ ] Implement password hashing
-- [ ] Test with API client (Postman/curl)
-- [ ] Verify: can register, login, receive tokens
-
-### Step 3.2 — Auth Frontend
-**Duration**: 2-3 hours  
-**Goal**: Registration and login UI connected
-
-- [ ] Build registration screen (per `APP_FLOW.md`)
-- [ ] Build login screen
-- [ ] Connect to auth endpoints
-- [ ] Handle validation, loading, error states
-- [ ] Verify: end-to-end auth flow works
+**Success Criteria**
+- [ ] Components render on mobile and desktop.
+- [ ] RTL mode works for sample Arabic content.
+- [ ] No card-inside-card layout pattern.
 
 ---
 
-## Phase 4: Core Features
+## Phase 2: Auth and Profile
 
-### Step 4.X — [Feature Name]
-**Duration**: [estimate]  
-**Goal**: [one-line description]
+### Step 2.1 — Firebase Auth
+**Duration**: 1 day  
+**Goal**: Google login and magic link / email link login.
 
-- [ ] Backend: Create endpoint(s) per `BACKEND_STRUCTURE.md`
-- [ ] Frontend: Build UI per `APP_FLOW.md` + `FRONTEND_GUIDELINES.md`
-- [ ] Connect frontend to backend
-- [ ] Handle all states (loading, empty, error)
-- [ ] Verify: feature works end-to-end
+**Context**
+- `01-docs/APP_FLOW.md` Auth section
+- `01-docs/BACKEND_STRUCTURE.md` Auth / User endpoints
 
-**Ref**: `PRD.md` Feature [N], `APP_FLOW.md` Screen [X]
+**Tasks**
+- [ ] Configure Firebase Auth providers.
+- [x] Build `/login` screen.
+- [x] Implement email link login.
+- [x] Implement Google login.
+- [x] Add auth callback handling.
+- [x] Add server-side token verification helper.
 
-<!-- Repeat Step 4.X for each P0 feature -->
+**Success Criteria**
+- [ ] User can sign in with Google.
+- [ ] User can sign in with magic link.
+- [x] Authenticated API route rejects missing/invalid tokens.
+
+### Step 2.2 — Personal Intelligence Profile Onboarding
+**Duration**: 1.5-2 days  
+**Goal**: One primary profile per user with all MVP personalization fields.
+
+**Context**
+- `01-docs/PRD.md` Feature 1 and Feature 2
+- `01-docs/APP_FLOW.md` Onboarding
+- `01-docs/BACKEND_STRUCTURE.md` `profiles`, `interestModules`, `watchlists`
+
+**Tasks**
+- [ ] Seed `interestModules`.
+- [ ] Build onboarding wizard: language, region, role, goal, interests, watchlist, currency, depth, delivery, preview.
+- [ ] Save profile to Firestore.
+- [ ] Enforce Free plan limits in UI and server validation.
+- [ ] Add profile settings screen for edits.
+
+**Success Criteria**
+- [ ] New authenticated user with no profile is routed to onboarding.
+- [ ] Completed profile routes to `/today`.
+- [ ] Free user cannot exceed 3 interest modules.
+- [ ] Profile data persists in Firestore.
 
 ---
 
-## Phase 5: Testing
+## Phase 3: Stripe Payments and Entitlements
 
-### Step 5.1 — Unit Tests
-**Duration**: 2-3 hours  
-**Goal**: Critical paths covered
+### Step 3.1 — Stripe Products, Prices, and Checkout
+**Duration**: 1 day  
+**Goal**: Real Stripe Checkout for Pro Monthly and Founder Lifetime.
 
-| Area | Target Coverage |
-|:-----|:---------------|
-| Auth logic | 90% |
-| Validation | 95% |
-| Core features | 80% |
+**Context**
+- `01-docs/TECH_STACK.md` Payments Architecture
+- `01-docs/BACKEND_STRUCTURE.md` Pricing / Stripe endpoints
+- `01-docs/PRD.md` Feature 6
 
-- [ ] Set up test framework
-- [ ] Write auth tests
-- [ ] Write validation tests
-- [ ] Write core feature tests
-- [ ] Verify: all tests pass
+**Tasks**
+- [ ] Create Stripe products and prices for Pro Monthly and Founder Lifetime.
+- [ ] Add configured price IDs to env.
+- [ ] Build pricing page.
+- [ ] Implement `/api/stripe/checkout`.
+- [ ] Create/reuse Stripe customer and store `stripeCustomerId`.
+- [ ] Start Checkout Session for subscription or one-time payment.
 
-### Step 5.2 — Integration / E2E Tests
-**Duration**: 3-4 hours  
-**Goal**: Full user flows verified
+**Success Criteria**
+- [ ] Free plan CTA starts signup.
+- [ ] Pro Monthly starts Stripe subscription checkout.
+- [ ] Founder Lifetime starts Stripe one-time checkout.
+- [ ] Checkout metadata includes Firebase `userId`.
 
-- [ ] Registration → Login → Use Feature → Logout
-- [ ] Error paths (wrong password, network failure)
-- [ ] Verify: all flows pass on device/browser
+### Step 3.2 — Stripe Webhooks and Plan Gating
+**Duration**: 1.5-2 days  
+**Goal**: Firestore entitlement state updates from Stripe webhooks.
+
+**Context**
+- `01-docs/BACKEND_STRUCTURE.md` `users`, `stripeEvents`, Entitlement Rules
+- Stripe skill guidance: Checkout Sessions for payments/subscriptions; webhooks as source of truth
+
+**Tasks**
+- [ ] Implement raw-body Stripe webhook route.
+- [ ] Verify Stripe webhook signatures.
+- [ ] Store `stripeEvents/{eventId}` idempotently.
+- [ ] Handle required subscription and payment events.
+- [ ] Update `users/{userId}` plan and entitlement fields.
+- [ ] Add billing settings page.
+- [ ] Add Customer Portal route if configuration is ready.
+- [ ] Add entitlement helper used by UI/API gates.
+
+**Success Criteria**
+- [ ] Successful Pro checkout activates `pro_monthly` entitlement.
+- [ ] Successful Founder checkout activates `founder_lifetime` entitlement.
+- [ ] Failed invoice moves entitlement to `past_due`.
+- [ ] Deleted subscription removes Pro entitlement.
+- [ ] Client redirect alone does not activate plan.
 
 ---
 
-## Phase 6: Deployment
+## Phase 4: Brief Data and AI Pipeline
 
-### Step 6.1 — Staging Deploy
-**Duration**: 1-2 hours
+### Step 4.1 — AI Provider Abstraction
+**Duration**: 1 day  
+**Goal**: Gemini/OpenAI adapters with configurable model routing.
 
-- [ ] Configure hosting (per `TECH_STACK.md`)
-- [ ] Set production environment variables
-- [ ] Deploy
-- [ ] Smoke test all features
-- [ ] Verify: fully functional on staging URL/device
+**Context**
+- `01-docs/TECH_STACK.md` AI Provider Strategy
+- `01-docs/BACKEND_STRUCTURE.md` AI Generation Pipeline
 
-### Step 6.2 — Production Launch
-**Duration**: 1-2 hours
+**Tasks**
+- [ ] Define AI provider interface.
+- [ ] Implement Gemini adapter.
+- [ ] Implement OpenAI adapter.
+- [ ] Add model config via env.
+- [ ] Add deterministic fallback validation helpers.
+- [ ] Add tests for provider routing.
 
-- [ ] Complete `05-checklists/MVP_LAUNCH.md`
-- [ ] Complete `05-checklists/APP_STORE.md` (if applicable)
-- [ ] Deploy to production
-- [ ] Monitor error logs for 24 hours
-- [ ] Verify: zero critical errors
+**Success Criteria**
+- [ ] App can switch provider using `AI_PROVIDER`.
+- [ ] Summary/classification/final brief/quality check use separate model configs.
+- [ ] Unit tests cover provider selection and missing-env errors.
+
+### Step 4.2 — Source Collection and Story Normalization
+**Duration**: 2-3 days  
+**Goal**: Shared source story cache exists before personalized generation.
+
+**Context**
+- `01-docs/BACKEND_STRUCTURE.md` `sourceStories`, generation jobs
+- `00-research/COMPETITOR_ANALYSIS.md`
+
+**Tasks**
+- [ ] Define initial open web/RSS/official source list.
+- [ ] Implement source collection job.
+- [ ] Normalize sources into `sourceStories`.
+- [ ] Add tags: topics, regions, entities, reliability.
+- [ ] Store collection/generation job logs.
+- [ ] Avoid paywalled scraping and long copied excerpts.
+
+**Success Criteria**
+- [ ] Cron-protected endpoint can collect sources.
+- [ ] Story objects are cached in Firestore.
+- [ ] Story objects contain source URL, publisher, timestamp, tags, reliability.
+
+### Step 4.3 — Relevance Scoring and Brief Generation
+**Duration**: 2-3 days  
+**Goal**: Generate structured personalized briefs from cached stories.
+
+**Context**
+- `01-docs/PRD.md` Feature 3 and Feature 4
+- `01-docs/APP_FLOW.md` Daily Brief Experience
+- `01-docs/BACKEND_STRUCTURE.md` `briefs`, `sourceLogs`
+
+**Tasks**
+- [ ] Implement relevance scoring against profile fields.
+- [ ] Select top stories for each user.
+- [ ] Generate structured brief JSON.
+- [ ] Generate email summary.
+- [ ] Store `briefs` and `sourceLogs`.
+- [ ] Add quality checks for missing sources, weak Arabic, and unsupported claims.
+
+**Success Criteria**
+- [ ] Generated brief includes required sections.
+- [ ] Major insight has source log and why-included reason.
+- [ ] No story appears without source metadata.
+- [ ] Failed generation writes useful failure state.
+
+---
+
+## Phase 5: Product Experience
+
+### Step 5.1 — Daily Brief Reader
+**Duration**: 2 days  
+**Goal**: Mobile-first private web brief.
+
+**Context**
+- `01-docs/APP_FLOW.md` Daily Brief
+- `01-docs/FRONTEND_GUIDELINES.md`
+
+**Tasks**
+- [ ] Build `/app/today` redirect/loading behavior.
+- [ ] Build `/app/briefs/[briefId]`.
+- [ ] Render Executive Snapshot, Watchboard, Personal Impact, Topic Radar, Talking Points, Sources, Glossary.
+- [ ] Add Source Drawer and Glossary Drawer.
+- [ ] Add feedback controls.
+- [ ] Add completion state.
+
+**Success Criteria**
+- [ ] Authenticated owner can view brief.
+- [ ] Non-owner cannot view brief.
+- [ ] Arabic RTL and Mixed mode render correctly.
+- [ ] Brief is scannable on mobile.
+
+### Step 5.2 — Resend Email Delivery
+**Duration**: 1 day  
+**Goal**: Daily email trigger with private brief CTA.
+
+**Context**
+- `01-docs/APP_FLOW.md` Daily Brief Habit
+- `01-docs/TECH_STACK.md` Resend env vars
+
+**Tasks**
+- [ ] Build daily brief email template.
+- [ ] Implement `/api/cron/send-brief-emails`.
+- [ ] Store `deliveryLogs`.
+- [ ] Track email sent/opened where available.
+- [ ] Keep full report out of email.
+
+**Success Criteria**
+- [ ] Email includes 5-bullet summary, top watch item, top personal impact, CTA.
+- [ ] CTA opens private web brief.
+- [ ] Delivery success/failure is logged.
+
+### Step 5.3 — Archive, Feedback, and Currency Conversion
+**Duration**: 2 days  
+**Goal**: Retention loop and Pro value surfaces.
+
+**Context**
+- `01-docs/APP_FLOW.md` Archive, Feedback, Currency Quick Convert
+- `01-docs/BACKEND_STRUCTURE.md` `feedback`, `deliveryLogs`, `plans`
+
+**Tasks**
+- [ ] Build `/archive`.
+- [ ] Enforce Free archive limit.
+- [ ] Implement feedback API and UI.
+- [ ] Implement FX provider wrapper.
+- [ ] Add preferred-currency display in brief values.
+- [ ] Store analytics events in Firestore.
+
+**Success Criteria**
+- [ ] Feedback writes to Firestore.
+- [ ] Archive gating works by entitlement.
+- [ ] Currency conversion displays FX timestamp.
+- [ ] Basic events are logged.
+
+---
+
+## Phase 6: Admin and Operations
+
+### Step 6.1 — MVP Admin Monitoring
+**Duration**: 1-2 days  
+**Goal**: Simple internal tooling for generated intelligence.
+
+**Context**
+- `01-docs/APP_FLOW.md` Internal Admin
+- `01-docs/BACKEND_STRUCTURE.md` `adminLogs`, `generationJobs`
+
+**Tasks**
+- [ ] Add admin route guard.
+- [ ] Build user/profile viewer.
+- [ ] Build generated brief viewer.
+- [ ] Build generation-job viewer.
+- [ ] Build source-log viewer.
+- [ ] Add resend brief action.
+- [ ] Add manual generate action.
+
+**Success Criteria**
+- [ ] Admin can inspect failed generation.
+- [ ] Admin can resend brief.
+- [ ] Admin actions write `adminLogs`.
+
+### Step 6.2 — Vercel Deployment and Cron
+**Duration**: 1 day  
+**Goal**: Staging deployment with real env vars and scheduled jobs.
+
+**Context**
+- `01-docs/TECH_STACK.md`
+- `03-workflows/DEPLOYMENT.md`
+
+**Tasks**
+- [ ] Link Vercel project.
+- [ ] Add all required environment variables.
+- [ ] Configure Vercel Cron routes.
+- [ ] Configure Stripe webhook endpoint.
+- [ ] Configure Firebase authorized domains.
+- [ ] Configure Resend domain/sender.
+
+**Success Criteria**
+- [ ] Staging deploy works.
+- [ ] Stripe webhook receives test event.
+- [ ] Cron endpoint rejects missing `CRON_SECRET`.
+- [ ] Cron endpoint succeeds with valid secret.
+
+---
+
+## Phase 7: Testing and Launch Readiness
+
+### Step 7.1 — Critical Tests
+**Duration**: 2-3 days  
+**Goal**: Cover high-risk paths before beta.
+
+**Test Targets**
+- Auth token verification
+- Profile validation
+- Entitlement mapping
+- Stripe webhook idempotency
+- AI provider routing
+- Source-story normalization
+- Brief generation validation
+- Archive gating
+- Currency formatting
+
+**Success Criteria**
+- [ ] `pnpm typecheck` passes.
+- [ ] `pnpm lint` passes.
+- [ ] `pnpm test` passes.
+- [ ] Stripe webhook test fixtures pass.
+
+### Step 7.2 — Browser E2E
+**Duration**: 1-2 days  
+**Goal**: Verify the product journey in a real browser.
+
+**Flows**
+- Landing → login → onboarding → today
+- Pricing → Stripe Checkout test mode → webhook entitlement
+- Today brief → source drawer → glossary → feedback
+- Archive Free limit → upgrade prompt
+- Billing settings → customer portal
+
+**Success Criteria**
+- [ ] Playwright verifies core routes.
+- [ ] Mobile viewport screenshots are reviewed.
+- [ ] Arabic RTL is manually checked.
+
+### Step 7.3 — Beta Launch Checklist
+**Duration**: 1 day  
+**Goal**: Ready for 50-100 beta users.
+
+**Tasks**
+- [ ] Privacy policy and terms drafted.
+- [ ] Support email configured.
+- [ ] Stripe test mode fully verified.
+- [ ] Stripe live mode configured when ready.
+- [ ] Firebase rules reviewed.
+- [ ] Source/copyright behavior reviewed.
+- [ ] Logging/monitoring checked.
 
 ---
 
@@ -215,44 +438,27 @@ For each component from `FRONTEND_GUIDELINES.md`:
 
 | Milestone | Target | Deliverables |
 |:----------|:-------|:-------------|
-| **Foundation** | Week 1 | Project running, DB connected, design tokens |
-| **Auth** | Week 2 | Register, login, session management |
-| **Core Features** | Week 3 | All P0 features working |
-| **MVP Launch** | Week 4 | Tested, deployed, monitoring |
-
----
+| **Foundation** | Days 1-3 | Next.js app, Firebase, design system, env scaffolding |
+| **Auth/Profile** | Days 4-6 | Google/magic link auth, onboarding, primary profile |
+| **Payments** | Days 7-9 | Pricing, Stripe Checkout, webhooks, entitlements |
+| **Prototype Brief** | Week 2 | Source cache, generated sample/personal brief, email trigger |
+| **MVP Core** | Weeks 3-5 | Daily generation, private brief, archive, feedback, currency, admin |
+| **Beta Launch** | Week 6 | Tests, staging/prod deploy, 50-100 beta users |
 
 ## Risk Mitigation
 
 | Risk | Impact | Mitigation |
 |:-----|:-------|:-----------|
-| Scope creep | High | Stick to PRD P0 only |
-| Schema changes | High | Follow migration process |
-| Auth bugs | Critical | Test extensively, use proven libraries |
-| Performance | Medium | Implement caching early |
-| Timeline slip | Medium | Build buffer, track daily |
+| Stripe entitlement bugs | Critical | Webhook-first state, idempotent `stripeEvents`, fixtures/tests |
+| AI costs spike | High | Shared source cache, model routing, no per-user web research |
+| Arabic quality feels weak | High | Mixed-mode QA, prompt tests, optional tone-polish model |
+| Source trust breaks | High | Required source logs, no source means no major insight |
+| Firebase rules too permissive | Critical | Explicit rules and server-side admin routes |
+| Cron timing gets complex | Medium | Vercel Cron for MVP; Cloud Scheduler/Run later |
+| Scope creep | High | P0 only; no native apps, WhatsApp, audio, teams, multiple profiles |
 
----
+## First Build Task
 
-## AI Generation Prompt
+When ready to start implementation, begin with:
 
-```
-Create an Implementation Plan for [YOUR APP].
-
-Context:
-- MVP Timeline: [WEEKS]
-- Team: [SOLO / TEAM SIZE]
-- Tech Stack: [FROM TECH_STACK.md]
-- Features: [P0 LIST FROM PRD.md]
-
-Generate a phased build plan with:
-1. PHASE 1 (Foundation): Project setup, env config, database
-2. PHASE 2 (Design): Design tokens, core components
-3. PHASE 3 (Auth): Backend endpoints, frontend screens
-4. PHASE 4 (Features): One step per P0 feature with backend + frontend tasks
-5. PHASE 5 (Testing): Unit tests + integration tests
-6. PHASE 6 (Deploy): Staging → Production
-
-For EACH step provide: duration estimate, task checklist, success criteria, doc references.
-Include milestone timeline and risk mitigation table.
-```
+> Read `AGENTS.md`, then read `01-docs/PRD.md`, `01-docs/APP_FLOW.md`, `01-docs/TECH_STACK.md`, `01-docs/FRONTEND_GUIDELINES.md`, `01-docs/BACKEND_STRUCTURE.md`, and `01-docs/IMPLEMENTATION_PLAN.md`. Execute Phase 1 Step 1.1 only: initialize the Next.js app with pinned dependencies, Tailwind tokens, lint/typecheck/test scripts, and route skeletons. Do not set up Stripe/Firebase yet except env placeholders. Verify with install, lint, typecheck, and local browser smoke test.

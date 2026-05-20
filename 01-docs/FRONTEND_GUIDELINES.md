@@ -1,190 +1,437 @@
-# Frontend Design System & Guidelines
+# Frontend Design System & Guidelines — Zubda / زبدة
 
-> Every visual decision locked down. Fonts, colors, spacing, components. AI builds components exactly to this spec.
+> This document turns the Zubda brand brief into concrete UI rules. It should guide implementation, screenshots, QA, and future design decisions.
 
 ## 1. Design Principles
 
-1. **Clarity** — Every element has a clear purpose
-2. **Consistency** — Patterns repeat across the app
-3. **Efficiency** — Minimize user effort
-4. **Accessibility** — WCAG 2.1 Level AA compliance
+1. **Arabic-first, GCC-native** — The product must feel designed in Arabic, not translated into Arabic.
+2. **One daily ritual** — The UI should guide users through a finite brief with a clear end state.
+3. **Warm intelligence** — Premium and useful, but alive enough to feel like a sharp GCC friend.
+4. **Trust by design** — Sources, confidence, and fact vs interpretation are visible through clean disclosure.
+5. **Personalization feels made for me** — Interests, watchlist, region, role, currency, and feedback appear in the interface.
+6. **Scannable in five minutes** — Cards, headings, and progressive disclosure beat long walls of text.
 
----
+## 2. Design Inspiration and Benchmarks
 
-## 2. Design Tokens
+| Reference | What to Learn | What Not to Copy |
+|:----------|:--------------|:-----------------|
+| Drahim / دراهم | Friendly local Arabic tone, trust cues, complex financial ideas made simple | Do not make Zubda look like a finance tracker or bank |
+| Thmanyah / ثمانية | Premium Arabic editorial identity, spacing, typography, confident content hierarchy | Do not make Zubda publisher-led or static |
+| Nabd / نبض | Mobile-first Arabic topic selection and notification habit | Do not become an endless headline aggregator |
+| Particle | Multi-source synthesis, summary layers, source transparency, future follow-up questions | Do not feel English-first or overcomplicate every story |
+| Duolingo / Headway / Blinkist | Daily completion, progress cues, bite-sized learning | Do not become childish or gamified |
+| Spotify Daylist / Wrapped | Personalized language and "made for you" feeling | Do not add delight at the cost of speed and clarity |
+| Notion | Clean modular content blocks and calm scanning | Do not become plain or generic |
+| Linear / Raycast | Speed, polish, keyboard quality for later dashboard use | Do not over-optimize desktop before mobile |
 
-### Color Palette
+## 3. Visual Direction
 
-#### Primary Colors
+### Chosen Direction
+Warm editorial GCC intelligence.
+
+The UI should combine:
+- warm off-white reading surfaces
+- ink-black typography
+- amber/gold emphasis for "the zubda"
+- deep green/teal trust accents
+- burgundy only for risk or pressure
+- subtle card depth and paper-like layering
+
+Avoid:
+- generic SaaS purple gradients
+- childish illustration
+- AI-glow visuals
+- financial terminal darkness everywhere
+- government portal styling
+- old newspaper texture
+- beige-only or desert-only palettes
+
+## 4. Color System
+
+Use HSL tokens so implementation can tune lightness while preserving hue. The base mode is light and warm. Dark mode is allowed later, but MVP should be light-first.
+
+### Brand Tokens
+
 ```css
---color-primary-50:  #[value];
---color-primary-100: #[value];
---color-primary-200: #[value];
---color-primary-300: #[value];
---color-primary-400: #[value];
---color-primary-500: #[value];  /* Main brand color */
---color-primary-600: #[value];
---color-primary-700: #[value];
---color-primary-800: #[value];
---color-primary-900: #[value];
+:root {
+  --color-paper: hsl(42 45% 97%);
+  --color-surface: hsl(42 38% 99%);
+  --color-surface-raised: hsl(42 32% 100%);
+  --color-ink: hsl(210 17% 9%);
+  --color-ink-muted: hsl(210 9% 35%);
+  --color-line: hsl(42 18% 84%);
+
+  --color-zubda-50: hsl(43 100% 96%);
+  --color-zubda-100: hsl(43 96% 90%);
+  --color-zubda-200: hsl(42 94% 80%);
+  --color-zubda-300: hsl(41 92% 68%);
+  --color-zubda-400: hsl(39 88% 56%);
+  --color-zubda-500: hsl(38 84% 47%);
+  --color-zubda-600: hsl(34 82% 39%);
+  --color-zubda-700: hsl(31 74% 31%);
+  --color-zubda-800: hsl(28 65% 24%);
+  --color-zubda-900: hsl(26 58% 18%);
+
+  --color-trust-50: hsl(166 54% 95%);
+  --color-trust-100: hsl(166 48% 88%);
+  --color-trust-200: hsl(166 43% 76%);
+  --color-trust-300: hsl(166 40% 62%);
+  --color-trust-400: hsl(167 45% 46%);
+  --color-trust-500: hsl(169 64% 31%);
+  --color-trust-600: hsl(171 72% 25%);
+  --color-trust-700: hsl(172 78% 19%);
+  --color-trust-800: hsl(174 76% 14%);
+  --color-trust-900: hsl(176 70% 10%);
+
+  --color-risk: hsl(350 58% 42%);
+  --color-warning: hsl(32 90% 48%);
+  --color-success: hsl(153 57% 34%);
+  --color-info: hsl(205 62% 38%);
+}
 ```
 
-#### Neutral Colors
+### Semantic Mappings
+
+| Use | Token |
+|:----|:------|
+| Main background | `--color-paper` |
+| Cards and panels | `--color-surface`, `--color-surface-raised` |
+| Primary text | `--color-ink` |
+| Secondary text | `--color-ink-muted` |
+| Borders and dividers | `--color-line` |
+| Primary CTA | `--color-ink` background with paper text |
+| Highlight / zubda emphasis | `--color-zubda-500` |
+| Source / trust indicators | `--color-trust-500` |
+| Risk / pressure | `--color-risk` |
+| Warning / attention | `--color-warning` |
+
+## 5. Typography
+
+### Font Strategy
+- Arabic primary: `IBM Plex Sans Arabic` for UI and body text.
+- Arabic editorial/display option: `Noto Kufi Arabic` for section titles if it feels polished in implementation.
+- English/Latin companion: `Satoshi` or `Manrope`.
+- Monospace/numbers: `JetBrains Mono` for aligned amounts, FX values, timestamps, and IDs.
+
+If a premium Arabic font such as Thmanyah's font is used, confirm licensing and loading performance before adopting it. Do not block MVP on custom font complexity.
+
+### Type Scale
+
 ```css
---color-neutral-50:  #[value];  /* Lightest background */
---color-neutral-100: #[value];
---color-neutral-200: #[value];  /* Borders */
---color-neutral-300: #[value];
---color-neutral-400: #[value];  /* Placeholder text */
---color-neutral-500: #[value];  /* Secondary text */
---color-neutral-600: #[value];
---color-neutral-700: #[value];  /* Primary text */
---color-neutral-800: #[value];
---color-neutral-900: #[value];  /* Headings */
+--font-arabic: "IBM Plex Sans Arabic", "Noto Sans Arabic", system-ui, sans-serif;
+--font-latin: "Satoshi", "Manrope", system-ui, sans-serif;
+--font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+--text-caption: 0.8125rem; /* 13px */
+--text-body: 0.9375rem;    /* 15px */
+--text-body-lg: 1.0625rem; /* 17px */
+--text-h3: 1.1875rem;      /* 19px */
+--text-h2: 1.375rem;       /* 22px */
+--text-h1: 1.75rem;        /* 28px */
+--text-display: 2.25rem;   /* 36px */
+
+--leading-caption: 1.45;
+--leading-body: 1.75;
+--leading-heading: 1.25;
 ```
 
-#### Semantic Colors
-```css
---color-success: #[value];  /* Confirmations */
---color-warning: #[value];  /* Cautions */
---color-error:   #[value];  /* Errors, destructive actions */
---color-info:    #[value];  /* Informational */
-```
+Rules:
+- Do not use negative letter spacing.
+- Do not scale font size with viewport width.
+- Arabic body text needs generous line height.
+- Mixed Arabic/English sentences must be tested manually.
+- Numbers and currencies should use `font-variant-numeric: tabular-nums`.
 
-### Typography
-```css
---font-sans: 'Inter', system-ui, sans-serif;
---font-mono: 'Fira Code', monospace;
-
---text-xs:   0.75rem;   /* 12px */
---text-sm:   0.875rem;  /* 14px */
---text-base: 1rem;      /* 16px */
---text-lg:   1.125rem;  /* 18px */
---text-xl:   1.25rem;   /* 20px */
---text-2xl:  1.5rem;    /* 24px */
---text-3xl:  1.875rem;  /* 30px */
-
---font-normal:   400;
---font-medium:   500;
---font-semibold: 600;
---font-bold:     700;
-```
+## 6. Layout and Spacing
 
 ### Spacing Scale
-```css
---spacing-1:  0.25rem;  /* 4px  */
---spacing-2:  0.5rem;   /* 8px  */
---spacing-3:  0.75rem;  /* 12px */
---spacing-4:  1rem;     /* 16px — default component padding */
---spacing-6:  1.5rem;   /* 24px */
---spacing-8:  2rem;     /* 32px — section spacing */
---spacing-12: 3rem;     /* 48px */
---spacing-16: 4rem;     /* 64px */
-```
-
-### Border Radius & Shadows
-```css
---radius-sm:   0.125rem;  /* 2px  */
---radius-base: 0.25rem;   /* 4px  */
---radius-md:   0.375rem;  /* 6px  */
---radius-lg:   0.5rem;    /* 8px  */
---radius-xl:   0.75rem;   /* 12px */
---radius-full: 9999px;
-
---shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
---shadow-md: 0 4px 6px rgba(0,0,0,0.1);
---shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-```
-
----
-
-## 3. Component Specifications
-
-### Buttons
-
-| Variant | Use Case | Limit |
-|:--------|:---------|:------|
-| **Primary** | Main CTA | One per screen |
-| **Secondary** | Supporting actions | As needed |
-| **Danger** | Destructive actions | Always with confirmation |
-
-**States**: Default → Hover → Active → Focus (2px ring) → Disabled (50% opacity) → Loading (spinner)
-
-**Sizes**: Small (px-3 py-1.5) · Medium (px-4 py-2) · Large (px-6 py-3)
-
-### Inputs
-- Always pair with a `<label>`
-- Show inline error messages below the field
-- Disabled state: reduced opacity, `cursor-not-allowed`
-- Focus state: primary color ring
-
-### Cards
-- Background: white / surface color
-- Border: 1px neutral-200
-- Padding: spacing-6
-- Hover: elevated shadow transition (200ms)
-
-### Modals
-- Overlay: black/50% opacity
-- Content: max-width 28rem, centered
-- Actions: right-aligned (Cancel, Confirm)
-- Close: click overlay or X button
-- Focus trap required
-
----
-
-## 4. Accessibility Checklist (WCAG 2.1 AA)
-
-- [ ] Color contrast: 4.5:1 for normal text, 3:1 for large text
-- [ ] All interactive elements keyboard accessible
-- [ ] Focus indicators visible (2px outline)
-- [ ] Tab order logical
-- [ ] Images have alt text
-- [ ] Icon buttons have `aria-label`
-- [ ] Form inputs have associated labels
-- [ ] Error messages announced to screen readers
-- [ ] Touch targets minimum 44×44px
-
----
-
-## 5. Animation Guidelines
-
-- Duration: 200ms default, 300ms max
-- Easing: `ease-in-out` for most, `ease-out` for entrances
-- Animate only `transform` and `opacity` for performance
-- Respect `prefers-reduced-motion`
-
----
-
-## 6. Responsive Breakpoints
 
 ```css
---breakpoint-sm: 640px;   /* Mobile */
---breakpoint-md: 768px;   /* Tablet */
---breakpoint-lg: 1024px;  /* Desktop */
---breakpoint-xl: 1280px;  /* Wide */
+--space-1: 0.25rem;
+--space-2: 0.5rem;
+--space-3: 0.75rem;
+--space-4: 1rem;
+--space-5: 1.25rem;
+--space-6: 1.5rem;
+--space-8: 2rem;
+--space-10: 2.5rem;
+--space-12: 3rem;
+--space-16: 4rem;
 ```
 
-Mobile-first approach: base styles for mobile, progressive enhancement upward.
+### Radius and Shadows
 
----
+```css
+--radius-xs: 4px;
+--radius-sm: 6px;
+--radius-md: 8px;
+--radius-lg: 10px;
+--radius-pill: 999px;
 
-## AI Generation Prompt
+--shadow-card: 0 1px 2px hsl(210 17% 9% / 0.06), 0 8px 24px hsl(210 17% 9% / 0.06);
+--shadow-drawer: 0 16px 48px hsl(210 17% 9% / 0.18);
+```
+
+Rules:
+- Cards should usually use `8px` radius.
+- Do not put cards inside cards.
+- Use full-width page bands or unframed sections rather than floating section cards.
+- Brief content should be constrained to a comfortable reading width on desktop.
+- Mobile is the primary consumption viewport.
+
+## 7. Component Patterns
+
+### Landing Hero
 
 ```
-Create a Frontend Design System document for [YOUR APP].
-
-App Style: [Modern / Minimal / Bold / Professional]
-Brand Colors: [Primary hex if known, or "suggest for a [type] app"]
-Platform: [Web / React Native / Both]
-UI Framework: [Tailwind / CSS-in-JS / StyleSheet / shadcn]
-
-Generate:
-1. DESIGN TOKENS: Complete color palette (primary 50-900, neutral 50-900, semantic), typography scale, spacing scale, radius, shadows — all with exact values
-2. COMPONENT SPECS: For each component (Button, Input, Card, Modal, Alert), specify all variants, sizes, states, and usage rules
-3. ACCESSIBILITY: WCAG 2.1 AA checklist for each component
-4. ANIMATIONS: Duration, easing, and performance rules
-5. RESPONSIVE: Breakpoints and mobile-first patterns
-
-Provide exact CSS values — no approximations.
+┌────────────────────────────────────┐
+│ Zubda / زبدة           Login       │
+├────────────────────────────────────┤
+│ زبدة يومك، بدون زحمة.              │
+│ كل صباح، زبدة شخصية مما يهمك       │
+│ [ابدأ زبدتك] [جرب زبدة اليوم]      │
+│                                    │
+│ phone-style brief preview          │
+└────────────────────────────────────┘
 ```
+
+Guidelines:
+- Hero must make `Zubda / زبدة` visible in the first viewport.
+- Avoid generic AI gradients.
+- The sample brief preview should show the product, not decorative abstraction.
+
+### Onboarding Step
+
+```
+┌────────────────────────────────────┐
+│ Step 5 of 10                       │
+│ وش المواضيع اللي تهمك؟             │
+├────────────────────────────────────┤
+│ [AI and technology] [GCC business] │
+│ [Finance] [Energy] [Real estate]   │
+│ [Fashion/luxury] [User-defined]    │
+├────────────────────────────────────┤
+│ [رجوع]                  [التالي]  │
+└────────────────────────────────────┘
+```
+
+Guidelines:
+- Use chips and segmented controls over long forms.
+- Keep sticky bottom navigation on mobile.
+- Explain limits only when they matter.
+
+### Daily Brief Story Card
+
+```
+┌────────────────────────────────────┐
+│ وش السالفة؟                        │
+│ Short factual summary              │
+├────────────────────────────────────┤
+│ ليش يهمك؟                          │
+│ Personal relevance based on profile│
+├────────────────────────────────────┤
+│ وش تراقب؟                          │
+│ Specific watch item                │
+├────────────────────────────────────┤
+│ [من وين جبناها؟] [يعني إيش؟]      │
+│ [مفيد] [مو مهم] [زودني]            │
+└────────────────────────────────────┘
+```
+
+Guidelines:
+- Use disclosure for deeper source details.
+- Keep the main card scannable.
+- Every story should have a reason for inclusion.
+
+### Watchboard Card
+
+```
+┌────────────────────────────────────┐
+│ راقب هذي                           │
+│ تصريحات الفيدرالي                  │
+│ ليش مهم: قد تضغط على أسهم النمو    │
+│ مين يتأثر: Nasdaq, QQQ, SMH        │
+└────────────────────────────────────┘
+```
+
+Guidelines:
+- Designed for quick morning scanning.
+- Use stable card dimensions to avoid layout shift.
+- Make numbers and assets readable in mixed mode.
+
+### Source Drawer
+
+```
+┌────────────────────────────────────┐
+│ من وين جبناها؟                     │
+├────────────────────────────────────┤
+│ Source title                       │
+│ Publisher · Time · Source type     │
+│ Why used                           │
+│ Reliability label                  │
+│ [Open source]                      │
+└────────────────────────────────────┘
+```
+
+Guidelines:
+- Progressive disclosure keeps trust available without overloading the brief.
+- Source links must be visible for major insights.
+
+### Pricing Card
+
+```
+┌────────────────────────────────────┐
+│ Pro Monthly                        │
+│ زبدة أعمق ومخصصة أكثر              │
+│ AED 29 / month                     │
+│ Full archive · Watchlist · FX      │
+│ [جرّب Pro]                         │
+└────────────────────────────────────┘
+```
+
+Guidelines:
+- Three plans only: Free, Pro Monthly, Founder Lifetime.
+- Use fixed localized display prices for checkout.
+- Keep Founder Lifetime urgent but not aggressive.
+
+## 8. Component Inventory
+
+Required MVP components:
+- Landing hero
+- Auth screen
+- Onboarding wizard
+- Interest module selector
+- Watchlist input
+- Currency selector
+- Delivery time selector
+- Brief preview card
+- Daily brief page
+- Executive snapshot card
+- Watchboard cards
+- Personal impact cards
+- Topic radar cards
+- Source drawer
+- Glossary tooltip / drawer
+- Feedback buttons
+- Archive list
+- Pricing cards
+- Profile settings
+- Error / retry states
+- Empty states
+- Loading / generation states
+
+## 9. Motion Guidelines
+
+Use motion sparingly and with purpose.
+
+| Type | Duration | Use |
+|:-----|:---------|:----|
+| Press feedback | 90-120ms | Buttons, chips, feedback taps |
+| Card entrance | 180-240ms | Brief sections appearing |
+| Drawer transition | 220-280ms | Source and glossary drawers |
+| Generation progress | 800-1200ms stages | Brief preparation state |
+| Completion moment | 600-900ms | خلصت زبدة اليوم |
+
+Rules:
+- Animate `opacity` and `transform`.
+- Respect `prefers-reduced-motion`.
+- Avoid decorative motion that slows reading.
+- Feedback taps can use a small scale/opacity response.
+
+## 10. RTL and Mixed-Language Requirements
+
+Arabic UI must be true RTL:
+- right-aligned layout
+- correct punctuation flow
+- correct number and currency display
+- mixed English company/source names handled naturally
+- source titles readable
+- charts and tooltips tested in RTL
+- forms and navigation mirrored correctly
+- dates and times localized
+
+Mixed mode example:
+> مزاج السوق اليوم يميل للحذر بسبب ارتفاع Treasury yields.
+
+Plain Arabic explanation:
+> عندما ترتفع عوائد السندات، عادةً تتأثر أسهم النمو مثل شركات التقنية لأنها تصبح أقل جاذبية للمستثمرين.
+
+## 11. Microcopy
+
+| Generic Copy | Zubda Copy |
+|:-------------|:-----------|
+| Executive Summary | زبدة اليوم |
+| Market Impact | وش أثرها عليك؟ |
+| What to Watch | راقب هذي |
+| Source Links | من وين جبناها؟ |
+| Glossary | يعني إيش؟ |
+| Feedback | هل كانت مفيدة؟ |
+| Customize your profile | خلّ زبدة تفهمك |
+| No high-signal update today | ما فيه شيء قوي اليوم في هذا الموضوع. |
+| Loading | نجهز لك الزبدة... |
+| Pricing Free | زبدة يومية بسيطة |
+| Pricing Pro | تخصيص أعمق، أرشيف كامل، واهتمامات أكثر |
+| Founder Lifetime | ادفع مرة وخلك من أوائل المؤسسين |
+
+## 12. Accessibility
+
+- Color contrast must meet WCAG AA.
+- Touch targets must be at least 44px.
+- Buttons and icon buttons need accessible labels in current language.
+- Drawers require focus management and Escape close on desktop.
+- Forms require labels, inline validation, and screen-reader readable errors.
+- Do not rely on color alone for risk, trust, or confidence.
+- Reduced motion preference must disable non-essential animation.
+- Arabic and English screen-reader labels must be tested for primary flows.
+
+## 13. Responsive Breakpoints
+
+```css
+--breakpoint-sm: 640px;
+--breakpoint-md: 768px;
+--breakpoint-lg: 1024px;
+--breakpoint-xl: 1280px;
+```
+
+Rules:
+- Mobile-first by default.
+- Daily brief should feel best on phone.
+- Desktop should provide more breathing room, not a completely different product.
+- Admin pages can be denser and more utilitarian.
+
+## 14. Library Direction
+
+Exact package versions are locked in `01-docs/TECH_STACK.md`. The design system preference is:
+
+| Need | Preferred Direction |
+|:-----|:--------------------|
+| App framework | Next.js / React web PWA unless tech stack changes |
+| Styling | Tailwind CSS with CSS variables |
+| Accessible primitives | Radix UI or shadcn/ui patterns |
+| Icons | Lucide icons |
+| Forms | React Hook Form + Zod |
+| Charts | Recharts or Tremor-style primitives for simple MVP visuals |
+| Motion | Framer Motion or CSS transitions for restrained motion |
+| Dates | date-fns with locale support |
+| Currency | `Intl.NumberFormat` plus backend FX source |
+| Email | React Email-style templates if stack supports it |
+
+Rules:
+- Prefer maintained libraries over custom widgets.
+- Avoid heavy charting until brief data proves it needs charts.
+- Do not introduce a component library that fights RTL.
+
+## 15. Design QA Checklist
+
+- [ ] First viewport clearly says Zubda / زبدة.
+- [ ] Landing page explains the product in under 10 seconds.
+- [ ] Arabic copy feels native, not translated.
+- [ ] Daily brief is scannable in 5 minutes.
+- [ ] Brief has a clear end state.
+- [ ] No infinite-feed behavior.
+- [ ] Source drawer is easy to find but does not clutter the main card.
+- [ ] Mixed Arabic/English text renders naturally.
+- [ ] Currency values display correctly for USD, AED, SAR, and EGP.
+- [ ] Mobile layout works with one thumb.
+- [ ] Empty, loading, and error states use Zubda voice.
+- [ ] Pricing stays simple: Free, Pro Monthly, Founder Lifetime.

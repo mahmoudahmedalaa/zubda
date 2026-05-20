@@ -1,0 +1,96 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function ownsUserDoc(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    function ownsDocument() {
+      return signedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    function createsOwnDocument() {
+      return signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow read: if ownsUserDoc(userId);
+      allow create: if ownsUserDoc(userId);
+      allow update: if ownsUserDoc(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+          "plan",
+          "entitlementStatus",
+          "stripeCustomerId",
+          "subscriptionStatus",
+          "subscriptionId",
+          "currentPeriodEnd",
+          "lifetimePurchasedAt",
+          "role"
+        ]);
+      allow delete: if false;
+    }
+
+    match /profiles/{profileId} {
+      allow read, update, delete: if ownsDocument();
+      allow create: if createsOwnDocument();
+    }
+
+    match /watchlists/{watchlistId} {
+      allow read, update, delete: if ownsDocument();
+      allow create: if createsOwnDocument();
+    }
+
+    match /briefs/{briefId} {
+      allow read: if ownsDocument();
+      allow write: if false;
+    }
+
+    match /sourceLogs/{sourceLogId} {
+      allow read: if ownsDocument();
+      allow write: if false;
+    }
+
+    match /deliveryLogs/{deliveryLogId} {
+      allow read: if ownsDocument();
+      allow write: if false;
+    }
+
+    match /feedback/{feedbackId} {
+      allow read, update, delete: if ownsDocument();
+      allow create: if createsOwnDocument();
+    }
+
+    match /interestModules/{moduleId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /plans/{planId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    match /sourceStories/{storyId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /stripeEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /generationJobs/{jobId} {
+      allow read, write: if false;
+    }
+
+    match /adminLogs/{logId} {
+      allow read, write: if false;
+    }
+  }
+}
+

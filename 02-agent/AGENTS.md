@@ -21,6 +21,14 @@
 - **Orchestration** → This file — HOW to make decisions, WHEN to ask, autonomy rules
 - **Execution** → `03-workflows/` + `02-agent/skills/` — Deterministic procedures and reusable skills
 
+### Available Skills
+| Skill | File | When to Use |
+|:------|:-----|:------------|
+| **Handover** | `skills/HANDOVER.md` | End of conversation — document state for next AI |
+| **MCP Setup** | `skills/MCP_SETUP.md` | Setting up Model Context Protocol tools |
+| **Skill Creator** | `skills/SKILL_CREATOR.md` | Creating new reusable skills |
+| **Design System Generator** | `skills/DESIGN_SYSTEM_GENERATOR.md` | Generating `FRONTEND_GUIDELINES.md` with psychology-driven colors, library selection, component patterns, and animation guidelines. **Always use this skill** when building a design system — it ensures research-backed, library-first results |
+
 ---
 
 ## Project Context

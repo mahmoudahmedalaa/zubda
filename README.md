@@ -107,6 +107,8 @@ Required systems for the full MVP:
 
 Project truth lives in:
 
+- `PRODUCT.md`
+- `DESIGN.md`
 - `01-docs/PRD.md`
 - `01-docs/APP_FLOW.md`
 - `01-docs/TECH_STACK.md`

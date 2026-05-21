@@ -6,7 +6,7 @@
   --color-surface: hsl(0 0% 100%);
   --color-surface-raised: hsl(0 0% 100%);
   --color-ink: hsl(231 26% 9%);
-  --color-ink-muted: hsl(220 13% 54%);
+  --color-ink-muted: hsl(220 15% 42%);
   --color-line: hsl(226 33% 91%);
   --color-zubda-50: hsl(235 100% 97%);
   --color-zubda-100: hsl(235 100% 94%);
@@ -24,11 +24,11 @@
   --color-trust-700: hsl(193 87% 25%);
   --color-saffron-50: hsl(39 100% 95%);
   --color-saffron-300: hsl(39 95% 70%);
-  --color-saffron-500: hsl(36 92% 55%);
+  --color-saffron-500: hsl(36 92% 42%);
   --color-fig-50: hsl(332 68% 96%);
   --color-fig-500: hsl(333 62% 48%);
   --color-risk: hsl(350 58% 42%);
-  --color-warning: hsl(32 90% 48%);
+  --color-warning: hsl(32 90% 38%);
   --color-success: hsl(153 57% 34%);
   --color-info: hsl(205 62% 38%);
   --radius-card: 28px;

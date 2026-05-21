@@ -9,8 +9,11 @@ const profile: ProfilePayload = {
   mainGoals: ["أكون مطّلع قبل الدوام"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia"],
+  sourcePreferences: [],
+  avoidTopics: [],
   communicationStyle: "مختصر ومباشر",
-  personalContext: "مستشار يحتاج نقاط واضحة للاجتماعات الصباحية",
+  decisionContext: "مستشار يحتاج نقاط واضحة للاجتماعات",
+  personalContext: "مستشار يحتاج نقاط واضحة للاجتماعات",
   briefDepth: "standard",
   deliveryTime: "07:30",
   timezone: "Asia/Dubai"

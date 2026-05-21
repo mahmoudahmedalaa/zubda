@@ -10,6 +10,8 @@ export const planLimits: Record<
     archiveDays: number | null;
     archiveSearch: boolean;
     deeperBrief: boolean;
+    sourcePreferences: boolean;
+    customDeliveryTime: boolean;
   }
 > = {
   free: {
@@ -17,21 +19,27 @@ export const planLimits: Record<
     maxWatchlistItems: 5,
     archiveDays: 7,
     archiveSearch: false,
-    deeperBrief: false
+    deeperBrief: false,
+    sourcePreferences: false,
+    customDeliveryTime: false
   },
   pro_monthly: {
     maxInterestModules: 15,
     maxWatchlistItems: 50,
     archiveDays: null,
     archiveSearch: true,
-    deeperBrief: true
+    deeperBrief: true,
+    sourcePreferences: true,
+    customDeliveryTime: true
   },
   founder_lifetime: {
     maxInterestModules: 15,
     maxWatchlistItems: 50,
     archiveDays: null,
     archiveSearch: true,
-    deeperBrief: true
+    deeperBrief: true,
+    sourcePreferences: true,
+    customDeliveryTime: true
   }
 };
 

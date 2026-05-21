@@ -37,6 +37,8 @@ export async function PATCH(request: Request): Promise<Response> {
   const plan = effectivePlanForEntitlement(userData?.plan, userData?.entitlementStatus);
   const limits = planLimits[plan] ?? planLimits.free;
   const watchlist = normalizeWatchlist(parsed.data.watchlist);
+  const sourcePreferences = normalizeWatchlist(parsed.data.sourcePreferences);
+  const avoidTopics = normalizeWatchlist(parsed.data.avoidTopics);
 
   if (parsed.data.interestModuleIds.length > limits.maxInterestModules) {
     return jsonError(
@@ -54,6 +56,14 @@ export async function PATCH(request: Request): Promise<Response> {
     );
   }
 
+  if (!limits.sourcePreferences && sourcePreferences.length > 0) {
+    return jsonError("FORBIDDEN", "Source preferences are available on Pro.", 402);
+  }
+
+  if (!limits.customDeliveryTime && parsed.data.deliveryTime !== "07:30") {
+    return jsonError("FORBIDDEN", "Custom delivery time is available on Pro.", 402);
+  }
+
   const hasExistingProfile = typeof userData?.primaryProfileId === "string";
   const profileId = hasExistingProfile
     ? userData.primaryProfileId
@@ -67,6 +77,8 @@ export async function PATCH(request: Request): Promise<Response> {
       {
         ...parsed.data,
         watchlist,
+        sourcePreferences,
+        avoidTopics,
         name: "Primary profile",
         userId: auth.token.uid,
         isPrimary: true,
@@ -110,7 +122,9 @@ export async function PATCH(request: Request): Promise<Response> {
     profile: {
       id: profileId,
       ...parsed.data,
-      watchlist
+      watchlist,
+      sourcePreferences,
+      avoidTopics
     }
   });
 }

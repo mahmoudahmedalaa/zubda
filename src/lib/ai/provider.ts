@@ -12,7 +12,7 @@ export type GenerateTextInput = {
 };
 
 export type GenerateTextResult = {
-  provider: "gemini" | "openai" | "fallback";
+  provider: "gemini" | "openai" | "openai_compatible" | "fallback";
   model: string;
   text: string;
 };
@@ -92,6 +92,33 @@ class OpenAiProvider implements AiProvider {
   }
 }
 
+class OpenAiCompatibleProvider implements AiProvider {
+  async generateText(input: GenerateTextInput): Promise<GenerateTextResult> {
+    if (!serverEnv.AI_COMPATIBLE_BASE_URL || !serverEnv.AI_COMPATIBLE_MODEL) {
+      throw new Error("AI_COMPATIBLE_BASE_URL and AI_COMPATIBLE_MODEL are required.");
+    }
+
+    const client = new OpenAI({
+      apiKey: serverEnv.AI_COMPATIBLE_API_KEY || "local-compatible-provider",
+      baseURL: serverEnv.AI_COMPATIBLE_BASE_URL
+    });
+    const response = await client.chat.completions.create({
+      model: serverEnv.AI_COMPATIBLE_MODEL,
+      temperature: input.temperature ?? 0.3,
+      messages: [
+        ...(input.system ? [{ role: "system" as const, content: input.system }] : []),
+        { role: "user" as const, content: input.prompt }
+      ]
+    });
+
+    return {
+      provider: "openai_compatible",
+      model: serverEnv.AI_COMPATIBLE_MODEL,
+      text: response.choices[0]?.message.content ?? ""
+    };
+  }
+}
+
 class FallbackProvider implements AiProvider {
   async generateText(input: GenerateTextInput): Promise<GenerateTextResult> {
     return {
@@ -109,6 +136,14 @@ export function getAiProvider(): AiProvider {
 
   if (serverEnv.AI_PROVIDER === "gemini" && serverEnv.GEMINI_API_KEY) {
     return new GeminiProvider();
+  }
+
+  if (
+    serverEnv.AI_PROVIDER === "openai_compatible" &&
+    serverEnv.AI_COMPATIBLE_BASE_URL &&
+    serverEnv.AI_COMPATIBLE_MODEL
+  ) {
+    return new OpenAiCompatibleProvider();
   }
 
   return new FallbackProvider();

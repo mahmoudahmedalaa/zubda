@@ -139,6 +139,10 @@ function profileStyle(profile: ProfilePayload): string {
 }
 
 function profileContextNote(profile: ProfilePayload): string {
+  if (profile.decisionContext) {
+    return profile.decisionContext.slice(0, 160);
+  }
+
   if (profile.personalContext) {
     return profile.personalContext.slice(0, 160);
   }
@@ -147,17 +151,26 @@ function profileContextNote(profile: ProfilePayload): string {
 }
 
 export function selectStoriesForProfile(
-  profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist">,
+  profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist" | "avoidTopics" | "sourcePreferences">,
   stories: SourceStorySeed[]
 ): SourceStorySeed[] {
   const watchlist = new Set(profile.watchlist.map((item) => item.toLowerCase()));
+  const avoidTopics = new Set(profile.avoidTopics.map((item) => item.toLowerCase()));
+  const sourcePreferences = new Set(profile.sourcePreferences.map((item) => item.toLowerCase()));
 
   return stories
+    .filter((story) => {
+      const haystack = [story.title, story.summary, story.publisher, ...story.topicTags, ...story.entityTags]
+        .join(" ")
+        .toLowerCase();
+      return !Array.from(avoidTopics).some((topic) => haystack.includes(topic));
+    })
     .map((story) => {
       const topicScore = story.topicTags.filter((tag) => profile.interestModuleIds.includes(tag)).length * 3;
       const regionScore = story.regionTags.includes(profile.region) || story.regionTags.includes("GCC") ? 2 : 0;
       const watchScore = story.entityTags.some((entity) => watchlist.has(entity.toLowerCase())) ? 4 : 0;
-      return { story, score: topicScore + regionScore + watchScore };
+      const sourceScore = sourcePreferences.has(story.publisher.toLowerCase()) ? 2 : 0;
+      return { story, score: topicScore + regionScore + watchScore + sourceScore };
     })
     .sort((a, b) => b.score - a.score)
     .slice(0, 4)
@@ -171,6 +184,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
   const watchlistFocus = profile.watchlist.slice(0, 3);
   const watchlistText = formatArabicList(watchlistFocus);
   const focusText = formatArabicList(focusTags);
+  const decisionText = profile.decisionContext || profile.personalContext;
 
   return {
     headline: "زبدة جاهزة لك",
@@ -262,14 +276,18 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
     })),
     personalImpact: {
       title: "وش يعني لك؟",
-      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. زبدة تقلل لك الزحمة وتطلع الإشارات الأقرب لاهتماماتك المختارة بدل الأخبار العامة.`
+      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. ${
+        decisionText ? `أخذنا في الحسبان: ${decisionText.slice(0, 180)}. ` : ""
+      }زبدة تقلل لك الزحمة وتطلع الإشارات الأقرب لاهتماماتك المختارة بدل الأخبار العامة.`
     },
     personalizationNotes: [
       `رتبنا الإشارات حسب منطقتك: ${profile.region}`,
       `قائمة متابعتك: ${watchlistText}`,
       `أسلوبك المفضل: ${profileStyle(profile)}`,
-      `ملاحظتك عن نفسك: ${profileContextNote(profile)}`
-    ],
+      `سياقك: ${profileContextNote(profile)}`,
+      profile.sourcePreferences.length ? `مصادرك المفضلة: ${formatArabicList(profile.sourcePreferences.slice(0, 3))}` : "",
+      profile.avoidTopics.length ? `نتجنب: ${formatArabicList(profile.avoidTopics.slice(0, 3))}` : ""
+    ].filter(Boolean),
     talkingPoints: selectedStories.slice(0, 3).map((story) => story.title),
     glossary: [
       {
@@ -283,7 +301,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       publisher: story.publisher,
       url: story.sourceUrl,
       reliabilityLabel: story.reliabilityLabel,
-      whyIncluded: "اخترناه لأنه قريب من اهتماماتك المختارة أو منطقتك أو قائمة المتابعة."
+      whyIncluded: "اخترناه لأنه قريب من اهتماماتك المختارة أو منطقتك أو قائمة المتابعة، بدون استخدام مواضيع طلبت تجاهلها."
     }))
   };
 }

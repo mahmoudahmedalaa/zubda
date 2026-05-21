@@ -30,10 +30,9 @@ export function PortalButton(): ReactElement {
   return (
     <div className="mt-5">
       <Button disabled={loading} onClick={() => void openPortal()} variant="secondary">
-        {loading ? "نفتح الفوترة..." : "إدارة الفوترة في Stripe"}
+        {loading ? "نفتح الفوترة..." : "إدارة الفوترة"}
       </Button>
       {error ? <p className="arabic-copy mt-3 text-sm text-[var(--color-risk)]">{error}</p> : null}
     </div>
   );
 }
-

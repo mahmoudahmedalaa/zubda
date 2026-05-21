@@ -2,7 +2,7 @@ import { verifyFirebaseRequest } from "@/lib/auth/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
-import { planLimits } from "@/lib/plans";
+import { effectivePlanForEntitlement, planLimits } from "@/lib/plans";
 import { ensureUserFromToken } from "@/lib/users/ensureUser";
 
 export async function GET(request: Request): Promise<Response> {
@@ -41,21 +41,18 @@ export async function GET(request: Request): Promise<Response> {
       : null;
   }
 
-  const plan =
-    userData.plan === "pro_monthly" || userData.plan === "founder_lifetime"
-      ? userData.plan
-      : "free";
+  const effectivePlan = effectivePlanForEntitlement(userData.plan, userData.entitlementStatus);
 
   return jsonOk({
     user,
     profile,
     entitlement: {
-      plan,
+      plan: effectivePlan,
       status:
         typeof userData.entitlementStatus === "string"
           ? userData.entitlementStatus
           : "free",
-      limits: planLimits[plan]
+      limits: planLimits[effectivePlan]
     }
   });
 }

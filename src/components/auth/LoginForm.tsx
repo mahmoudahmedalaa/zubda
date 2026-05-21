@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, type ReactElement, useState } from "react";
 import {
@@ -60,6 +60,7 @@ export function LoginForm(): ReactElement {
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<"idle" | "email" | "google">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -150,8 +151,10 @@ export function LoginForm(): ReactElement {
           />
           <input
             className="min-h-12 w-full rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 pl-11 text-left outline-none focus:border-[var(--color-zubda-500)]"
+            autoComplete="email"
             dir="ltr"
             id="email"
+            inputMode="email"
             name="email"
             onChange={(event) => setEmail(event.target.value)}
             placeholder="you@example.com"
@@ -171,7 +174,8 @@ export function LoginForm(): ReactElement {
             size={18}
           />
           <input
-            className="min-h-12 w-full rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 pl-11 text-left outline-none focus:border-[var(--color-zubda-500)]"
+            className="min-h-12 w-full rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-12 py-3 text-left outline-none focus:border-[var(--color-zubda-500)]"
+            autoComplete={mode === "signup" ? "new-password" : "current-password"}
             dir="ltr"
             id="password"
             minLength={6}
@@ -179,9 +183,17 @@ export function LoginForm(): ReactElement {
             onChange={(event) => setPassword(event.target.value)}
             placeholder="••••••••"
             required
-            type="password"
+            type={showPassword ? "text" : "password"}
             value={password}
           />
+          <button
+            aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+            className="absolute right-3 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full text-[var(--color-ink-muted)] transition hover:bg-[var(--color-zubda-50)] hover:text-[var(--color-zubda-600)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)]"
+            onClick={() => setShowPassword((current) => !current)}
+            type="button"
+          >
+            {showPassword ? <EyeOff aria-hidden size={18} /> : <Eye aria-hidden size={18} />}
+          </button>
         </div>
 
         <Button className="w-full" disabled={status !== "idle"} type="submit">

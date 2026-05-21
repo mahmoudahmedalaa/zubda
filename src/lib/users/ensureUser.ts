@@ -12,6 +12,7 @@ export type SyncedUser = {
   entitlementStatus: string;
   role: string;
   primaryProfileId?: string;
+  wasCreated: boolean;
 };
 
 export async function ensureUserFromToken(token: DecodedIdToken): Promise<SyncedUser> {
@@ -46,6 +47,7 @@ export async function ensureUserFromToken(token: DecodedIdToken): Promise<Synced
     entitlementStatus:
       typeof fresh.entitlementStatus === "string" ? fresh.entitlementStatus : "free",
     role: typeof fresh.role === "string" ? fresh.role : "user",
-    ...(typeof fresh.primaryProfileId === "string" ? { primaryProfileId: fresh.primaryProfileId } : {})
+    ...(typeof fresh.primaryProfileId === "string" ? { primaryProfileId: fresh.primaryProfileId } : {}),
+    wasCreated: !snapshot.exists
   };
 }

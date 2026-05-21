@@ -165,8 +165,8 @@ export function OnboardingWizard(): ReactElement {
     <Card className="w-full max-w-2xl p-6 text-right">
       <div className="mb-6">
         <div className="flex items-center justify-between gap-4">
-          <p className="font-mono text-xs uppercase text-[var(--color-ink-muted)]">
-            Step {stepIndex + 1} of {steps.length}
+          <p className="text-xs font-black text-[var(--color-ink-muted)]">
+            خطوة {stepIndex + 1} من {steps.length}
           </p>
           <p className="font-mono text-xs text-[var(--color-trust-700)]">{progress}%</p>
         </div>
@@ -267,7 +267,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">وش المواضيع اللي تهمك؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            Free يبدأ بثلاث اهتمامات. Pro يفتح تخصيص أوسع لاحقاً.
+            ابدأ بثلاث اهتمامات أساسية. تقدر توسعها أكثر مع برو
           </p>
           <div className="mt-3 text-sm font-semibold text-[var(--color-trust-700)]">
             {draft.interestModuleIds.length}/{freeLimits.maxInterestModules}
@@ -311,7 +311,8 @@ export function OnboardingWizard(): ReactElement {
                   addWatchItem();
                 }
               }}
-              placeholder="Nvidia, Oil prices, Saudi market..."
+              placeholder="أرامكو، النفط، السوق السعودي..."
+              aria-label="أضف عنصر لقائمة المتابعة"
               value={watchInput}
             />
             <Button onClick={addWatchItem} variant="secondary">
@@ -342,7 +343,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">بأي عملة تحب نفهمك الأرقام؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            نستخدمها للشرح داخل الملخص. أسعار Stripe ثابتة ومنفصلة.
+            عشان الأرقام تطلع لك بالصيغة الأقرب لك
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {currencies.map((currency) => (
@@ -362,7 +363,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">قد إيش تبيها مختصرة؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            Standard هو default: خمس دقائق تعطيك الزبدة بدون حشو.
+            الوضع المتوسط يعطيك قراءة خمس دقائق: مختصرة، واضحة، وبدون حشو
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {briefDepths.map((depth) => (
@@ -382,7 +383,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">متى توصلك الزبدة؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            الإيميل هو trigger اليومي، والقراءة تكون في صفحة خاصة.
+            نرسلها لك الصباح بالإيميل، وتفتح الملخص في صفحة خاصة
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {deliveryTimes.map((time) => (

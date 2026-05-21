@@ -137,12 +137,17 @@ Completed foundation work:
 - AI provider abstraction with Gemini, OpenAI, and deterministic fallback.
 - Cron routes for source story seeding, profile-based brief generation, generation job logging, and Resend email delivery.
 - Authenticated private brief APIs, archive APIs, feedback API, and Firestore-backed brief reader UI.
-- Basic plan entitlement constants and tests.
+- Entitlement-aware profile limits and Free archive gating.
+- Source logs stored for each generated brief.
+- Basic Firestore event logging for auth, onboarding, checkout, brief opens, generated briefs, emails, and feedback.
+- Preferred-currency conversion inside generated briefs, with deterministic fallback rates until an FX provider is connected.
+- Full email/password signup → onboarding → `/app/today` browser smoke test verified locally against Firebase Auth.
+- TypeScript, ESLint, Vitest, and production `next build` are passing locally.
 
 Next implementation priorities:
 
-1. Enable Firebase Authentication in Firebase Console, then turn on Email/Password and Google sign-in.
-2. Add Stripe secret key, publishable key, and webhook secret locally/Vercel.
-3. Add Resend API key and verify `morning@zubda.ai`.
-4. Add Gemini/OpenAI API keys for real AI generation beyond deterministic seeded stories.
-5. Verify full sign-in → onboarding save → checkout → webhook entitlement → brief generation flow with a real test user.
+1. Add Stripe secret key, publishable key, and webhook secret locally/Vercel.
+2. Add Resend API key and verify `morning@zubda.ai`.
+3. Add Gemini/OpenAI API keys for real AI generation beyond deterministic seeded stories.
+4. Add an FX provider key if live/daily exchange-rate refresh is required beyond fallback rates.
+5. Verify Stripe Checkout + webhook entitlement in Stripe test mode after keys are added.

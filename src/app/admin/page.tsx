@@ -10,6 +10,7 @@ const adminAreas = [
   ["مهام التوليد", collections.generationJobs],
   ["سجل المصادر", collections.sourceLogs],
   ["التفاعل", collections.feedback],
+  ["الأحداث", collections.events],
   ["التوصيل", collections.deliveryLogs],
   ["الدفع", collections.stripeEvents]
 ] as const;

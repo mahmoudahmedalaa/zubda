@@ -1,6 +1,7 @@
 import type { ProfilePayload } from "@/lib/profile/schema";
 import type { InterestModule } from "@/data/onboarding";
 import type { StructuredBrief } from "@/lib/briefs/types";
+import { formatUsdConversion, usdRateLabel } from "@/lib/fx/conversion";
 
 export type SourceStorySeed = {
   id: string;
@@ -155,6 +156,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
   const watchlistFocus = profile.watchlist.slice(0, 3);
   const watchlistText = formatArabicList(watchlistFocus);
   const focusText = formatArabicList(focusTags);
+  const convertedMarketValue = formatUsdConversion(100_000_000, profile.preferredCurrency);
 
   return {
     headline: "زبدة جاهزة لك",
@@ -165,14 +167,14 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
     metrics: [
       { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
       { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" },
-      { label: "الدولار مقابل الدرهم", value: "3.67", change: "ثابت تقريباً", tone: "good" },
+      { label: "تحويل سريع", value: convertedMarketValue, change: usdRateLabel(profile.preferredCurrency), tone: "good" },
       { label: "إشارات مهمة", value: String(selectedStories.length), change: "حسب قائمتك", tone: "watch" }
     ],
     chart: {
       title: "قوة الإشارات حسب اهتمامك",
       subtitle: "كلما ارتفع العمود، زادت صلة الموضوع بقائمتك",
       points: [
-        { label: "AI", value: 88 },
+        { label: "التقنية", value: 88 },
         { label: "النفط", value: 76 },
         { label: "الخليج", value: 68 },
         { label: "العقار", value: 44 }
@@ -226,7 +228,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
         label: "ناسداك",
         weight: 24,
         bias: "حساس للفائدة",
-        note: "يستفيد من AI ويتأثر بالعوائد"
+        note: "يستفيد من التقنية ويتأثر بالعوائد"
       },
       {
         symbol: "UAE RE",

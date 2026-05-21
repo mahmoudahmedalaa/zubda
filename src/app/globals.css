@@ -3,9 +3,10 @@
 :root {
   color-scheme: light;
   --color-paper: hsl(232 100% 99%);
-  --color-surface: hsl(0 0% 100%);
-  --color-surface-raised: hsl(0 0% 100%);
+  --color-surface: hsl(235 72% 99.4%);
+  --color-surface-raised: hsl(235 90% 99.7%);
   --color-ink: hsl(231 26% 9%);
+  --color-ink-panel: hsl(232 24% 13%);
   --color-ink-muted: hsl(220 15% 42%);
   --color-line: hsl(226 33% 91%);
   --color-zubda-50: hsl(235 100% 97%);
@@ -69,6 +70,12 @@
   select,
   textarea {
     font: inherit;
+  }
+
+  button,
+  [role="button"],
+  a {
+    touch-action: manipulation;
   }
 
   ::selection {

@@ -2,6 +2,7 @@ import { FieldValue } from "firebase-admin/firestore";
 import { Resend } from "resend";
 import type { BriefDocument } from "@/lib/briefs/types";
 import { buildBriefEmail } from "@/lib/email/briefEmail";
+import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { clientEnv, serverEnv } from "@/lib/env";
@@ -101,6 +102,10 @@ export async function sendReadyBriefEmails(): Promise<{
         status: "sent",
         resendMessageId: result.data?.id,
         sentAt: FieldValue.serverTimestamp()
+      });
+      await trackServerEvent("brief_email_sent", {
+        userId: brief.userId,
+        properties: { briefId: brief.id, deliveryLogId: logRef.id, resendMessageId: result.data?.id }
       });
       sent += 1;
     } catch (error) {

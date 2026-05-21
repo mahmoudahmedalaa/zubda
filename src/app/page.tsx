@@ -17,14 +17,14 @@ const promiseCards = [
 ];
 
 const steps = [
-  ["قل لنا عالمك", "مستثمر؟ مؤسس؟ مستشار؟ اختر الدور والبلد والعملة"],
-  ["أضف قائمتك", "شركات، أسواق، أصول، قطاعات، أو موضوعات تتابعها"],
-  ["تتغير الزبدة معك", "كل قراءة وتقييم يعدّل ترتيب الملخص القادم"]
+  ["قل لنا عالمك", "اختَر دورك، بلدك، عملتك، والمواضيع اللي تهمك"],
+  ["أضف قائمتك", "شركات، أسواق، أصول، قطاعات، أو موضوعات تبغى ننتبه لها"],
+  ["نرتبها لك", "كل صباح نبدأ بالأقرب لشغلك وقراراتك، مو الأعلى صوتاً"]
 ];
 
 const personalizationExamples = [
-  ["لو أنت مستثمر", "نرفع لك السوق، الفائدة، النفط، والفرص اللي تحرك محفظتك"],
-  ["لو أنت مؤسس", "نركز على التمويل، المنافسين، التقنية، وتنظيمات السوق"],
+  ["لو أنت مستثمر", "نقرب لك الفائدة، النفط، السوق، وأثرها على محفظتك"],
+  ["لو أنت مؤسس", "نركز على التمويل، المنافسين، التقنية، وتغييرات السوق"],
   ["لو أنت مستشار", "نطلع لك نقاط تصلح لاجتماعك وكلام ينقال بثقة"]
 ];
 
@@ -191,7 +191,7 @@ export default function LandingPage(): ReactElement {
           <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             <Reveal>
               <Card className="overflow-hidden text-right">
-                <div className="bg-[var(--color-ink)] p-7 text-white">
+                <div className="bg-[var(--color-ink-panel)] p-7 text-white">
                   <ShieldCheck aria-hidden className="text-[var(--color-trust-100)]" size={32} />
                   <h2 className="display-arabic mt-5 text-4xl font-black leading-[1.25]">الثقة ظاهرة</h2>
                   <p className="arabic-copy mt-3 text-sm font-semibold text-white/72">

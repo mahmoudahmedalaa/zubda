@@ -8,6 +8,7 @@ export const collections = {
   sourceLogs: "sourceLogs",
   deliveryLogs: "deliveryLogs",
   feedback: "feedback",
+  events: "events",
   plans: "plans",
   stripeEvents: "stripeEvents",
   generationJobs: "generationJobs",
@@ -15,4 +16,3 @@ export const collections = {
 } as const;
 
 export type CollectionName = (typeof collections)[keyof typeof collections];
-

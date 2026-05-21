@@ -174,7 +174,7 @@ function SignalChart({
               />
             </div>
             <p className="text-xs font-semibold text-[var(--color-ink-muted)]">
-              {point.label === "AI"
+              {point.label === "التقنية"
                 ? "مرتبط بقائمة التقنية والأسهم"
                 : point.label === "النفط"
                   ? "مرتبط بالخليج والتضخم"
@@ -260,7 +260,7 @@ function SentimentGauge({
             </div>
             <div className="rounded-[22px] bg-[var(--color-saffron-50)] p-4">
               <p className="text-sm font-black">المحرك الرئيسي</p>
-              <p className="mt-1 text-sm font-bold text-[var(--color-ink-muted)]">AI + الفائدة</p>
+              <p className="mt-1 text-sm font-bold text-[var(--color-ink-muted)]">التقنية + الفائدة</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { getBriefForUser } from "@/lib/briefs/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
+import { trackServerEvent } from "@/lib/events/server";
 import { jsonError, jsonOk } from "@/lib/http";
 
 type RouteContext = {
@@ -27,6 +28,11 @@ export async function GET(request: Request, context: RouteContext): Promise<Resp
   if (!brief) {
     return jsonError("NOT_FOUND", "Brief was not found for this user.", 404);
   }
+
+  await trackServerEvent("brief_opened", {
+    userId: auth.token.uid,
+    properties: { briefId: brief.id, dateKey: brief.dateKey, source: "detail" }
+  });
 
   return jsonOk({ brief });
 }

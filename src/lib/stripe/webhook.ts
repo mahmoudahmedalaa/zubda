@@ -1,5 +1,6 @@
 import type Stripe from "stripe";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
+import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 
@@ -82,6 +83,14 @@ export async function processStripeEvent(event: Stripe.Event): Promise<void> {
             };
 
       await getAdminDb().collection(collections.users).doc(userId).set(update, { merge: true });
+      await trackServerEvent("checkout_completed", {
+        userId,
+        properties: { plan, stripeCustomerId, sessionId: session.id }
+      });
+      await trackServerEvent(plan === "founder_lifetime" ? "lifetime_activated" : "pro_activated", {
+        userId,
+        properties: { stripeCustomerId, sessionId: session.id }
+      });
       return;
     }
 
@@ -114,6 +123,13 @@ export async function processStripeEvent(event: Stripe.Event): Promise<void> {
           },
           { merge: true }
         );
+
+      if (subscription.status === "active" || subscription.status === "trialing") {
+        await trackServerEvent("pro_activated", {
+          userId,
+          properties: { stripeCustomerId, subscriptionId: subscription.id, status: subscription.status }
+        });
+      }
       return;
     }
 
@@ -137,7 +153,13 @@ export async function processStripeEvent(event: Stripe.Event): Promise<void> {
           },
           { merge: true }
         );
+
+      if (event.type === "invoice.payment_failed") {
+        await trackServerEvent("checkout_failed", {
+          userId,
+          properties: { stripeCustomerId, invoiceId: invoice.id }
+        });
+      }
     }
   }
 }
-

@@ -38,3 +38,15 @@ export const planLimits: Record<
     deeperBrief: true
   }
 };
+
+export function effectivePlanForEntitlement(plan: unknown, status: unknown): PlanKey {
+  if (plan === "founder_lifetime" && (status === "lifetime" || status === "active")) {
+    return "founder_lifetime";
+  }
+
+  if (plan === "pro_monthly" && status === "active") {
+    return "pro_monthly";
+  }
+
+  return "free";
+}

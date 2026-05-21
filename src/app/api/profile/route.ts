@@ -1,10 +1,11 @@
 import { FieldValue } from "firebase-admin/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
 import { collections } from "@/lib/firebase/collections";
+import { trackServerEvent } from "@/lib/events/server";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
 import { normalizeWatchlist, profilePayloadSchema } from "@/lib/profile/schema";
-import { planLimits, type PlanKey } from "@/lib/plans";
+import { effectivePlanForEntitlement, planLimits } from "@/lib/plans";
 
 function authErrorResponse(code: string, status: 401 | 503): Response {
   return jsonError(
@@ -33,7 +34,7 @@ export async function PATCH(request: Request): Promise<Response> {
   const userRef = db.collection(collections.users).doc(auth.token.uid);
   const userSnapshot = await userRef.get();
   const userData = userSnapshot.data();
-  const plan = (userData?.plan ?? "free") as PlanKey;
+  const plan = effectivePlanForEntitlement(userData?.plan, userData?.entitlementStatus);
   const limits = planLimits[plan] ?? planLimits.free;
   const watchlist = normalizeWatchlist(parsed.data.watchlist);
 
@@ -90,6 +91,18 @@ export async function PATCH(request: Request): Promise<Response> {
       },
       { merge: true }
     );
+  });
+
+  await trackServerEvent("onboarding_completed", {
+    userId: auth.token.uid,
+    properties: {
+      plan,
+      region: parsed.data.region,
+      role: parsed.data.role,
+      interests: parsed.data.interestModuleIds.length,
+      watchlist: watchlist.length,
+      currency: parsed.data.preferredCurrency
+    }
   });
 
   return jsonOk({

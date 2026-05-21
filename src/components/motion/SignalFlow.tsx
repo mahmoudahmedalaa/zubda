@@ -6,14 +6,14 @@ import { type ReactElement } from "react";
 
 const profileInputs = [
   { label: "دورك", value: "مستثمر", icon: BriefcaseBusiness },
-  { label: "منطقتك", value: "UAE + GCC", icon: MapPin },
+  { label: "منطقتك", value: "الإمارات والخليج", icon: MapPin },
   { label: "عملتك", value: "AED", icon: CircleDollarSign }
 ];
 
 const rankedSignals = [
   { label: "الفائدة", score: 82, note: "تضغط على أسهم النمو" },
   { label: "النفط", score: 74, note: "يحرك مزاج الخليج" },
-  { label: "AI", score: 69, note: "فرص وتقلب" }
+  { label: "التقنية", score: 69, note: "فرص وتقلب" }
 ];
 
 export function SignalFlow(): ReactElement {
@@ -49,7 +49,7 @@ export function SignalFlow(): ReactElement {
           ))}
         </div>
 
-        <div className="rounded-[30px] bg-[var(--color-ink)] p-5 text-white">
+        <div className="rounded-[30px] bg-[var(--color-ink-panel)] p-5 text-white">
           <div className="mb-5 flex items-center justify-between gap-3">
             <div>
               <p className="text-sm font-black text-white/68">ترتيب الإشارات</p>
@@ -81,7 +81,7 @@ export function SignalFlow(): ReactElement {
         <div className="rounded-[28px] bg-[var(--color-trust-50)] p-5 text-right">
           <p className="text-sm font-black text-[var(--color-trust-700)]">النتيجة</p>
           <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
-            بدل ملخص عام، تشوف أولاً الشيء الأقرب لمحفظتك وشغلك وسوالفك المهمة
+            بدل ملخص عام، تبدأ بالأشياء الأقرب لمحفظتك وشغلك والقرارات اللي قدامك
           </p>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { verifyFirebaseRequest } from "@/lib/auth/server";
 import { clientEnv } from "@/lib/env";
+import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
@@ -90,6 +91,15 @@ export async function POST(request: Request): Promise<Response> {
             }
           }
         : undefined
+  });
+
+  await trackServerEvent("checkout_started", {
+    userId: auth.token.uid,
+    properties: {
+      plan: parsed.data.plan,
+      currency: parsed.data.currency,
+      sessionId: session.id
+    }
   });
 
   return jsonOk({ url: session.url });

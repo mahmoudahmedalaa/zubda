@@ -1,6 +1,7 @@
 import { buildStructuredBrief, sourceStorySeeds } from "@/lib/briefs/sample";
 import { getLatestBriefForUser } from "@/lib/briefs/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
+import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
@@ -55,15 +56,24 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   if (brief) {
+    await trackServerEvent("brief_opened", {
+      userId: auth.token.uid,
+      properties: { briefId: brief.id, dateKey: brief.dateKey, source: "today" }
+    });
     return jsonOk({ brief });
   }
 
-  return jsonOk({
-    brief: {
-      id: "sample",
-      dateKey: new Date().toISOString().slice(0, 10),
-      status: "sample",
-      structuredBrief: buildStructuredBrief(profile, sourceStorySeeds)
-    }
+  const sampleBrief = {
+    id: "sample",
+    dateKey: new Date().toISOString().slice(0, 10),
+    status: "sample",
+    structuredBrief: buildStructuredBrief(profile, sourceStorySeeds)
+  };
+
+  await trackServerEvent("brief_opened", {
+    userId: auth.token.uid,
+    properties: { briefId: sampleBrief.id, dateKey: sampleBrief.dateKey, source: "sample_fallback" }
   });
+
+  return jsonOk({ brief: sampleBrief });
 }

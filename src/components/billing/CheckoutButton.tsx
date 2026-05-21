@@ -17,7 +17,6 @@ type CheckoutButtonProps = {
 
 export function CheckoutButton({ plan, label, currency, featured = false }: CheckoutButtonProps): ReactElement {
   const router = useRouter();
-  const [authReady, setAuthReady] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,14 +24,12 @@ export function CheckoutButton({ plan, label, currency, featured = false }: Chec
   useEffect(() => {
     if (!hasFirebaseClientConfig()) {
       queueMicrotask(() => {
-        setAuthReady(true);
         setError("Firebase غير مضبوط لهذه البيئة.");
       });
       return;
     }
 
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (user) => {
-      setAuthReady(true);
       setSignedIn(Boolean(user));
     });
 
@@ -70,7 +67,7 @@ export function CheckoutButton({ plan, label, currency, featured = false }: Chec
     <div className="mt-6 space-y-3">
       <Button
         className="w-full"
-        disabled={!authReady || loading}
+        disabled={loading}
         onClick={() => void startCheckout()}
         variant={featured ? "primary" : "secondary"}
       >

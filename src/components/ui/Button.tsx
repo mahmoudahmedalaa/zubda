@@ -25,7 +25,7 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const baseClass =
-  "inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--radius-control)] px-6 py-3 text-sm font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-[var(--radius-control)] px-6 py-3 text-sm font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50";
 
 export function Button({
   children,

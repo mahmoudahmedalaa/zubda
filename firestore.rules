@@ -65,6 +65,10 @@ service cloud.firestore {
       allow create: if createsOwnDocument();
     }
 
+    match /events/{eventId} {
+      allow read, write: if false;
+    }
+
     match /interestModules/{moduleId} {
       allow read: if true;
       allow write: if false;
@@ -93,4 +97,3 @@ service cloud.firestore {
     }
   }
 }
-

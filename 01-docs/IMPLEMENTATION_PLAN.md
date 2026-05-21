@@ -141,10 +141,10 @@
 - [x] Add profile settings screen for edits/viewing current profile.
 
 **Success Criteria**
-- [ ] New authenticated user with no profile is routed to onboarding.
-- [ ] Completed profile routes to `/today`.
-- [ ] Free user cannot exceed 3 interest modules.
-- [ ] Profile data persists in Firestore.
+- [x] New authenticated user with no profile is routed to onboarding.
+- [x] Completed profile routes to `/today`.
+- [x] Free user cannot exceed 3 interest modules.
+- [x] Profile data persists in Firestore.
 
 ---
 
@@ -188,7 +188,7 @@
 - [x] Update `users/{userId}` plan and entitlement fields.
 - [x] Add billing settings page.
 - [x] Add Customer Portal route if configuration is ready.
-- [ ] Add entitlement helper used by UI/API gates.
+- [x] Add entitlement helper used by UI/API gates.
 
 **Success Criteria**
 - [ ] Successful Pro checkout activates `pro_monthly` entitlement.
@@ -321,18 +321,18 @@
 - `01-docs/BACKEND_STRUCTURE.md` `feedback`, `deliveryLogs`, `plans`
 
 **Tasks**
-- [ ] Build `/archive`.
-- [ ] Enforce Free archive limit.
-- [ ] Implement feedback API and UI.
-- [ ] Implement FX provider wrapper.
-- [ ] Add preferred-currency display in brief values.
-- [ ] Store analytics events in Firestore.
+- [x] Build `/archive`.
+- [x] Enforce Free archive limit.
+- [x] Implement feedback API and UI.
+- [x] Implement FX provider wrapper.
+- [x] Add preferred-currency display in brief values.
+- [x] Store analytics events in Firestore.
 
 **Success Criteria**
-- [ ] Feedback writes to Firestore.
-- [ ] Archive gating works by entitlement.
-- [ ] Currency conversion displays FX timestamp.
-- [ ] Basic events are logged.
+- [x] Feedback writes to Firestore.
+- [x] Archive gating works by entitlement.
+- [ ] Currency conversion displays live FX timestamp after external FX provider is connected.
+- [x] Basic events are logged.
 
 ---
 

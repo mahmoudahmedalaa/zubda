@@ -14,7 +14,7 @@ export function Chip({
 }: ChipProps): ReactElement {
   return (
     <button
-      className={`min-h-10 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+      className={`min-h-10 cursor-pointer rounded-full border px-4 py-2 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
           ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-500)] text-white"
           : "border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-ink-muted)] hover:border-[var(--color-zubda-300)] hover:text-[var(--color-zubda-700)]"

@@ -87,8 +87,8 @@ Required systems for the full MVP:
 ## Key Routes
 
 - `/` landing page.
-- `/login` magic link and Google sign-in.
-- `/login/finish` email-link callback.
+- `/login` email/password and Google sign-in.
+- `/login/finish` legacy email-link callback.
 - `/pricing` Free, Pro Monthly, Founder Lifetime.
 - `/onboarding` and `/onboarding/[step]`.
 - `/app/today`.
@@ -126,7 +126,8 @@ Completed foundation work:
 - Firebase project and Web app config for `zubda-d075c`.
 - Firebase client/admin helpers.
 - Firestore database created in `me-central2`, rules deployed, system collections seeded.
-- Firebase Auth client flows for Google and email magic links.
+- Firebase Auth client flows for Google and email/password.
+- Auth sync endpoint that creates/updates the Firestore user record after sign-up/sign-in.
 - Authenticated `/api/me` token-verification path.
 - Auth-guarded onboarding wizard with profile persistence API.
 - Stripe Checkout, webhook, and Customer Portal API routes.
@@ -138,7 +139,7 @@ Completed foundation work:
 
 Next implementation priorities:
 
-1. Configure Firebase Auth providers for Google and email-link sign-in in Firebase Console.
+1. Enable Firebase Authentication in Firebase Console, then turn on Email/Password and Google sign-in.
 2. Add Stripe secret key, publishable key, and webhook secret locally/Vercel.
 3. Add Resend API key and verify `morning@zubda.ai`.
 4. Add Gemini/OpenAI API keys for real AI generation beyond deterministic seeded stories.

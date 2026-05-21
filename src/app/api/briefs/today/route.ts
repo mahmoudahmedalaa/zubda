@@ -1,7 +1,35 @@
 import { buildStructuredBrief, sourceStorySeeds } from "@/lib/briefs/sample";
 import { getLatestBriefForUser } from "@/lib/briefs/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
+import { collections } from "@/lib/firebase/collections";
+import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
+import { profilePayloadSchema, type ProfilePayload } from "@/lib/profile/schema";
+import { ensureUserFromToken } from "@/lib/users/ensureUser";
+
+const defaultSampleProfile: ProfilePayload = {
+  languageMode: "mixed",
+  region: "UAE",
+  role: "مستثمر",
+  mainGoals: ["أتابع السوق والاستثمار"],
+  interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
+  watchlist: ["أسواق الخليج", "النفط", "الذكاء الاصطناعي"],
+  preferredCurrency: "AED",
+  briefDepth: "standard",
+  deliveryTime: "07:30",
+  timezone: "Asia/Dubai"
+};
+
+async function getPrimaryProfile(primaryProfileId?: string): Promise<ProfilePayload> {
+  if (!primaryProfileId) {
+    return defaultSampleProfile;
+  }
+
+  const profileSnapshot = await getAdminDb().collection(collections.profiles).doc(primaryProfileId).get();
+  const parsed = profilePayloadSchema.safeParse(profileSnapshot.data());
+
+  return parsed.success ? parsed.data : defaultSampleProfile;
+}
 
 export async function GET(request: Request): Promise<Response> {
   const auth = await verifyFirebaseRequest(request);
@@ -16,7 +44,15 @@ export async function GET(request: Request): Promise<Response> {
     );
   }
 
-  const brief = await getLatestBriefForUser(auth.token.uid);
+  const user = await ensureUserFromToken(auth.token);
+  const profile = await getPrimaryProfile(user.primaryProfileId);
+  let brief = null;
+
+  try {
+    brief = await getLatestBriefForUser(auth.token.uid);
+  } catch {
+    brief = null;
+  }
 
   if (brief) {
     return jsonOk({ brief });
@@ -27,22 +63,7 @@ export async function GET(request: Request): Promise<Response> {
       id: "sample",
       dateKey: new Date().toISOString().slice(0, 10),
       status: "sample",
-      structuredBrief: buildStructuredBrief(
-        {
-          languageMode: "mixed",
-          region: "UAE",
-          role: "مستشار",
-          mainGoals: ["أكون مطّلع قبل الدوام"],
-          interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
-          watchlist: ["Nvidia"],
-          preferredCurrency: "AED",
-          briefDepth: "standard",
-          deliveryTime: "07:30",
-          timezone: "Asia/Dubai"
-        },
-        sourceStorySeeds
-      )
+      structuredBrief: buildStructuredBrief(profile, sourceStorySeeds)
     }
   });
 }
-

@@ -6,19 +6,81 @@ import { type FormEvent, type ReactElement, useState } from "react";
 import {
   createAccountWithEmailPassword,
   signInWithEmailPassword,
-  signInWithGoogle
+  signInWithGoogle,
+  syncSignedInUser
 } from "@/lib/auth/client";
+import { authedFetch } from "@/lib/api/client";
 import { Button } from "@/components/ui/Button";
+
+type MeResponse = {
+  profile: unknown | null;
+};
+
+function authErrorMessage(error: unknown, mode: "login" | "signup"): string {
+  const code =
+    typeof error === "object" && error && "code" in error && typeof error.code === "string"
+      ? error.code
+      : "";
+
+  if (code === "auth/email-already-in-use") {
+    return "الإيميل مسجل قبل. ادخل بدل إنشاء حساب جديد.";
+  }
+
+  if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+    return "الإيميل أو كلمة المرور مو صحيحة.";
+  }
+
+  if (code === "auth/weak-password") {
+    return "خل كلمة المرور ٦ أحرف أو أكثر.";
+  }
+
+  if (code === "auth/operation-not-allowed") {
+    return "فعّل تسجيل الدخول بالإيميل أو Google من Firebase Authentication.";
+  }
+
+  if (code === "auth/configuration-not-found") {
+    return "الدخول لسه ما يشتغل لأن Authentication مو مفعّل في Firebase. فعّل Email/Password وبعدها جرّب مرة ثانية.";
+  }
+
+  if (code === "auth/popup-closed-by-user") {
+    return "قفلت نافذة Google قبل ما يكتمل الدخول.";
+  }
+
+  return error instanceof Error
+    ? error.message
+    : mode === "signup"
+      ? "ما قدرنا ننشئ الحساب."
+      : "ما قدرنا ندخلك.";
+}
 
 export function LoginForm(): ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") ?? "/onboarding";
+  const requestedNextPath = searchParams.get("next");
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "email" | "google">("idle");
   const [error, setError] = useState<string | null>(null);
+
+  async function resolveNextPath(): Promise<string> {
+    if (requestedNextPath) {
+      return requestedNextPath;
+    }
+
+    if (mode === "signup") {
+      return "/onboarding";
+    }
+
+    const response = await authedFetch("/api/me");
+
+    if (!response.ok) {
+      return "/onboarding";
+    }
+
+    const data = (await response.json()) as MeResponse;
+    return data.profile ? "/app/today" : "/onboarding";
+  }
 
   async function handleEmailAuth(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -32,16 +94,11 @@ export function LoginForm(): ReactElement {
         await signInWithEmailPassword(email, password);
       }
 
-      router.push(nextPath);
+      await syncSignedInUser();
+      router.push(await resolveNextPath());
     } catch (caughtError) {
       setStatus("idle");
-      setError(
-        caughtError instanceof Error
-          ? caughtError.message
-          : mode === "signup"
-            ? "ما قدرنا ننشئ الحساب"
-            : "ما قدرنا ندخلك"
-      );
+      setError(authErrorMessage(caughtError, mode));
     }
   }
 
@@ -51,10 +108,11 @@ export function LoginForm(): ReactElement {
 
     try {
       await signInWithGoogle();
-      router.push(nextPath);
+      await syncSignedInUser();
+      router.push(await resolveNextPath());
     } catch (caughtError) {
       setStatus("idle");
-      setError(caughtError instanceof Error ? caughtError.message : "ما قدرنا ندخلك بجوجل");
+      setError(authErrorMessage(caughtError, "login"));
     }
   }
 

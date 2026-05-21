@@ -102,6 +102,34 @@ const storyContext: Record<string, { time: string; why: string; plainArabic: str
   }
 };
 
+function formatArabicList(items: string[]): string {
+  if (items.length === 0) {
+    return "اهتماماتك";
+  }
+
+  if (items.length === 1) {
+    return items[0];
+  }
+
+  return `${items.slice(0, -1).join("، ")} و${items[items.length - 1]}`;
+}
+
+function profileLens(profile: ProfilePayload): string {
+  if (profile.role === "مستثمر") {
+    return "كمستثمر";
+  }
+
+  if (profile.role === "مؤسس") {
+    return "كمؤسس";
+  }
+
+  if (profile.role === "مستشار") {
+    return "كمستشار";
+  }
+
+  return "حسب شغلك واهتماماتك";
+}
+
 export function selectStoriesForProfile(
   profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist">,
   stories: SourceStorySeed[]
@@ -124,12 +152,15 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
   const selectedStories = selectStoriesForProfile(profile, stories);
   const lead = selectedStories[0] ?? sourceStorySeeds[0];
   const focusTags = Array.from(new Set(selectedStories.flatMap((story) => story.topicTags))).slice(0, 3);
+  const watchlistFocus = profile.watchlist.slice(0, 3);
+  const watchlistText = formatArabicList(watchlistFocus);
+  const focusText = formatArabicList(focusTags);
 
   return {
     headline: "زبدة جاهزة لك",
     executiveSnapshot: {
       title: "الملخص",
-      body: `${lead.summary} رتّبنا الباقي حسب متابعتك لـ Nvidia والنفط وأسواق الخليج.`
+      body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على ${watchlistText}.`
     },
     metrics: [
       { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
@@ -214,13 +245,13 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       plainArabic: storyContext[story.id]?.plainArabic ?? "الموضوع مهم لأنه مرتبط باهتماماتك أو قائمتك"
     })),
     personalImpact: {
-      title: "ماذا يعني لك؟",
-      body: `لو أنت مستثمر أو تتابع التقنية والأسواق، فالأهم لك الآن هو: ${focusTags.join("، ")}. راقب Nvidia كمؤشر على شهية الإنفاق في الذكاء الاصطناعي، وراقب النفط لأنه يؤثر مباشرة على مزاج أسواق الخليج.`
+      title: "وش يعني لك؟",
+      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. زبدة اليوم تقلل لك الزحمة وتطلع الإشارات الأقرب لقائمتك بدل الأخبار العامة.`
     },
     personalizationNotes: [
-      `اخترنا هذه النقاط لأن منطقتك ${profile.region}`,
-      "قائمة متابعتك فيها Nvidia والنفط والعقار",
-      `الشرح المالي يظهر بعملة ${profile.preferredCurrency}`
+      `رتبنا الإشارات حسب منطقتك: ${profile.region}`,
+      `قائمة متابعتك: ${watchlistText}`,
+      `الأرقام تظهر بعملة ${profile.preferredCurrency}`
     ],
     talkingPoints: selectedStories.slice(0, 3).map((story) => `النقطة الذكية: ${story.title}`),
     glossary: [

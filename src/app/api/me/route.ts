@@ -3,6 +3,7 @@ import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { jsonError, jsonOk } from "@/lib/http";
 import { planLimits } from "@/lib/plans";
+import { ensureUserFromToken } from "@/lib/users/ensureUser";
 
 export async function GET(request: Request): Promise<Response> {
   const auth = await verifyFirebaseRequest(request);
@@ -22,16 +23,10 @@ export async function GET(request: Request): Promise<Response> {
 
   const db = getAdminDb();
   const userRef = db.collection(collections.users).doc(auth.token.uid);
+  await ensureUserFromToken(auth.token);
   const userSnapshot = await userRef.get();
-  const user = userSnapshot.exists
-    ? { id: userSnapshot.id, ...userSnapshot.data() }
-    : {
-        id: auth.token.uid,
-        email: auth.token.email ?? null,
-        displayName: auth.token.name ?? null,
-        plan: "free",
-        entitlementStatus: "free"
-      };
+  const userData = (userSnapshot.data() ?? {}) as Record<string, unknown>;
+  const user = { id: userSnapshot.id, ...userData };
 
   let profile = null;
   const primaryProfileId =
@@ -46,7 +41,10 @@ export async function GET(request: Request): Promise<Response> {
       : null;
   }
 
-  const plan = user.plan === "pro_monthly" || user.plan === "founder_lifetime" ? user.plan : "free";
+  const plan =
+    userData.plan === "pro_monthly" || userData.plan === "founder_lifetime"
+      ? userData.plan
+      : "free";
 
   return jsonOk({
     user,
@@ -54,8 +52,8 @@ export async function GET(request: Request): Promise<Response> {
     entitlement: {
       plan,
       status:
-        "entitlementStatus" in user && typeof user.entitlementStatus === "string"
-          ? user.entitlementStatus
+        typeof userData.entitlementStatus === "string"
+          ? userData.entitlementStatus
           : "free",
       limits: planLimits[plan]
     }

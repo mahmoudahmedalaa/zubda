@@ -9,6 +9,7 @@ import {
   signInWithEmailLink,
   signInWithPopup
 } from "firebase/auth";
+import { authedFetch } from "@/lib/api/client";
 import { getFirebaseAuth } from "@/lib/firebase/client";
 
 const emailStorageKey = "zubda.emailForSignIn";
@@ -38,6 +39,14 @@ export async function signInWithEmailPassword(email: string, password: string): 
 
 export async function createAccountWithEmailPassword(email: string, password: string): Promise<void> {
   await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+}
+
+export async function syncSignedInUser(): Promise<void> {
+  const response = await authedFetch("/api/auth/sync", { method: "POST" });
+
+  if (!response.ok) {
+    throw new Error("تم الدخول، لكن ما قدرنا نجهز حسابك داخل زبدة.");
+  }
 }
 
 export function isMagicLink(url: string): boolean {

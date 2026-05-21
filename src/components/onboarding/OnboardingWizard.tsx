@@ -9,7 +9,7 @@ import { getFirebaseAuth, hasFirebaseClientConfig } from "@/lib/firebase/client"
 import { planLimits } from "@/lib/plans";
 import {
   briefDepths,
-  currencies,
+  communicationStyles,
   deliveryTimes,
   interestModules,
   languageModes,
@@ -28,7 +28,8 @@ const steps = [
   "goal",
   "interests",
   "watchlist",
-  "currency",
+  "communication",
+  "about",
   "depth",
   "delivery",
   "preview"
@@ -41,7 +42,8 @@ type DraftProfile = {
   mainGoals: string[];
   interestModuleIds: string[];
   watchlist: string[];
-  preferredCurrency: (typeof currencies)[number];
+  communicationStyle: (typeof communicationStyles)[number];
+  personalContext: string;
   briefDepth: "quick" | "standard" | "deep";
   deliveryTime: string;
   timezone: string;
@@ -54,7 +56,8 @@ const initialDraft: DraftProfile = {
   mainGoals: [mainGoals[0]],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: [],
-  preferredCurrency: "AED",
+  communicationStyle: "مختصر ومباشر",
+  personalContext: "",
   briefDepth: "standard",
   deliveryTime: "07:30",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dubai"
@@ -112,7 +115,8 @@ export function OnboardingWizard(): ReactElement {
       ["الأهداف", draft.mainGoals.join("، ")],
       ["الاهتمامات", draft.interestModuleIds.join("، ")],
       ["قائمة المتابعة", draft.watchlist.length ? draft.watchlist.join("، ") : "تقدر تضيفها لاحقاً"],
-      ["العملة", draft.preferredCurrency],
+      ["طريقة الكلام", draft.communicationStyle],
+      ["عنّك", draft.personalContext || "تقدر تضيف تفاصيل أكثر لاحقاً"],
       ["العمق", draft.briefDepth],
       ["وقت الوصول", draft.deliveryTime]
     ],
@@ -339,23 +343,42 @@ export function OnboardingWizard(): ReactElement {
         </section>
       ) : null}
 
-      {step === "currency" ? (
+      {step === "communication" ? (
         <section>
-          <h1 className="text-3xl font-black">بأي عملة تحب نفهمك الأرقام؟</h1>
+          <h1 className="text-3xl font-black">كيف تحب زبدة تكلمك؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            عشان الأرقام تطلع لك بالصيغة الأقرب لك
+            نضبط الأسلوب حسب طريقتك في القراءة واتخاذ القرار
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            {currencies.map((currency) => (
+            {communicationStyles.map((style) => (
               <Chip
-                key={currency}
-                onClick={() => setDraft((current) => ({ ...current, preferredCurrency: currency }))}
-                selected={draft.preferredCurrency === currency}
+                key={style}
+                onClick={() => setDraft((current) => ({ ...current, communicationStyle: style }))}
+                selected={draft.communicationStyle === style}
               >
-                {currency}
+                {style}
               </Chip>
             ))}
           </div>
+        </section>
+      ) : null}
+
+      {step === "about" ? (
+        <section>
+          <h1 className="text-3xl font-black">علّم زبدة عنك</h1>
+          <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
+            اكتب أي شيء يساعدنا نفهمك: شغلك، عملاءك، قراراتك، أسلوبك، أو الأشياء اللي ما تحب تضيع وقتك فيها
+          </p>
+          <textarea
+            className="arabic-copy mt-7 min-h-36 w-full resize-y rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 py-4 outline-none focus:border-[var(--color-zubda-500)]"
+            maxLength={1200}
+            onChange={(event) => setDraft((current) => ({ ...current, personalContext: event.target.value }))}
+            placeholder="مثلاً: أشتغل في الاستراتيجية، أتابع الاستثمار والتقنية، أحب المختصر العملي، وأحتاج نقاط تنفعني في الاجتماعات..."
+            value={draft.personalContext}
+          />
+          <p className="mt-2 text-xs font-bold text-[var(--color-ink-muted)]">
+            اختياري، لكنه يخلي التخصيص أذكى بكثير
+          </p>
         </section>
       ) : null}
 

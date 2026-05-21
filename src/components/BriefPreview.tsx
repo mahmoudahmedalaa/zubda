@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bell, CheckCircle2, CircleDollarSign, RadioTower, Sparkles } from "lucide-react";
+import { Bell, CheckCircle2, MessageCircle, RadioTower, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import type { ReactElement } from "react";
 
@@ -86,10 +86,10 @@ export function BriefPreview(): ReactElement {
               </p>
             </div>
             <div className="rounded-3xl bg-[var(--color-saffron-50)] p-4">
-              <CircleDollarSign aria-hidden className="text-[var(--color-saffron-500)]" size={22} />
-              <h3 className="mt-3 text-sm font-black text-[var(--color-ink)]">بالعملة التي تناسبك</h3>
+              <MessageCircle aria-hidden className="text-[var(--color-saffron-500)]" size={22} />
+              <h3 className="mt-3 text-sm font-black text-[var(--color-ink)]">بالأسلوب اللي يناسبك</h3>
               <p className="arabic-copy mt-1 text-xs font-medium text-[var(--color-ink-muted)]">
-                ١٠٠ مليون دولار ≈ ٣٦٧ مليون درهم
+                مختصر، عملي، أو بتحليل أعمق حسب اختيارك
               </p>
             </div>
           </section>

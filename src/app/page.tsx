@@ -17,7 +17,7 @@ const promiseCards = [
 ];
 
 const steps = [
-  ["قل لنا عالمك", "اختَر دورك، بلدك، عملتك، والمواضيع اللي تهمك"],
+  ["قل لنا عالمك", "اختَر دورك، بلدك، المواضيع اللي تهمك، وطريقة الكلام اللي تناسبك"],
   ["أضف قائمتك", "شركات، أسواق، أصول، قطاعات، أو موضوعات تبغى ننتبه لها"],
   ["نرتبها لك", "كل صباح نبدأ بالأقرب لشغلك وقراراتك، مو الأعلى صوتاً"]
 ];
@@ -42,7 +42,7 @@ const testimonials = [
 
 const faqs = [
   ["هل هو تطبيق أخبار؟", "لا. الأخبار مادة خام، أما المنتج فهو ملخص شخصي يشرح ما يخصك"],
-  ["هل أستطيع اختيار الموضوعات؟", "نعم. تختار اهتماماتك، بلدك، عملتك، وقائمة المتابعة"],
+  ["هل أستطيع اختيار الموضوعات؟", "نعم. تختار اهتماماتك، بلدك، قائمتك، وطريقة الكلام اللي تناسبك"],
   ["هل المصادر ظاهرة؟", "كل نقطة مهمة تعرض مصدرها وسبب إدراجها في الملخص"]
 ];
 
@@ -114,7 +114,7 @@ export default function LandingPage(): ReactElement {
         <section className="page-shell py-20" id="how">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal className="text-right">
-              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">من الضجيج إلى الزبدة</h2>
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">من الوشوشة إلى الزبدة</h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
                 مو بس تختار موضوعات. زبدة تبني ملخصها حولك أنت
               </p>
@@ -144,7 +144,7 @@ export default function LandingPage(): ReactElement {
                 نفس الخبر، زبدة مختلفة لكل شخص
               </h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                لأن المستثمر لا يحتاج نفس زاوية المؤسس، والمستشار لا يقرأ بنفس عين المتداول
+                كل واحد له زاويته. المستثمر يهمه الأثر على محفظته، والمؤسس يهمه السوق والمنافسين، والمستشار يهمه الكلام اللي ينقال بثقة
               </p>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-3">

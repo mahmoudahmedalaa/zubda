@@ -33,12 +33,11 @@ export type ProfileDocument = {
   interestModuleIds: string[];
   userDefinedTopics?: string[];
   watchlistIds?: string[];
-  preferredCurrency: SupportedCurrency;
-  secondaryCurrency?: SupportedCurrency;
+  communicationStyle?: string;
+  personalContext?: string;
   briefDepth: BriefDepth;
   deliveryTime: string;
   timezone: string;
   createdAt: Date;
   updatedAt: Date;
 };
-

@@ -2,7 +2,7 @@
 
 ## Product
 
-Zubda / زبدة is an Arabic-first personal intelligence product. It creates one daily brief around each user's work, interests, region, watchlist, currency, and goals.
+Zubda / زبدة is an Arabic-first personal intelligence product. It creates one daily brief around each user's work, interests, region, watchlist, communication style, personal context, and goals.
 
 Tagline:
 الزبدة مما يهمك

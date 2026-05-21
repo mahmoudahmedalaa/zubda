@@ -15,7 +15,8 @@ const defaultSampleProfile: ProfilePayload = {
   mainGoals: ["أتابع السوق والاستثمار"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["أسواق الخليج", "النفط", "الذكاء الاصطناعي"],
-  preferredCurrency: "AED",
+  communicationStyle: "مختصر ومباشر",
+  personalContext: "مستثمر يتابع الأسواق الخليجية والتقنية ويحب الملخصات العملية قبل بداية اليوم",
   briefDepth: "standard",
   deliveryTime: "07:30",
   timezone: "Asia/Dubai"

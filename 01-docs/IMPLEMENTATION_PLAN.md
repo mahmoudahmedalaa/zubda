@@ -135,7 +135,7 @@
 
 **Tasks**
 - [x] Seed `interestModules`.
-- [x] Build onboarding wizard: language, region, role, goal, interests, watchlist, currency, depth, delivery, preview.
+- [x] Build onboarding wizard: language, region, role, goal, interests, watchlist, communication style, personal context, depth, delivery, preview.
 - [x] Save profile to Firestore.
 - [x] Enforce Free plan limits in UI and server validation.
 - [x] Add profile settings screen for edits/viewing current profile.
@@ -312,26 +312,26 @@
 - [ ] CTA opens private web brief.
 - [ ] Delivery success/failure is logged.
 
-### Step 5.3 — Archive, Feedback, and Currency Conversion
+### Step 5.3 — Archive, Feedback, and Personalization Signals
 **Duration**: 2 days  
 **Goal**: Retention loop and Pro value surfaces.
 
 **Context**
-- `01-docs/APP_FLOW.md` Archive, Feedback, Currency Quick Convert
+- `01-docs/APP_FLOW.md` Archive, Feedback, Personal Intelligence Profile
 - `01-docs/BACKEND_STRUCTURE.md` `feedback`, `deliveryLogs`, `plans`
 
 **Tasks**
 - [x] Build `/archive`.
 - [x] Enforce Free archive limit.
 - [x] Implement feedback API and UI.
-- [x] Implement FX provider wrapper.
-- [x] Add preferred-currency display in brief values.
+- [x] Add communication style and personal-context fields to the intelligence profile.
+- [x] Use communication style and personal context in generated brief personalization notes.
 - [x] Store analytics events in Firestore.
 
 **Success Criteria**
 - [x] Feedback writes to Firestore.
 - [x] Archive gating works by entitlement.
-- [ ] Currency conversion displays live FX timestamp after external FX provider is connected.
+- [x] Communication style and personal context are stored with the profile.
 - [x] Basic events are logged.
 
 ---
@@ -446,7 +446,7 @@
 | **Auth/Profile** | Days 4-6 | Google/magic link auth, onboarding, primary profile |
 | **Payments** | Days 7-9 | Pricing, Stripe Checkout, webhooks, entitlements |
 | **Prototype Brief** | Week 2 | Source cache, generated sample/personal brief, email trigger |
-| **MVP Core** | Weeks 3-5 | Daily generation, private brief, archive, feedback, currency, admin |
+| **MVP Core** | Weeks 3-5 | Daily generation, private brief, archive, feedback, personalization, admin |
 | **Beta Launch** | Week 6 | Tests, staging/prod deploy, 50-100 beta users |
 
 ## Risk Mitigation

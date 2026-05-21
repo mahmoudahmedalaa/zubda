@@ -6,6 +6,6 @@ describe("planLimits", () => {
     expect(planLimits.free.maxInterestModules).toBeLessThan(planLimits.pro_monthly.maxInterestModules);
     expect(planLimits.free.archiveSearch).toBe(false);
     expect(planLimits.pro_monthly.archiveSearch).toBe(true);
-    expect(planLimits.founder_lifetime.currencyConversion).toBe(true);
+    expect(planLimits.founder_lifetime.deeperBrief).toBe(true);
   });
 });

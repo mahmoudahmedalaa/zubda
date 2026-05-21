@@ -83,7 +83,6 @@ export async function generateBriefsForProfiles(): Promise<number> {
       status: "ready",
       languageMode: profile.languageMode,
       depth: profile.briefDepth,
-      preferredCurrency: profile.preferredCurrency,
       sourceStoryIds: structuredBrief.sources.map((source) => source.id),
       structuredBrief,
       emailSummary: [

@@ -15,7 +15,8 @@ type ProfileView = {
   mainGoals?: string[];
   interestModuleIds?: string[];
   watchlist?: string[];
-  preferredCurrency?: string;
+  communicationStyle?: string;
+  personalContext?: string;
   briefDepth?: string;
   deliveryTime?: string;
 };
@@ -130,7 +131,7 @@ export function ProfileSettingsClient(): ReactElement {
             <p className="text-sm font-black text-[var(--color-zubda-600)]">ملفك الحالي</p>
             <h2 className="mt-2 text-3xl font-black leading-[1.45]">زبدة تفهم عالمك</h2>
             <p className="arabic-copy mt-3 max-w-2xl text-[var(--color-ink-muted)]">
-              هذه البيانات هي اللي تحدد ترتيب الأخبار، طريقة الشرح، والعملة داخل الملخص.
+              هذه البيانات هي اللي تحدد ترتيب الأخبار، طريقة الشرح، والسياق اللي يخصك.
             </p>
           </div>
           <Link
@@ -146,7 +147,7 @@ export function ProfileSettingsClient(): ReactElement {
         <Field label="اللغة" value={languageLabels[profile.languageMode ?? ""] ?? profile.languageMode} />
         <Field label="المنطقة" value={profile.region} />
         <Field label="الدور" value={profile.role} />
-        <Field label="العملة" value={profile.preferredCurrency} />
+        <Field label="طريقة الكلام" value={profile.communicationStyle} />
         <Field label="عمق الملخص" value={depthLabels[profile.briefDepth ?? ""] ?? profile.briefDepth} />
         <Field label="وقت الوصول" value={profile.deliveryTime} />
       </div>
@@ -169,6 +170,13 @@ export function ProfileSettingsClient(): ReactElement {
         <h2 className="text-2xl font-black">قائمة المتابعة</h2>
         <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
           {profile.watchlist?.length ? profile.watchlist.join("، ") : "ما أضفت شيء بعد."}
+        </p>
+      </Card>
+
+      <Card className="p-5 md:p-6">
+        <h2 className="text-2xl font-black">عنّك</h2>
+        <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
+          {profile.personalContext || "ما أضفت وصف شخصي بعد."}
         </p>
       </Card>
     </div>

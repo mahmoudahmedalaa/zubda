@@ -85,7 +85,7 @@ Login:
 
 Onboarding:
 - One primary profile.
-- Ask enough to make the brief personal: language, region, role, goals, interests, watchlist, currency, depth, delivery time.
+- Ask enough to make the brief personal: language, region, role, goals, interests, watchlist, communication style, personal context, depth, delivery time.
 - Keep it mobile-friendly and skippable where optional.
 
 Daily Brief:

@@ -46,6 +46,13 @@ export const mainGoals = [
   "أقلل وقت التصفح"
 ] as const;
 
+export const communicationStyles = [
+  "مختصر ومباشر",
+  "عملي وفيه نقاط قابلة للاستخدام",
+  "تحليلي مع سياق أكثر",
+  "خفيف وقريب من الكلام اليومي"
+] as const;
+
 export const briefDepths = [
   { label: "سريع", value: "quick" },
   { label: "متوازن", value: "standard" },
@@ -61,7 +68,8 @@ export const onboardingSteps = [
   "goal",
   "interests",
   "watchlist",
-  "currency",
+  "communication",
+  "about",
   "depth",
   "delivery",
   "preview"
@@ -69,3 +77,4 @@ export const onboardingSteps = [
 
 export type OnboardingStep = (typeof onboardingSteps)[number];
 export type InterestModule = (typeof interestModules)[number];
+export type CommunicationStyle = (typeof communicationStyles)[number];

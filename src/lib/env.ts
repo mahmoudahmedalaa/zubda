@@ -33,9 +33,7 @@ const serverEnvSchema = z.object({
   AI_SUMMARY_MODEL: z.string().optional(),
   AI_CLASSIFICATION_MODEL: z.string().optional(),
   AI_FINAL_BRIEF_MODEL: z.string().optional(),
-  AI_QUALITY_CHECK_MODEL: z.string().optional(),
-  FX_PROVIDER: z.string().optional(),
-  FX_API_KEY: z.string().optional()
+  AI_QUALITY_CHECK_MODEL: z.string().optional()
 });
 
 export const clientEnv = clientEnvSchema.parse({
@@ -71,7 +69,5 @@ export const serverEnv = serverEnvSchema.parse({
   AI_SUMMARY_MODEL: process.env.AI_SUMMARY_MODEL,
   AI_CLASSIFICATION_MODEL: process.env.AI_CLASSIFICATION_MODEL,
   AI_FINAL_BRIEF_MODEL: process.env.AI_FINAL_BRIEF_MODEL,
-  AI_QUALITY_CHECK_MODEL: process.env.AI_QUALITY_CHECK_MODEL,
-  FX_PROVIDER: process.env.FX_PROVIDER,
-  FX_API_KEY: process.env.FX_API_KEY
+  AI_QUALITY_CHECK_MODEL: process.env.AI_QUALITY_CHECK_MODEL
 });

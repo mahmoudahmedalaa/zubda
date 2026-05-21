@@ -9,7 +9,6 @@ export const planLimits: Record<
     maxWatchlistItems: number;
     archiveDays: number | null;
     archiveSearch: boolean;
-    currencyConversion: boolean;
     deeperBrief: boolean;
   }
 > = {
@@ -18,7 +17,6 @@ export const planLimits: Record<
     maxWatchlistItems: 5,
     archiveDays: 7,
     archiveSearch: false,
-    currencyConversion: false,
     deeperBrief: false
   },
   pro_monthly: {
@@ -26,7 +24,6 @@ export const planLimits: Record<
     maxWatchlistItems: 50,
     archiveDays: null,
     archiveSearch: true,
-    currencyConversion: true,
     deeperBrief: true
   },
   founder_lifetime: {
@@ -34,7 +31,6 @@ export const planLimits: Record<
     maxWatchlistItems: 50,
     archiveDays: null,
     archiveSearch: true,
-    currencyConversion: true,
     deeperBrief: true
   }
 };

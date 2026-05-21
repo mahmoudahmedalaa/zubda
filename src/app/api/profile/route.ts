@@ -101,7 +101,8 @@ export async function PATCH(request: Request): Promise<Response> {
       role: parsed.data.role,
       interests: parsed.data.interestModuleIds.length,
       watchlist: watchlist.length,
-      currency: parsed.data.preferredCurrency
+      communicationStyle: parsed.data.communicationStyle,
+      hasPersonalContext: parsed.data.personalContext.length > 0
     }
   });
 

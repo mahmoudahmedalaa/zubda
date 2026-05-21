@@ -82,7 +82,6 @@ Required systems for the full MVP:
 - Resend API key.
 - Gemini and/or OpenAI API key.
 - Cron secret.
-- FX provider key for in-brief currency conversion.
 
 ## Key Routes
 
@@ -140,7 +139,7 @@ Completed foundation work:
 - Entitlement-aware profile limits and Free archive gating.
 - Source logs stored for each generated brief.
 - Basic Firestore event logging for auth, onboarding, checkout, brief opens, generated briefs, emails, and feedback.
-- Preferred-currency conversion inside generated briefs, with deterministic fallback rates until an FX provider is connected.
+- Communication style and open personal-context fields in onboarding, so the AI can personalize tone, framing, and relevance beyond topic filters.
 - Full email/password signup → onboarding → `/app/today` browser smoke test verified locally against Firebase Auth.
 - TypeScript, ESLint, Vitest, and production `next build` are passing locally.
 
@@ -149,5 +148,4 @@ Next implementation priorities:
 1. Add Stripe secret key, publishable key, and webhook secret locally/Vercel.
 2. Add Resend API key and verify `morning@zubda.ai`.
 3. Add Gemini/OpenAI API keys for real AI generation beyond deterministic seeded stories.
-4. Add an FX provider key if live/daily exchange-rate refresh is required beyond fallback rates.
-5. Verify Stripe Checkout + webhook entitlement in Stripe test mode after keys are added.
+4. Verify Stripe Checkout + webhook entitlement in Stripe test mode after keys are added.

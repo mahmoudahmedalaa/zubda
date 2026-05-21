@@ -1,7 +1,6 @@
 import type { ProfilePayload } from "@/lib/profile/schema";
 import type { InterestModule } from "@/data/onboarding";
 import type { StructuredBrief } from "@/lib/briefs/types";
-import { formatUsdConversion, usdRateLabel } from "@/lib/fx/conversion";
 
 export type SourceStorySeed = {
   id: string;
@@ -131,6 +130,22 @@ function profileLens(profile: ProfilePayload): string {
   return "حسب شغلك واهتماماتك";
 }
 
+function profileStyle(profile: ProfilePayload): string {
+  if (profile.communicationStyle) {
+    return profile.communicationStyle;
+  }
+
+  return "مختصر ومباشر";
+}
+
+function profileContextNote(profile: ProfilePayload): string {
+  if (profile.personalContext) {
+    return profile.personalContext.slice(0, 160);
+  }
+
+  return "ما أضفت تفاصيل شخصية بعد، فاعتمدنا على دورك واهتماماتك وقائمة المتابعة";
+}
+
 export function selectStoriesForProfile(
   profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist">,
   stories: SourceStorySeed[]
@@ -156,7 +171,6 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
   const watchlistFocus = profile.watchlist.slice(0, 3);
   const watchlistText = formatArabicList(watchlistFocus);
   const focusText = formatArabicList(focusTags);
-  const convertedMarketValue = formatUsdConversion(100_000_000, profile.preferredCurrency);
 
   return {
     headline: "زبدة جاهزة لك",
@@ -167,7 +181,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
     metrics: [
       { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
       { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" },
-      { label: "تحويل سريع", value: convertedMarketValue, change: usdRateLabel(profile.preferredCurrency), tone: "good" },
+      { label: "أسلوبك", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" },
       { label: "إشارات مهمة", value: String(selectedStories.length), change: "حسب قائمتك", tone: "watch" }
     ],
     chart: {
@@ -253,7 +267,8 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
     personalizationNotes: [
       `رتبنا الإشارات حسب منطقتك: ${profile.region}`,
       `قائمة متابعتك: ${watchlistText}`,
-      `الأرقام تظهر بعملة ${profile.preferredCurrency}`
+      `طريقة الكلام: ${profileStyle(profile)}`,
+      `ملاحظتك عن نفسك: ${profileContextNote(profile)}`
     ],
     talkingPoints: selectedStories.slice(0, 3).map((story) => `النقطة الذكية: ${story.title}`),
     glossary: [

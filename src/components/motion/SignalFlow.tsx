@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart3, BriefcaseBusiness, CircleDollarSign, MapPin, Target } from "lucide-react";
+import { BarChart3, BriefcaseBusiness, MessageCircle, MapPin, Target } from "lucide-react";
 import { type ReactElement } from "react";
 
 const profileInputs = [
   { label: "دورك", value: "مستثمر", icon: BriefcaseBusiness },
   { label: "منطقتك", value: "الإمارات والخليج", icon: MapPin },
-  { label: "عملتك", value: "AED", icon: CircleDollarSign }
+  { label: "أسلوبك", value: "مختصر وعملي", icon: MessageCircle }
 ];
 
 const rankedSignals = [

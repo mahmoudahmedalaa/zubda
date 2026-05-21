@@ -13,7 +13,8 @@ const sampleProfile: ProfilePayload = {
   mainGoals: ["أتابع السوق بدون لفّة طويلة"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia", "Oil", "UAE real estate"],
-  preferredCurrency: "AED",
+  communicationStyle: "عملي وفيه نقاط قابلة للاستخدام",
+  personalContext: "مستثمر في دبي يتابع التقنية والأسواق الخليجية ويحتاج نقاط سريعة تنفعه قبل الاجتماعات",
   briefDepth: "standard",
   deliveryTime: "07:30",
   timezone: "Asia/Dubai"
@@ -25,7 +26,6 @@ const sampleBrief: BriefDocument = {
   status: "ready",
   languageMode: "mixed",
   depth: "standard",
-  preferredCurrency: "AED",
   structuredBrief: buildStructuredBrief(sampleProfile, sourceStorySeeds)
 };
 

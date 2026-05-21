@@ -84,7 +84,6 @@ export type BriefDocument = {
   status: string;
   languageMode?: string;
   depth?: string;
-  preferredCurrency?: string;
   sourceStoryIds?: string[];
   structuredBrief: StructuredBrief;
   emailSummary?: string[];

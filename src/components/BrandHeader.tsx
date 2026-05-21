@@ -5,7 +5,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 
 export function BrandHeader(): ReactElement {
   return (
-    <header className="page-shell flex items-center justify-between py-5">
+    <header className="page-shell flex items-center justify-between py-6">
       <Link className="transition hover:scale-[1.02]" href="/">
         <BrandLogo />
       </Link>

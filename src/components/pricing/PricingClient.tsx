@@ -74,7 +74,7 @@ export function PricingClient(): ReactElement {
             اختر الخطة اللي تناسب صباحك
           </h1>
           <p className="arabic-copy mt-5 max-w-2xl text-lg font-semibold text-[var(--color-ink-muted)]">
-            الأسعار ثابتة حسب العملة المختارة. غيّر العملة من هنا، وكل الأسعار والأزرار تتحدث معها
+            ابدأ مجاناً، وإذا صارت زبدة جزء من صباحك فعّل برو
           </p>
           <div className="mt-7 inline-flex items-center gap-3 rounded-full border border-[var(--color-line)] bg-white p-2 shadow-[var(--shadow-card)]">
             <label className="pr-4 text-sm font-black text-[var(--color-ink-muted)]" htmlFor="pricing-currency">

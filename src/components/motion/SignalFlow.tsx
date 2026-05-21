@@ -1,57 +1,90 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { BarChart3, BriefcaseBusiness, CircleDollarSign, MapPin, Target } from "lucide-react";
 import { type ReactElement } from "react";
 
-const signals = [
-  { label: "خبر رسمي", color: "var(--color-trust-500)", x: "12%", y: "18%" },
-  { label: "سوق", color: "var(--color-saffron-500)", x: "70%", y: "14%" },
-  { label: "تقنية", color: "var(--color-zubda-500)", x: "76%", y: "68%" },
-  { label: "منطقتك", color: "var(--color-fig-500)", x: "18%", y: "72%" }
+const profileInputs = [
+  { label: "دورك", value: "مستثمر", icon: BriefcaseBusiness },
+  { label: "منطقتك", value: "UAE + GCC", icon: MapPin },
+  { label: "عملتك", value: "AED", icon: CircleDollarSign }
+];
+
+const rankedSignals = [
+  { label: "الفائدة", score: 82, note: "تضغط على أسهم النمو" },
+  { label: "النفط", score: 74, note: "يحرك مزاج الخليج" },
+  { label: "AI", score: 69, note: "فرص وتقلب" }
 ];
 
 export function SignalFlow(): ReactElement {
   return (
-    <div className="relative min-h-[390px] overflow-hidden rounded-[40px] bg-white p-6 shadow-[var(--shadow-card)]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,hsl(237_97%_61%/0.12),transparent_16rem)]" />
-      <svg aria-hidden className="absolute inset-0 h-full w-full" viewBox="0 0 420 390" fill="none">
-        <motion.path
-          animate={{ pathLength: [0.2, 1, 0.2], opacity: [0.22, 0.58, 0.22] }}
-          d="M70 76 C150 122 168 168 210 195 C255 223 302 250 334 296"
-          stroke="var(--color-zubda-500)"
-          strokeLinecap="round"
-          strokeWidth="3"
-          transition={{ duration: 5.6, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.path
-          animate={{ pathLength: [0.15, 1, 0.15], opacity: [0.18, 0.5, 0.18] }}
-          d="M324 68 C270 122 244 158 210 195 C170 238 118 274 84 306"
-          stroke="var(--color-trust-500)"
-          strokeLinecap="round"
-          strokeWidth="3"
-          transition={{ duration: 6.4, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </svg>
+    <div className="relative overflow-hidden rounded-[40px] border border-[var(--color-line)] bg-white p-6 shadow-[var(--shadow-card)]">
+      <div className="absolute -left-16 -top-16 size-48 rounded-full bg-[var(--color-saffron-300)]/18 blur-3xl" />
+      <div className="absolute -bottom-20 right-8 size-56 rounded-full bg-[var(--color-zubda-300)]/16 blur-3xl" />
 
-      {signals.map((signal, index) => (
-        <motion.div
-          animate={{ y: [0, index % 2 === 0 ? -8 : 8, 0] }}
-          className="absolute rounded-[24px] border border-[var(--color-line)] bg-white px-4 py-3 text-sm font-black shadow-sm"
-          key={signal.label}
-          style={{ color: signal.color, left: signal.x, top: signal.y }}
-          transition={{ duration: 4.8 + index * 0.35, repeat: Infinity, ease: "easeInOut" }}
-        >
-          {signal.label}
-        </motion.div>
-      ))}
+      <div className="relative grid gap-6">
+        <div className="flex items-start justify-between gap-4">
+          <div className="text-right">
+            <p className="text-sm font-black text-[var(--color-zubda-600)]">محرك التخصيص</p>
+            <h3 className="display-arabic mt-2 text-3xl font-black leading-[1.25]">كيف تختار زبدتك؟</h3>
+          </div>
+          <div className="grid size-14 place-items-center rounded-[22px] bg-[var(--color-zubda-50)] text-[var(--color-zubda-600)]">
+            <Target aria-hidden size={25} />
+          </div>
+        </div>
 
-      <motion.div
-        animate={{ scale: [1, 1.04, 1], boxShadow: ["0 18px 44px hsl(237 97% 61% / 0.24)", "0 22px 64px hsl(237 97% 61% / 0.34)", "0 18px 44px hsl(237 97% 61% / 0.24)"] }}
-        className="absolute left-1/2 top-1/2 grid size-32 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-[36px] bg-[var(--color-zubda-500)] text-center text-lg font-black text-white"
-        transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
-      >
-        الزبدة
-      </motion.div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {profileInputs.map(({ label, value, icon: Icon }, index) => (
+            <motion.div
+              className="rounded-[24px] bg-[var(--color-paper)] p-4 text-right"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08, duration: 0.45 }}
+              key={label}
+            >
+              <Icon aria-hidden className="text-[var(--color-zubda-500)]" size={20} />
+              <p className="mt-3 text-xs font-black text-[var(--color-ink-muted)]">{label}</p>
+              <p className="mt-1 text-lg font-black">{value}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="rounded-[30px] bg-[var(--color-ink)] p-5 text-white">
+          <div className="mb-5 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-black text-white/68">ترتيب الإشارات</p>
+              <h4 className="mt-1 text-2xl font-black">الأعلى صلة بك</h4>
+            </div>
+            <BarChart3 aria-hidden className="text-[var(--color-saffron-300)]" size={26} />
+          </div>
+          <div className="grid gap-4">
+            {rankedSignals.map((signal, index) => (
+              <div className="grid gap-2" key={signal.label}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="font-black">{signal.label}</span>
+                  <span className="text-xs font-black text-white/62">{signal.score}/100</span>
+                </div>
+                <div className="h-3 overflow-hidden rounded-full bg-white/12">
+                  <motion.span
+                    className="block h-full rounded-full bg-[var(--color-saffron-300)]"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${signal.score}%` }}
+                    transition={{ delay: 0.25 + index * 0.09, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </div>
+                <p className="text-xs font-semibold text-white/62">{signal.note}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-[28px] bg-[var(--color-trust-50)] p-5 text-right">
+          <p className="text-sm font-black text-[var(--color-trust-700)]">النتيجة</p>
+          <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
+            بدل ملخص عام، تشوف أولاً الشيء الأقرب لمحفظتك وشغلك وسوالفك المهمة
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -143,7 +143,7 @@ function SignalChart({
   }
 
   return (
-    <Card className="p-5 md:p-6">
+    <Card className="p-6 md:p-7">
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-600)]">
@@ -155,16 +155,33 @@ function SignalChart({
         </div>
         <LineChart aria-hidden className="text-[var(--color-saffron-500)]" size={28} />
       </div>
-      <div className="mt-7 flex h-52 items-end gap-3 rounded-[28px] bg-[var(--color-paper)] p-4">
+      <div className="mt-6 rounded-[24px] bg-[var(--color-zubda-50)] p-4 text-sm font-bold text-[var(--color-zubda-700)]">
+        المقصود هنا: قرب الموضوع من اهتماماتك وقائمتك، مو تقييم لجودة الخبر
+      </div>
+      <div className="mt-7 grid gap-4">
         {chart.points.map((point, index) => (
-          <div className="flex h-full flex-1 flex-col justify-end gap-2 text-center" key={point.label}>
-            <motion.div
-              className="mx-auto w-full rounded-t-[18px] bg-[var(--color-zubda-500)] shadow-[0_12px_30px_hsl(237_97%_61%/0.18)]"
-              initial={{ height: 12 }}
-              animate={{ height: `${point.value}%` }}
-              transition={{ delay: 0.16 + index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            />
-            <p className="text-xs font-black text-[var(--color-ink-muted)]">{point.label}</p>
+          <div className="grid gap-2" key={point.label}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-black">{point.label}</span>
+              <span className="text-xs font-black text-[var(--color-ink-muted)]">{point.value}/100</span>
+            </div>
+            <div className="h-4 overflow-hidden rounded-full bg-[var(--color-paper)]">
+              <motion.span
+                className="block h-full rounded-full bg-[var(--color-zubda-500)]"
+                initial={{ width: 0 }}
+                animate={{ width: `${point.value}%` }}
+                transition={{ delay: 0.16 + index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+            <p className="text-xs font-semibold text-[var(--color-ink-muted)]">
+              {point.label === "AI"
+                ? "مرتبط بقائمة التقنية والأسهم"
+                : point.label === "النفط"
+                  ? "مرتبط بالخليج والتضخم"
+                  : point.label === "الخليج"
+                    ? "مرتبط بمنطقتك"
+                    : "متابعة أخف، لكن لا نتركه"}
+            </p>
           </div>
         ))}
       </div>
@@ -181,7 +198,9 @@ function SentimentGauge({
     return null;
   }
 
-  const needleRotation = -90 + (sentiment.score / 100) * 180;
+  const needleAngle = Math.PI - (sentiment.score / 100) * Math.PI;
+  const needleX = 160 + 82 * Math.cos(needleAngle);
+  const needleY = 150 - 82 * Math.sin(needleAngle);
 
   return (
     <Card className="overflow-hidden p-5 md:p-6">
@@ -212,20 +231,17 @@ function SentimentGauge({
                 <stop offset="1" stopColor="var(--color-trust-500)" />
               </linearGradient>
             </defs>
-            <motion.line
+            <line
               x1="160"
-              x2="160"
+              x2={needleX}
               y1="150"
-              y2="74"
+              y2={needleY}
               stroke="var(--color-ink)"
               strokeLinecap="round"
               strokeWidth="5"
-              initial={{ rotate: -90 }}
-              animate={{ rotate: needleRotation }}
-              style={{ originX: "160px", originY: "150px" }}
-              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
             />
-            <circle cx="160" cy="150" r="10" fill="var(--color-ink)" />
+            <circle cx="160" cy="150" r="9" fill="var(--color-ink)" />
+            <circle cx={needleX} cy={needleY} r="7" fill="var(--color-ink)" />
           </svg>
           <div className="absolute inset-x-0 bottom-0 text-center">
             <p className="text-4xl font-black">{sentiment.score}/100</p>
@@ -370,7 +386,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
   const { structuredBrief } = brief;
 
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-7">
       <Card className="overflow-hidden border-[var(--color-zubda-200)]">
         <div className="bg-[var(--color-zubda-500)] p-6 text-white md:p-8">
           <p className="text-sm font-black text-white/80">زبدتك</p>
@@ -399,7 +415,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
 
       <MetricStrip metrics={structuredBrief.metrics} />
       <SentimentGauge sentiment={structuredBrief.sentiment} />
-      <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
         <RiskPressureBars risks={structuredBrief.riskFactors} />
         <SignalChart chart={structuredBrief.chart} />
       </div>

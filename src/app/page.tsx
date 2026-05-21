@@ -8,24 +8,30 @@ import { SignalFlow } from "@/components/motion/SignalFlow";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
-const trustPoints = ["مصادر واضحة", "ملخص ينتهي", "سياق شخصي"];
+const trustPoints = ["مصادر واضحة", "مصمم لك", "بدون لفّة"];
 
 const promiseCards = [
-  ["يلخص", "أهم ما تغيّر بدون رمي عشرات العناوين في وجهك"],
+  ["يلخص", "أهم ما تغيّر بدون رمي عشرات العناوين عليك"],
   ["يفسر", "لماذا الخبر مهم، ومن يتأثر، وما الذي يستحق المتابعة"],
   ["يرتب", "المعلومة حسب بلدك، عملك، اهتماماتك، وقائمة متابعتك"]
 ];
 
 const steps = [
-  ["اختر ما يهمك", "الدور، البلد، الاهتمامات، العملة، وقائمة المتابعة"],
-  ["نفلتر الضجيج", "نحوّل الأخبار والإشارات إلى قصص قصيرة قابلة للفهم"],
-  ["تصلك الزبدة", "ملخص صباحي خاص بك، له بداية ونهاية ومصادر واضحة"]
+  ["قل لنا عالمك", "مستثمر؟ مؤسس؟ مستشار؟ اختر الدور والبلد والعملة"],
+  ["أضف قائمتك", "شركات، أسواق، أصول، قطاعات، أو موضوعات تتابعها"],
+  ["تتغير الزبدة معك", "كل قراءة وتقييم يعدّل ترتيب الملخص القادم"]
+];
+
+const personalizationExamples = [
+  ["لو أنت مستثمر", "نرفع لك السوق، Nvidia، الفائدة، والنفط قبل الأخبار العامة"],
+  ["لو أنت مؤسس", "نركز على التمويل، المنافسين، الذكاء الاصطناعي، وتنظيمات السوق"],
+  ["لو أنت مستشار", "نطلع لك نقاط تصلح لاجتماعك وكلام ينقال بثقة"]
 ];
 
 const proofRows = [
   ["المصدر", "رابط وتاريخ وسبب استخدامه"],
   ["السياق", "ما علاقته بعملك أو سوقك أو اهتماماتك"],
-  ["المتابعة", "ما الذي تراقبه اليوم بدل متابعة كل شيء"]
+  ["المتابعة", "ما الذي يستحق المتابعة بدل متابعة كل شيء"]
 ];
 
 const testimonials = [
@@ -53,7 +59,7 @@ export default function LandingPage(): ReactElement {
               اعرف المهم قبل الزحمة
             </h1>
             <p className="arabic-copy mx-auto mt-6 max-w-xl text-lg font-medium text-[var(--color-ink-muted)] sm:text-xl lg:mx-0">
-              ملخص عربي شخصي يختصر لك الأخبار والأسواق والموضوعات التي تتابعها، ويشرح لك لماذا تهمك
+              ملخص صباحي يفهم شغلك، اهتماماتك، قائمتك، وعملتك. مو أخبار عامة للجميع
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               <ButtonLink href="/login">
@@ -85,10 +91,10 @@ export default function LandingPage(): ReactElement {
           <div className="page-shell">
             <Reveal className="mx-auto max-w-3xl text-center">
               <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">
-                المشكلة ليست قلة الأخبار
+                الأخبار كثيرة، بس المهم قليل
               </h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                المهم يختلط بالعادي. زبدة تعطي كل معلومة حجمها الصحيح
+                زبدة تقلل الزحمة وتطلع لك الشيء اللي يستاهل وقتك
               </p>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -109,7 +115,7 @@ export default function LandingPage(): ReactElement {
             <Reveal className="text-right">
               <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">من الضجيج إلى الزبدة</h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                التجربة بسيطة: اختيارات قليلة، نتيجة مفهومة، وثقة ظاهرة
+                مو بس تختار موضوعات. زبدة تبني ملخصها حولك أنت
               </p>
             </Reveal>
             <div className="grid gap-4">
@@ -130,6 +136,40 @@ export default function LandingPage(): ReactElement {
           </div>
         </section>
 
+        <section className="bg-white/74 py-20">
+          <div className="page-shell">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">
+                نفس الخبر، زبدة مختلفة لكل شخص
+              </h2>
+              <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
+                لأن المستثمر لا يحتاج نفس زاوية المؤسس، والمستشار لا يقرأ بنفس عين المتداول
+              </p>
+            </Reveal>
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {personalizationExamples.map(([title, text], index) => (
+                <Reveal delay={index * 0.08} key={title}>
+                  <Card className="h-full overflow-hidden p-0 text-right shadow-none">
+                    <div
+                      className={`h-2 ${
+                        index === 0
+                          ? "bg-[var(--color-saffron-500)]"
+                          : index === 1
+                            ? "bg-[var(--color-zubda-500)]"
+                            : "bg-[var(--color-trust-500)]"
+                      }`}
+                    />
+                    <div className="p-6">
+                      <h3 className="display-arabic text-2xl font-black">{title}</h3>
+                      <p className="arabic-copy mt-3 text-sm font-semibold text-[var(--color-ink-muted)]">{text}</p>
+                    </div>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <section className="bg-[var(--color-zubda-50)] py-20">
           <div className="page-shell grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
             <Reveal className="text-right">
@@ -137,7 +177,7 @@ export default function LandingPage(): ReactElement {
                 مصادر كثيرة، ملخص واحد
               </h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                الحركة هنا مقصودة: إشارات متفرقة تدخل، ثم تخرج كخلاصة واضحة قابلة للقراءة في دقائق
+                إشارات متفرقة تدخل، ثم تخرج كخلاصة واضحة قابلة للقراءة في دقائق
               </p>
             </Reveal>
             <Reveal delay={0.1}>
@@ -189,7 +229,7 @@ export default function LandingPage(): ReactElement {
             <Reveal className="mx-auto max-w-3xl text-center">
               <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">مصمم كعادة صباحية</h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                ليس موجزاً لا ينتهي. تقرأه، تفهم المهم، ثم تبدأ يومك
+                تقرأه، تفهم المهم، ثم تبدأ يومك
               </p>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-3">

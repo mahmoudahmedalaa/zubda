@@ -9,8 +9,8 @@ import type { ProfilePayload } from "@/lib/profile/schema";
 const sampleProfile: ProfilePayload = {
   languageMode: "mixed",
   region: "UAE",
-  role: "مستشار",
-  mainGoals: ["أكون مطّلع قبل الدوام"],
+  role: "مستثمر",
+  mainGoals: ["أتابع السوق بدون لفّة طويلة"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia", "Oil", "UAE real estate"],
   preferredCurrency: "AED",
@@ -36,9 +36,9 @@ export default function SampleBriefPage(): ReactElement {
       <main className="page-shell py-10 text-right">
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <h1 className="text-4xl font-black leading-[1.35]">مثال على زبدة اليوم</h1>
+            <h1 className="text-4xl font-black leading-[1.35]">مثال على زبدة مخصصة</h1>
             <p className="arabic-copy mt-3 max-w-2xl font-semibold text-[var(--color-ink-muted)]">
-              هذا مثال تفاعلي كامل لشكل الملخص. في الحساب الحقيقي يتغير حسب اهتماماتك وقائمة المتابعة
+              شوف كيف يتغير الملخص لما تكون مهتم بـ Nvidia، النفط، وأسواق الخليج
             </p>
           </div>
           <ButtonLink href="/login">ابدأ زبدتك</ButtonLink>

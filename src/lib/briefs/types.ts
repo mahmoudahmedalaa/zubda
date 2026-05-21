@@ -16,6 +16,32 @@ export type WatchboardItem = {
   plainArabic: string;
 };
 
+export type BriefMetric = {
+  label: string;
+  value: string;
+  change: string;
+  tone: "good" | "watch" | "risk";
+};
+
+export type BriefChartPoint = {
+  label: string;
+  value: number;
+};
+
+export type BriefRiskFactor = {
+  label: string;
+  score: number;
+  note: string;
+};
+
+export type BriefPortfolioExposure = {
+  symbol: string;
+  label: string;
+  weight: number;
+  bias: string;
+  note: string;
+};
+
 export type StructuredBrief = {
   headline: string;
   executiveSnapshot: {
@@ -27,6 +53,21 @@ export type StructuredBrief = {
     title: string;
     body: string;
   };
+  metrics?: BriefMetric[];
+  chart?: {
+    title: string;
+    subtitle: string;
+    points: BriefChartPoint[];
+  };
+  sentiment?: {
+    label: string;
+    score: number;
+    explanation: string;
+    conviction: number;
+  };
+  riskFactors?: BriefRiskFactor[];
+  portfolioExposure?: BriefPortfolioExposure[];
+  personalizationNotes?: string[];
   talkingPoints: string[];
   glossary: Array<{
     term: string;

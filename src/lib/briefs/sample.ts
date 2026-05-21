@@ -75,6 +75,33 @@ export const sourceStorySeeds: SourceStorySeed[] = [
   }
 ];
 
+const storyContext: Record<string, { time: string; why: string; plainArabic: string; metric: string }> = {
+  "fed-yields-tech-watch": {
+    time: "قبل افتتاح السوق",
+    why: "لو لهجة الفيدرالي طلعت متشددة، المستثمرين غالباً يخففون من أسهم النمو والتقنية",
+    plainArabic: "الفائدة العالية تخلي المال أغلى، فالشركات التي تعتمد على النمو السريع تتأثر أكثر",
+    metric: "عوائد السندات"
+  },
+  "oil-prices-gcc-business": {
+    time: "خلال الجلسة",
+    why: "أنت تتابع الخليج والطاقة، والنفط ما زال مؤثراً على المزاج العام للأسواق والميزانيات",
+    plainArabic: "إذا النفط تحرك بقوة، غالباً تتحرك معه توقعات المستثمرين تجاه أسواق الخليج",
+    metric: "برنت"
+  },
+  "nvidia-ai-spending": {
+    time: "بعد الإغلاق",
+    why: "نتائج Nvidia أصبحت إشارة مهمة على قوة الإنفاق في الذكاء الاصطناعي والسحابة",
+    plainArabic: "لو Nvidia قوية، السوق يفهم أن موجة الذكاء الاصطناعي ما زالت مستمرة",
+    metric: "NVDA"
+  },
+  "gcc-real-estate-rates": {
+    time: "خلال الأسبوع",
+    why: "الفائدة والسيولة تؤثر على تكلفة التمويل، وهذا يهم العقار والمشاريع الكبرى في المنطقة",
+    plainArabic: "إذا التمويل صار أغلى، المطورون والمشترون يصبحون أكثر حذراً",
+    metric: "تمويل العقار"
+  }
+};
+
 export function selectStoriesForProfile(
   profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist">,
   stories: SourceStorySeed[]
@@ -96,29 +123,106 @@ export function selectStoriesForProfile(
 export function buildStructuredBrief(profile: ProfilePayload, stories: SourceStorySeed[]): StructuredBrief {
   const selectedStories = selectStoriesForProfile(profile, stories);
   const lead = selectedStories[0] ?? sourceStorySeeds[0];
+  const focusTags = Array.from(new Set(selectedStories.flatMap((story) => story.topicTags))).slice(0, 3);
 
   return {
-    headline: "زبدة اليوم جاهزة",
+    headline: "زبدة جاهزة لك",
     executiveSnapshot: {
       title: "الملخص",
-      body: `${lead.summary} باقي الإشارات مرتبة حسب اهتماماتك ومنطقتك.`
+      body: `${lead.summary} رتّبنا الباقي حسب متابعتك لـ Nvidia والنفط وأسواق الخليج.`
     },
+    metrics: [
+      { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
+      { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" },
+      { label: "الدولار مقابل الدرهم", value: "3.67", change: "ثابت تقريباً", tone: "good" },
+      { label: "إشارات مهمة", value: String(selectedStories.length), change: "حسب قائمتك", tone: "watch" }
+    ],
+    chart: {
+      title: "قوة الإشارات حسب اهتمامك",
+      subtitle: "كلما ارتفع العمود، زادت صلة الموضوع بقائمتك",
+      points: [
+        { label: "AI", value: 88 },
+        { label: "النفط", value: 76 },
+        { label: "الخليج", value: 68 },
+        { label: "العقار", value: 44 }
+      ]
+    },
+    sentiment: {
+      label: "إيجابي بحذر",
+      score: 64,
+      conviction: 7,
+      explanation: "الذكاء الاصطناعي يدعم المزاج العام، لكن الفائدة والنفط يخلون السوق حساس."
+    },
+    riskFactors: [
+      {
+        label: "الفائدة",
+        score: 8,
+        note: "أكبر ضغط على أسهم النمو والتقنية"
+      },
+      {
+        label: "نتائج التقنية",
+        score: 7,
+        note: "توقعات السوق عالية، خصوصاً حول Nvidia"
+      },
+      {
+        label: "النفط",
+        score: 6,
+        note: "مهم للخليج ولتوقعات التضخم"
+      },
+      {
+        label: "العقار",
+        score: 5,
+        note: "يتأثر إذا زادت تكلفة التمويل"
+      }
+    ],
+    portfolioExposure: [
+      {
+        symbol: "NVDA",
+        label: "Nvidia",
+        weight: 38,
+        bias: "فرصة عالية وتقلب عال",
+        note: "أقرب مؤشر على إنفاق الذكاء الاصطناعي"
+      },
+      {
+        symbol: "Oil",
+        label: "النفط",
+        weight: 28,
+        bias: "مهم للخليج",
+        note: "يرفع أو يهدئ مزاج أسواق المنطقة"
+      },
+      {
+        symbol: "QQQ",
+        label: "ناسداك",
+        weight: 24,
+        bias: "حساس للفائدة",
+        note: "يستفيد من AI ويتأثر بالعوائد"
+      },
+      {
+        symbol: "UAE RE",
+        label: "عقار الإمارات",
+        weight: 10,
+        bias: "متابعة هادئة",
+        note: "التمويل والسيولة هما المفتاح"
+      }
+    ],
     watchboard: selectedStories.map((story) => ({
       sourceStoryId: story.id,
       title: story.title,
-      time: "اليوم",
-      why: story.summary,
-      impact: story.topicTags.slice(0, 2).join("، "),
-      plainArabic: story.summary
+      time: storyContext[story.id]?.time ?? "للمتابعة",
+      why: storyContext[story.id]?.why ?? story.summary,
+      impact: storyContext[story.id]?.metric ?? story.topicTags.slice(0, 1).join("، "),
+      plainArabic: storyContext[story.id]?.plainArabic ?? "الموضوع مهم لأنه مرتبط باهتماماتك أو قائمتك"
     })),
     personalImpact: {
-      title: "وش أثرها عليك؟",
-      body: `حسب دورك كـ ${profile.role} واهتماماتك، ركز اليوم على ${selectedStories
-        .flatMap((story) => story.topicTags)
-        .slice(0, 3)
-        .join("، ")}.`
+      title: "ماذا يعني لك؟",
+      body: `لو أنت مستثمر أو تتابع التقنية والأسواق، فالأهم لك الآن هو: ${focusTags.join("، ")}. راقب Nvidia كمؤشر على شهية الإنفاق في الذكاء الاصطناعي، وراقب النفط لأنه يؤثر مباشرة على مزاج أسواق الخليج.`
     },
-    talkingPoints: selectedStories.slice(0, 3).map((story) => `اللي يستحق المتابعة: ${story.title}`),
+    personalizationNotes: [
+      `اخترنا هذه النقاط لأن منطقتك ${profile.region}`,
+      "قائمة متابعتك فيها Nvidia والنفط والعقار",
+      `الشرح المالي يظهر بعملة ${profile.preferredCurrency}`
+    ],
+    talkingPoints: selectedStories.slice(0, 3).map((story) => `النقطة الذكية: ${story.title}`),
     glossary: [
       {
         term: "عوائد السندات",
@@ -131,7 +235,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       publisher: story.publisher,
       url: story.sourceUrl,
       reliabilityLabel: story.reliabilityLabel,
-      whyIncluded: "ظهر لأنه مرتبط باهتماماتك أو منطقتك أو قائمة المتابعة."
+      whyIncluded: "اخترناه لأنه قريب من اهتماماتك أو منطقتك أو قائمة المتابعة."
     }))
   };
 }

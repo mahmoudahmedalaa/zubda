@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
+  signInWithEmailAndPassword,
   signInWithEmailLink,
   signInWithPopup
 } from "firebase/auth";
@@ -30,6 +32,14 @@ export async function signInWithGoogle(): Promise<void> {
   await signInWithPopup(auth, provider);
 }
 
+export async function signInWithEmailPassword(email: string, password: string): Promise<void> {
+  await signInWithEmailAndPassword(getFirebaseAuth(), email, password);
+}
+
+export async function createAccountWithEmailPassword(email: string, password: string): Promise<void> {
+  await createUserWithEmailAndPassword(getFirebaseAuth(), email, password);
+}
+
 export function isMagicLink(url: string): boolean {
   return isSignInWithEmailLink(getFirebaseAuth(), url);
 }
@@ -46,4 +56,3 @@ export async function completeMagicLink(url: string, fallbackEmail?: string): Pr
   await signInWithEmailLink(auth, email, url);
   window.localStorage.removeItem(emailStorageKey);
 }
-

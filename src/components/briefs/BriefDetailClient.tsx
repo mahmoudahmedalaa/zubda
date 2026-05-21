@@ -79,7 +79,7 @@ export function BriefDetailClient({ briefId }: { briefId: string }): ReactElemen
       <Card className="p-6 text-center">
         <h1 className="text-3xl font-black">ما لقينا هذي الزبدة.</h1>
         <p className="arabic-copy mx-auto mt-3 max-w-lg text-[var(--color-ink-muted)]">
-          ممكن تكون محذوفة أو ما تخص هذا الحساب.
+          ممكن تكون محذوفة أو ما تخص حسابك.
         </p>
         <ButtonLink className="mt-6" href="/app/archive">
           ارجع للأرشيف

@@ -46,7 +46,7 @@ export function BriefPreview(): ReactElement {
             transition={{ duration: 4.6, ease: "easeInOut", repeat: Infinity }}
           />
           <div className="flex items-center justify-between">
-            <p className="text-sm font-bold text-white/76">زبدة اليوم جاهزة</p>
+            <p className="text-sm font-bold text-white/76">زبدتك جاهزة</p>
             <Bell aria-hidden size={20} />
           </div>
           <h2 className="display-arabic mt-4 text-3xl font-black leading-[1.35]">ما المهم قبل يومك؟</h2>
@@ -56,12 +56,12 @@ export function BriefPreview(): ReactElement {
           <section>
             <h3 className="text-base font-black text-[var(--color-zubda-600)]">الزبدة</h3>
             <p className="arabic-copy mt-2 text-base font-medium text-[var(--color-ink-muted)]">
-              السوق هادئ لكنه حساس. التقنية والطاقة أهم ما يستحق انتباهك اليوم
+              السوق هادئ لكنه حساس. التقنية والطاقة أهم ما يستحق انتباهك
             </p>
           </section>
 
           <section>
-            <h3 className="text-base font-black text-[var(--color-ink)]">راقب اليوم</h3>
+            <h3 className="text-base font-black text-[var(--color-ink)]">راقب</h3>
             <div className="mt-3 grid gap-2">
               {watchItems.map(([item, reason], index) => (
                 <motion.div

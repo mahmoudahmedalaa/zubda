@@ -1,8 +1,16 @@
 "use client";
 
-import { CheckCircle2, ExternalLink, ThumbsDown, ThumbsUp } from "lucide-react";
+import { motion } from "framer-motion";
+import { BarChart3, CheckCircle2, ExternalLink, LineChart, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type ReactElement, useState } from "react";
-import type { BriefDocument, WatchboardItem } from "@/lib/briefs/types";
+import type {
+  BriefChartPoint,
+  BriefDocument,
+  BriefMetric,
+  BriefPortfolioExposure,
+  BriefRiskFactor,
+  WatchboardItem
+} from "@/lib/briefs/types";
 import { authedFetch } from "@/lib/api/client";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -17,6 +25,12 @@ const reliabilityLabels = {
   medium: "متوسط",
   low: "يحتاج متابعة"
 } as const;
+
+const metricToneClasses: Record<BriefMetric["tone"], string> = {
+  good: "bg-[var(--color-trust-50)] text-[var(--color-trust-700)]",
+  watch: "bg-[var(--color-saffron-50)] text-[var(--color-ink)]",
+  risk: "bg-red-50 text-[var(--color-risk)]"
+};
 
 function FeedbackButtons({
   briefId,
@@ -77,7 +91,7 @@ function FeedbackButtons({
         type="button"
       >
         <ThumbsDown aria-hidden size={15} />
-        مو مهم
+        ما يهمني
       </button>
       <button
         className={`inline-flex min-h-10 items-center gap-2 rounded-full border px-4 py-2 text-sm font-bold transition ${
@@ -89,9 +103,228 @@ function FeedbackButtons({
         onClick={() => void submit("more_like_this")}
         type="button"
       >
-        زودني عنه
+        أبغى أكثر
       </button>
     </div>
+  );
+}
+
+function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | null {
+  if (!metrics?.length) {
+    return null;
+  }
+
+  return (
+    <div className="grid gap-3 md:grid-cols-4">
+      {metrics.map((metric, index) => (
+        <motion.div
+          className={`rounded-[24px] p-4 ${metricToneClasses[metric.tone]}`}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.07, duration: 0.4 }}
+          key={metric.label}
+        >
+          <p className="text-xs font-black opacity-70">{metric.label}</p>
+          <p className="mt-2 text-2xl font-black">{metric.value}</p>
+          <p className="mt-1 text-xs font-bold opacity-75">{metric.change}</p>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
+
+function SignalChart({
+  chart
+}: {
+  chart?: { title: string; subtitle: string; points: BriefChartPoint[] };
+}): ReactElement | null {
+  if (!chart) {
+    return null;
+  }
+
+  return (
+    <Card className="p-5 md:p-6">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-600)]">
+            <BarChart3 aria-hidden size={18} />
+            إشاراتك
+          </div>
+          <h2 className="mt-2 text-2xl font-black leading-[1.35]">{chart.title}</h2>
+          <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">{chart.subtitle}</p>
+        </div>
+        <LineChart aria-hidden className="text-[var(--color-saffron-500)]" size={28} />
+      </div>
+      <div className="mt-7 flex h-52 items-end gap-3 rounded-[28px] bg-[var(--color-paper)] p-4">
+        {chart.points.map((point, index) => (
+          <div className="flex h-full flex-1 flex-col justify-end gap-2 text-center" key={point.label}>
+            <motion.div
+              className="mx-auto w-full rounded-t-[18px] bg-[var(--color-zubda-500)] shadow-[0_12px_30px_hsl(237_97%_61%/0.18)]"
+              initial={{ height: 12 }}
+              animate={{ height: `${point.value}%` }}
+              transition={{ delay: 0.16 + index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <p className="text-xs font-black text-[var(--color-ink-muted)]">{point.label}</p>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+function SentimentGauge({
+  sentiment
+}: {
+  sentiment?: { label: string; score: number; explanation: string; conviction: number };
+}): ReactElement | null {
+  if (!sentiment) {
+    return null;
+  }
+
+  const needleRotation = -90 + (sentiment.score / 100) * 180;
+
+  return (
+    <Card className="overflow-hidden p-5 md:p-6">
+      <div className="grid gap-6 lg:grid-cols-[320px_1fr] lg:items-center">
+        <div className="relative mx-auto w-full max-w-[320px]">
+          <svg className="h-auto w-full" viewBox="0 0 320 180" role="img" aria-label={`مزاج السوق ${sentiment.score} من 100`}>
+            <path
+              d="M50 150 A110 110 0 0 1 270 150"
+              fill="none"
+              stroke="var(--color-line)"
+              strokeLinecap="round"
+              strokeWidth="24"
+            />
+            <motion.path
+              d="M50 150 A110 110 0 0 1 270 150"
+              fill="none"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: sentiment.score / 100 }}
+              stroke="url(#sentimentGradient)"
+              strokeLinecap="round"
+              strokeWidth="24"
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <defs>
+              <linearGradient id="sentimentGradient" x1="50" x2="270" y1="150" y2="150">
+                <stop stopColor="var(--color-risk)" />
+                <stop offset="0.5" stopColor="var(--color-saffron-500)" />
+                <stop offset="1" stopColor="var(--color-trust-500)" />
+              </linearGradient>
+            </defs>
+            <motion.line
+              x1="160"
+              x2="160"
+              y1="150"
+              y2="74"
+              stroke="var(--color-ink)"
+              strokeLinecap="round"
+              strokeWidth="5"
+              initial={{ rotate: -90 }}
+              animate={{ rotate: needleRotation }}
+              style={{ originX: "160px", originY: "150px" }}
+              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <circle cx="160" cy="150" r="10" fill="var(--color-ink)" />
+          </svg>
+          <div className="absolute inset-x-0 bottom-0 text-center">
+            <p className="text-4xl font-black">{sentiment.score}/100</p>
+            <p className="text-sm font-bold text-[var(--color-ink-muted)]">مزاج السوق</p>
+          </div>
+        </div>
+
+        <div className="text-right">
+          <p className="text-sm font-black text-[var(--color-zubda-600)]">قراءة السوق</p>
+          <h2 className="mt-2 text-3xl font-black leading-[1.35]">{sentiment.label}</h2>
+          <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">{sentiment.explanation}</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-[22px] bg-[var(--color-zubda-50)] p-4">
+              <p className="text-sm font-black text-[var(--color-zubda-700)]">القناعة</p>
+              <p className="mt-1 text-2xl font-black">{sentiment.conviction}/10</p>
+            </div>
+            <div className="rounded-[22px] bg-[var(--color-saffron-50)] p-4">
+              <p className="text-sm font-black">المحرك الرئيسي</p>
+              <p className="mt-1 text-sm font-bold text-[var(--color-ink-muted)]">AI + الفائدة</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function RiskPressureBars({ risks }: { risks?: BriefRiskFactor[] }): ReactElement | null {
+  if (!risks?.length) {
+    return null;
+  }
+
+  return (
+    <Card className="p-5 md:p-6">
+      <h2 className="text-3xl font-black">مؤشرات الضغط</h2>
+      <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">
+        أين ممكن تضغط الأخبار على السوق أو قائمتك
+      </p>
+      <div className="mt-6 grid gap-4">
+        {risks.map((risk, index) => (
+          <div className="grid gap-2" key={risk.label}>
+            <div className="flex items-center justify-between gap-3">
+              <span className="font-black">{risk.label}</span>
+              <span className="rounded-full bg-[var(--color-saffron-50)] px-3 py-1 text-xs font-black text-[var(--color-ink)]">
+                {risk.score}/10
+              </span>
+            </div>
+            <div className="h-3 overflow-hidden rounded-full bg-[var(--color-paper)]">
+              <motion.span
+                className="block h-full rounded-full bg-gradient-to-l from-[var(--color-risk)] via-[var(--color-saffron-500)] to-[var(--color-trust-500)]"
+                initial={{ width: 0 }}
+                animate={{ width: `${risk.score * 10}%` }}
+                transition={{ delay: index * 0.08, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
+            <p className="text-sm font-semibold text-[var(--color-ink-muted)]">{risk.note}</p>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+function PortfolioExposure({ exposure }: { exposure?: BriefPortfolioExposure[] }): ReactElement | null {
+  if (!exposure?.length) {
+    return null;
+  }
+
+  return (
+    <Card className="p-5 md:p-6">
+      <h2 className="text-3xl font-black">أثرها على قائمتك</h2>
+      <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">
+        توزيع تقريبي لما يستحق انتباهك بناءً على قائمتك
+      </p>
+      <div className="mt-6 grid gap-4">
+        {exposure.map((item, index) => (
+          <div className="grid gap-3 rounded-[24px] bg-white p-4 md:grid-cols-[120px_1fr_170px] md:items-center" key={item.symbol}>
+            <div>
+              <p className="text-xl font-black">{item.symbol}</p>
+              <p className="text-xs font-bold text-[var(--color-ink-muted)]">{item.label}</p>
+            </div>
+            <div>
+              <div className="h-3 overflow-hidden rounded-full bg-[var(--color-paper)]">
+                <motion.span
+                  className="block h-full rounded-full bg-[var(--color-zubda-500)]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${item.weight}%` }}
+                  transition={{ delay: index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </div>
+              <p className="mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">{item.note}</p>
+            </div>
+            <div className="rounded-full bg-[var(--color-trust-50)] px-4 py-2 text-center text-xs font-black text-[var(--color-trust-700)]">
+              {item.bias}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }
 
@@ -108,7 +341,7 @@ function WatchboardCard({
     <Card className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-extrabold text-[var(--color-zubda-600)]">راقب اليوم</p>
+          <p className="text-sm font-extrabold text-[var(--color-zubda-600)]">راقب</p>
           <h3 className="mt-2 text-2xl font-black leading-[1.45]">{item.title}</h3>
         </div>
         <span className="rounded-full bg-[var(--color-zubda-50)] px-3 py-1 text-xs font-black text-[var(--color-zubda-700)]">
@@ -116,17 +349,17 @@ function WatchboardCard({
         </span>
       </div>
       <div className="mt-5 grid gap-4 md:grid-cols-2">
-        <div>
-          <p className="text-sm font-black">ليش يهمك؟</p>
+        <div className="rounded-[24px] bg-[var(--color-zubda-50)] p-4">
+          <p className="text-sm font-black text-[var(--color-zubda-700)]">ليش يهمك؟</p>
           <p className="arabic-copy mt-2 text-[var(--color-ink-muted)]">{item.why}</p>
         </div>
-        <div>
-          <p className="text-sm font-black">بالعربي البسيط</p>
+        <div className="rounded-[24px] bg-[var(--color-saffron-50)] p-4">
+          <p className="text-sm font-black text-[var(--color-ink)]">بالعربي البسيط</p>
           <p className="arabic-copy mt-2 text-[var(--color-ink-muted)]">{item.plainArabic}</p>
         </div>
       </div>
       <p className="mt-4 inline-flex rounded-full bg-slate-50 px-4 py-2 text-sm font-bold text-[var(--color-ink-muted)]">
-        التأثير المحتمل: {item.impact}
+        المؤشر المرتبط: {item.impact}
       </p>
       {enableFeedback ? <FeedbackButtons briefId={briefId} sourceStoryId={item.sourceStoryId} /> : null}
     </Card>
@@ -140,7 +373,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
     <div className="grid gap-5">
       <Card className="overflow-hidden border-[var(--color-zubda-200)]">
         <div className="bg-[var(--color-zubda-500)] p-6 text-white md:p-8">
-          <p className="text-sm font-black text-white/80">زبدة اليوم</p>
+          <p className="text-sm font-black text-white/80">زبدتك</p>
           <h1 className="mt-2 text-4xl font-black leading-[1.45] md:text-5xl">
             {structuredBrief.headline}
           </h1>
@@ -164,6 +397,14 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
         </div>
       </Card>
 
+      <MetricStrip metrics={structuredBrief.metrics} />
+      <SentimentGauge sentiment={structuredBrief.sentiment} />
+      <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+        <RiskPressureBars risks={structuredBrief.riskFactors} />
+        <SignalChart chart={structuredBrief.chart} />
+      </div>
+      <PortfolioExposure exposure={structuredBrief.portfolioExposure} />
+
       <section className="grid gap-4">
         {structuredBrief.watchboard.map((item) => (
           <WatchboardCard
@@ -176,11 +417,23 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
       </section>
 
       <Card className="p-5 md:p-6">
-        <p className="text-sm font-black text-[var(--color-zubda-600)]">وش أثرها عليك؟</p>
+        <p className="text-sm font-black text-[var(--color-zubda-600)]">مخصص لك</p>
         <h2 className="mt-2 text-3xl font-black leading-[1.45]">{structuredBrief.personalImpact.title}</h2>
         <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
           {structuredBrief.personalImpact.body}
         </p>
+        {structuredBrief.personalizationNotes?.length ? (
+          <div className="mt-5 grid gap-2 md:grid-cols-3">
+            {structuredBrief.personalizationNotes.map((note) => (
+              <span
+                className="rounded-[20px] bg-[var(--color-paper)] px-4 py-3 text-sm font-bold text-[var(--color-ink-muted)]"
+                key={note}
+              >
+                {note}
+              </span>
+            ))}
+          </div>
+        ) : null}
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.85fr]">
@@ -200,7 +453,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
         </Card>
 
         <Card className="p-5 md:p-6">
-          <h2 className="text-3xl font-black">يعني إيش؟</h2>
+          <h2 className="text-3xl font-black">بالعربي البسيط</h2>
           <div className="mt-5 grid gap-3">
             {structuredBrief.glossary.map((item) => (
               <div className="rounded-[22px] bg-slate-50 p-4" key={item.term}>
@@ -215,7 +468,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
       </div>
 
       <Card className="p-5 md:p-6">
-        <h2 className="text-3xl font-black">من وين جبناها؟</h2>
+        <h2 className="text-3xl font-black">المصادر</h2>
         <div className="mt-5 grid gap-3">
           {structuredBrief.sources.map((source) => (
             <a
@@ -247,7 +500,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
       </Card>
 
       <Card className="bg-[var(--color-trust-50)] p-6 text-center">
-        <h2 className="text-3xl font-black">خلصت زبدة اليوم</h2>
+        <h2 className="text-3xl font-black">خلصت الزبدة</h2>
         <p className="arabic-copy mx-auto mt-3 max-w-xl text-[var(--color-ink-muted)]">
           عندك أهم ما يستحق المتابعة، ومعه المصادر وسبب الأهمية. الباقي غالباً زحمة.
         </p>

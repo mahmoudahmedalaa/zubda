@@ -242,7 +242,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">ليش تبي زبدة كل صباح؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            اختار أكثر من هدف. هذا يساعدنا نعرف شكل “الفائدة” بالنسبة لك.
+            اختار أكثر من هدف عشان نعرف شكل “الفائدة” بالنسبة لك.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {mainGoals.map((goal) => (
@@ -342,7 +342,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">بأي عملة تحب نفهمك الأرقام؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            هذا للشرح داخل brief. أسعار Stripe ثابتة ومنفصلة.
+            نستخدمها للشرح داخل الملخص. أسعار Stripe ثابتة ومنفصلة.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {currencies.map((currency) => (

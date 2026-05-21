@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/Card";
 
 type BriefReaderProps = {
   brief: BriefDocument;
+  enableFeedback?: boolean;
 };
 
 const reliabilityLabels = {
@@ -94,7 +95,15 @@ function FeedbackButtons({
   );
 }
 
-function WatchboardCard({ item, briefId }: { item: WatchboardItem; briefId: string }): ReactElement {
+function WatchboardCard({
+  item,
+  briefId,
+  enableFeedback
+}: {
+  item: WatchboardItem;
+  briefId: string;
+  enableFeedback: boolean;
+}): ReactElement {
   return (
     <Card className="p-5">
       <div className="flex items-start justify-between gap-4">
@@ -119,12 +128,12 @@ function WatchboardCard({ item, briefId }: { item: WatchboardItem; briefId: stri
       <p className="mt-4 inline-flex rounded-full bg-slate-50 px-4 py-2 text-sm font-bold text-[var(--color-ink-muted)]">
         التأثير المحتمل: {item.impact}
       </p>
-      <FeedbackButtons briefId={briefId} sourceStoryId={item.sourceStoryId} />
+      {enableFeedback ? <FeedbackButtons briefId={briefId} sourceStoryId={item.sourceStoryId} /> : null}
     </Card>
   );
 }
 
-export function BriefReader({ brief }: BriefReaderProps): ReactElement {
+export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps): ReactElement {
   const { structuredBrief } = brief;
 
   return (
@@ -157,7 +166,12 @@ export function BriefReader({ brief }: BriefReaderProps): ReactElement {
 
       <section className="grid gap-4">
         {structuredBrief.watchboard.map((item) => (
-          <WatchboardCard briefId={brief.id} item={item} key={`${brief.id}-${item.sourceStoryId}`} />
+          <WatchboardCard
+            briefId={brief.id}
+            enableFeedback={enableFeedback}
+            item={item}
+            key={`${brief.id}-${item.sourceStoryId}`}
+          />
         ))}
       </section>
 

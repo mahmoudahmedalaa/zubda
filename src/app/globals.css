@@ -22,6 +22,11 @@
   --color-trust-100: hsl(188 76% 90%);
   --color-trust-500: hsl(190 91% 38%);
   --color-trust-700: hsl(193 87% 25%);
+  --color-saffron-50: hsl(39 100% 95%);
+  --color-saffron-300: hsl(39 95% 70%);
+  --color-saffron-500: hsl(36 92% 55%);
+  --color-fig-50: hsl(332 68% 96%);
+  --color-fig-500: hsl(333 62% 48%);
   --color-risk: hsl(350 58% 42%);
   --color-warning: hsl(32 90% 48%);
   --color-success: hsl(153 57% 34%);
@@ -78,7 +83,11 @@
 }
 
 .arabic-copy {
-  line-height: 1.95;
+  line-height: 1.85;
+}
+
+.display-arabic {
+  font-family: var(--font-display), var(--font-arabic), system-ui, sans-serif;
 }
 
 .tabular {
@@ -99,6 +108,10 @@
 
 .scan-line {
   animation: scan-line 4.8s ease-in-out infinite;
+}
+
+.soft-orbit {
+  animation: soft-orbit 9s ease-in-out infinite;
 }
 
 @keyframes float-slow {
@@ -133,6 +146,17 @@
   50% {
     transform: translateY(150px);
     opacity: 0.55;
+  }
+}
+
+@keyframes soft-orbit {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+
+  50% {
+    transform: translate3d(10px, -12px, 0) rotate(3deg);
   }
 }
 

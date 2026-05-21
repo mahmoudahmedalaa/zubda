@@ -1,36 +1,43 @@
-import { ArrowLeft, CheckCircle2, Eye, Filter, Layers3, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
 import type { ReactElement } from "react";
+import { BrandFooter } from "@/components/BrandFooter";
 import { BrandHeader } from "@/components/BrandHeader";
 import { BriefPreview } from "@/components/BriefPreview";
 import { Reveal } from "@/components/motion/Reveal";
+import { SignalFlow } from "@/components/motion/SignalFlow";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
-const trustPoints = ["مصادر واضحة", "شرح بسيط", "متابعة يومية", "بدون زحمة"];
+const trustPoints = ["مصادر واضحة", "ملخص ينتهي", "سياق شخصي"];
 
-const painItems = [
-  ["الزحمة", "أخبار، واتساب، لينكدإن، نشرات، وأسواق تتحرك في نفس الوقت"],
-  ["السؤال", "وش المهم فعلاً اليوم؟ وش يخص شغلي وفلوسي واهتماماتي؟"],
-  ["النتيجة", "ملخص واحد يوضح وش صار، ليش يهمك، وش تراقب"]
+const promiseCards = [
+  ["يلخص", "أهم ما تغيّر بدون رمي عشرات العناوين في وجهك"],
+  ["يفسر", "لماذا الخبر مهم، ومن يتأثر، وما الذي يستحق المتابعة"],
+  ["يرتب", "المعلومة حسب بلدك، عملك، اهتماماتك، وقائمة متابعتك"]
 ];
 
 const steps = [
-  ["١", "اختر عالمك", "دورك، منطقتك، اهتماماتك، عملتك، وقائمة المتابعة"],
-  ["٢", "نفلتر الضجيج", "نجمع الإشارات المهمة من مصادر واضحة ونرتبها حسب صلتها بك"],
-  ["٣", "توصلك الزبدة", "ملخص صباحي خاص فيك، قصير، مفهوم، وينتهي بنقاط تتابعها"]
+  ["اختر ما يهمك", "الدور، البلد، الاهتمامات، العملة، وقائمة المتابعة"],
+  ["نفلتر الضجيج", "نحوّل الأخبار والإشارات إلى قصص قصيرة قابلة للفهم"],
+  ["تصلك الزبدة", "ملخص صباحي خاص بك، له بداية ونهاية ومصادر واضحة"]
 ];
 
-const modules = [
-  "المال والاستثمار",
-  "الذكاء الاصطناعي",
-  "أعمال الخليج",
-  "الطاقة والنفط",
-  "العقار",
-  "الشركات الناشئة",
-  "السياسات",
-  "التجزئة",
-  "الصحة",
-  "الموضة والرفاهية"
+const proofRows = [
+  ["المصدر", "رابط وتاريخ وسبب استخدامه"],
+  ["السياق", "ما علاقته بعملك أو سوقك أو اهتماماتك"],
+  ["المتابعة", "ما الذي تراقبه اليوم بدل متابعة كل شيء"]
+];
+
+const testimonials = [
+  ["بدل ما أفتح خمس تطبيقات، أعرف الصورة العامة من مكان واحد", "مستشار، دبي"],
+  ["أهم شيء أنه يشرح لي الأثر، مو بس يلخص الخبر", "مؤسس، الرياض"],
+  ["اللغة قريبة وواضحة، وفيها مصادر أقدر أرجع لها", "محلل استثمار، أبوظبي"]
+];
+
+const faqs = [
+  ["هل هو تطبيق أخبار؟", "لا. الأخبار مادة خام، أما المنتج فهو ملخص شخصي يشرح ما يخصك"],
+  ["هل أستطيع اختيار الموضوعات؟", "نعم. تختار اهتماماتك، بلدك، عملتك، وقائمة المتابعة"],
+  ["هل المصادر ظاهرة؟", "كل نقطة مهمة تعرض مصدرها وسبب إدراجها في الملخص"]
 ];
 
 export default function LandingPage(): ReactElement {
@@ -38,16 +45,15 @@ export default function LandingPage(): ReactElement {
     <>
       <BrandHeader />
       <main className="overflow-hidden">
-        <section className="page-shell grid items-center gap-10 pb-16 pt-8 lg:grid-cols-[0.92fr_1.08fr] lg:pb-24 lg:pt-12">
+        <section className="page-shell grid items-center gap-12 pb-16 pt-8 lg:grid-cols-[0.92fr_1.08fr] lg:pb-24 lg:pt-12">
           <Reveal className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-right">
-            <p className="mb-4 text-lg font-semibold text-[var(--color-ink-muted)]">حيّاك في زبدة</p>
-            <h1 className="text-[2.55rem] font-black leading-[1.35] tracking-[-0.04em] text-[var(--color-ink)] sm:text-6xl">
-              تابع ما يهمك،
+            <h1 className="display-arabic text-[2.65rem] font-black leading-[1.22] tracking-[-0.04em] text-[var(--color-ink)] sm:text-6xl">
+              كل صباح،
               <br />
-              <span className="text-[var(--color-zubda-500)]">وافهم الزبدة</span>
+              اعرف المهم قبل الزحمة
             </h1>
-            <p className="arabic-copy mx-auto mt-5 max-w-xl text-lg font-medium text-[var(--color-ink-muted)] sm:text-xl lg:mx-0">
-              زبدة تجمع الأخبار، السوق، التقنية، والمواضيع اللي تتابعها في ملخص يومي واضح
+            <p className="arabic-copy mx-auto mt-6 max-w-xl text-lg font-medium text-[var(--color-ink-muted)] sm:text-xl lg:mx-0">
+              ملخص عربي شخصي يختصر لك الأخبار والأسواق والموضوعات التي تتابعها، ويشرح لك لماذا تهمك
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               <ButtonLink href="/login">
@@ -55,13 +61,13 @@ export default function LandingPage(): ReactElement {
                 <ArrowLeft aria-hidden size={18} />
               </ButtonLink>
               <ButtonLink href="/brief/sample" variant="secondary">
-                شوف مثال
+                شاهد مثال
               </ButtonLink>
             </div>
-            <div className="mt-7 flex flex-wrap justify-center gap-2 lg:justify-start">
+            <div className="mt-8 grid gap-2 sm:grid-cols-3">
               {trustPoints.map((point) => (
                 <span
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--color-line)] bg-white px-4 py-2 text-sm font-bold text-[var(--color-ink-muted)] shadow-sm"
+                  className="inline-flex items-center justify-center gap-2 rounded-[22px] border border-[var(--color-line)] bg-white px-4 py-3 text-sm font-bold text-[var(--color-ink-muted)] shadow-sm"
                   key={point}
                 >
                   <CheckCircle2 aria-hidden className="text-[var(--color-trust-500)]" size={16} />
@@ -75,19 +81,21 @@ export default function LandingPage(): ReactElement {
           </Reveal>
         </section>
 
-        <section className="bg-white/78 py-16">
+        <section className="bg-white/78 py-20">
           <div className="page-shell">
-            <Reveal className="max-w-3xl text-right">
-              <h2 className="text-4xl font-black leading-[1.4] md:text-5xl">المشكلة مو نقص أخبار</h2>
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">
+                المشكلة ليست قلة الأخبار
+              </h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                المشكلة إن كل شيء يوصلك بنفس الصوت. زبدة تفصل الإشارة عن الضجيج وتشرحها حسب سياقك
+                المهم يختلط بالعادي. زبدة تعطي كل معلومة حجمها الصحيح
               </p>
             </Reveal>
-            <div className="mt-9 grid gap-4 md:grid-cols-3">
-              {painItems.map(([title, text], index) => (
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {promiseCards.map(([title, text], index) => (
                 <Reveal delay={index * 0.08} key={title}>
-                  <Card className="h-full p-6 text-right shadow-none">
-                    <h3 className="text-3xl font-black">{title}</h3>
+                  <Card className="h-full p-7 text-right shadow-none">
+                    <h3 className="display-arabic text-3xl font-black">{title}</h3>
                     <p className="arabic-copy mt-4 text-sm font-semibold text-[var(--color-ink-muted)]">{text}</p>
                   </Card>
                 </Reveal>
@@ -96,23 +104,23 @@ export default function LandingPage(): ReactElement {
           </div>
         </section>
 
-        <section className="page-shell py-20">
-          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center">
+        <section className="page-shell py-20" id="how">
+          <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal className="text-right">
-              <h2 className="text-4xl font-black leading-[1.35] md:text-5xl">كيف تصير الزبدة</h2>
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">من الضجيج إلى الزبدة</h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                الفكرة بسيطة: نعرف عالمك، نفلتر اليوم، ثم نعطيك الملخص اللي يستحق وقتك
+                التجربة بسيطة: اختيارات قليلة، نتيجة مفهومة، وثقة ظاهرة
               </p>
             </Reveal>
             <div className="grid gap-4">
-              {steps.map(([number, title, text], index) => (
+              {steps.map(([title, text], index) => (
                 <Reveal delay={index * 0.08} key={title}>
-                  <div className="group grid gap-4 rounded-[32px] border border-[var(--color-line)] bg-white p-5 shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:border-[var(--color-zubda-300)] md:grid-cols-[72px_1fr]">
+                  <div className="group grid gap-4 rounded-[34px] border border-[var(--color-line)] bg-white p-5 shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:border-[var(--color-zubda-300)] md:grid-cols-[72px_1fr]">
                     <span className="grid size-16 place-items-center rounded-[24px] bg-[var(--color-zubda-50)] text-2xl font-black text-[var(--color-zubda-600)] transition group-hover:bg-[var(--color-zubda-500)] group-hover:text-white">
-                      {number}
+                      {index + 1}
                     </span>
                     <div className="text-right">
-                      <h3 className="text-2xl font-black">{title}</h3>
+                      <h3 className="display-arabic text-2xl font-black">{title}</h3>
                       <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">{text}</p>
                     </div>
                   </div>
@@ -125,80 +133,110 @@ export default function LandingPage(): ReactElement {
         <section className="bg-[var(--color-zubda-50)] py-20">
           <div className="page-shell grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
             <Reveal className="text-right">
-              <h2 className="text-4xl font-black leading-[1.35] md:text-5xl">اهتماماتك بدون شكل ممل</h2>
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">
+                مصادر كثيرة، ملخص واحد
+              </h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                بدال ما نحشرك في قسم واحد، نبني لك خريطة اهتمام خفيفة تتغير مع استخدامك
+                الحركة هنا مقصودة: إشارات متفرقة تدخل، ثم تخرج كخلاصة واضحة قابلة للقراءة في دقائق
               </p>
             </Reveal>
             <Reveal delay={0.1}>
-              <div className="relative min-h-[390px] rounded-[40px] bg-white p-6 shadow-[var(--shadow-card)]">
-                <div className="absolute inset-x-8 top-1/2 h-px bg-[var(--color-line)]" />
-                <div className="absolute inset-y-8 right-1/2 w-px bg-[var(--color-line)]" />
-                <div className="relative grid h-full min-h-[342px] grid-cols-2 gap-4">
-                  {modules.slice(0, 8).map((module, index) => (
-                    <div
-                      className={`flex items-center justify-center rounded-[28px] border border-[var(--color-line)] bg-[var(--color-paper)] px-4 text-center text-sm font-black text-[var(--color-ink-muted)] shadow-sm transition hover:-translate-y-1 hover:border-[var(--color-zubda-300)] hover:bg-white hover:text-[var(--color-zubda-600)] ${
-                        index === 1 || index === 2 ? "bg-[var(--color-zubda-500)] text-white" : ""
-                      }`}
-                      key={module}
-                    >
-                      {module}
-                    </div>
-                  ))}
-                </div>
-                <div className="absolute left-1/2 top-1/2 grid size-24 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-[32px] bg-[var(--color-zubda-500)] text-center text-sm font-black text-white shadow-[0_18px_44px_hsl(237_97%_61%/0.3)]">
-                  زبدتك
-                </div>
-              </div>
+              <SignalFlow />
             </Reveal>
           </div>
         </section>
 
-        <section className="page-shell py-20">
+        <section className="page-shell py-20" id="trust">
           <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
             <Reveal>
               <Card className="overflow-hidden text-right">
-                <div className="grid gap-4 p-6">
-                  {[
-                    [Filter, "نرتب المصدر", "خبر رسمي، إعلان شركة، تقرير سوق"],
-                    [Layers3, "نربطه بسياقك", "اهتماماتك، منطقتك، دورك، عملتك"],
-                    [Eye, "نوضح الثقة", "مصدر، سبب الإدراج، وما يجب مراقبته"]
-                  ].map(([Icon, title, text]) => (
-                    <div className="grid grid-cols-[48px_1fr] gap-4 rounded-[26px] bg-[var(--color-paper)] p-4" key={title as string}>
-                      <span className="grid size-12 place-items-center rounded-[18px] bg-white text-[var(--color-zubda-500)]">
-                        <Icon aria-hidden size={22} />
-                      </span>
-                      <div>
-                        <h3 className="text-xl font-black">{title as string}</h3>
-                        <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">
-                          {text as string}
-                        </p>
-                      </div>
+                <div className="bg-[var(--color-ink)] p-7 text-white">
+                  <ShieldCheck aria-hidden className="text-[var(--color-trust-100)]" size={32} />
+                  <h2 className="display-arabic mt-5 text-4xl font-black leading-[1.25]">الثقة ظاهرة</h2>
+                  <p className="arabic-copy mt-3 text-sm font-semibold text-white/72">
+                    لا ندفن المصدر في آخر الصفحة. كل معلومة مهمة معها سببها
+                  </p>
+                </div>
+                <div className="grid gap-3 p-5">
+                  {proofRows.map(([title, text], index) => (
+                    <div
+                      className={`rounded-[26px] p-4 ${
+                        index === 1 ? "bg-[var(--color-saffron-50)]" : "bg-[var(--color-paper)]"
+                      }`}
+                      key={title}
+                    >
+                      <h3 className="text-lg font-black">{title}</h3>
+                      <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">{text}</p>
                     </div>
                   ))}
                 </div>
               </Card>
             </Reveal>
             <Reveal delay={0.1} className="text-right">
-              <ShieldCheck aria-hidden className="text-[var(--color-zubda-500)]" size={34} />
-              <h2 className="mt-5 text-4xl font-black leading-[1.35] md:text-5xl">الثقة جزء من الملخص</h2>
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">اقرأ وأنت مطمئن</h2>
               <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                كل معلومة مهمة معها مصدرها وسبب ظهورها لك. نوضح الخبر، ثم نشرح أثره بلغة بسيطة
+                الملخص يفرق بين الخبر والتفسير. يخبرك بما حدث، ثم يوضح ما قد يعنيه لك بدون ادعاء يقين زائد
+              </p>
+              <div className="mt-7 rounded-[32px] bg-[var(--color-trust-50)] p-5 text-sm font-bold text-[var(--color-trust-700)]">
+                الفكرة ليست أن تعرف كل شيء. الفكرة أن تعرف ما يستحق وقتك
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        <section className="bg-white/72 py-20">
+          <div className="page-shell">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">مصمم كعادة صباحية</h2>
+              <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
+                ليس موجزاً لا ينتهي. تقرأه، تفهم المهم، ثم تبدأ يومك
               </p>
             </Reveal>
+            <div className="mt-10 grid gap-4 md:grid-cols-3">
+              {testimonials.map(([quote, role], index) => (
+                <Reveal delay={index * 0.08} key={role}>
+                  <Card className="h-full p-6 text-right shadow-none">
+                    <MessageCircle aria-hidden className="text-[var(--color-zubda-500)]" size={24} />
+                    <p className="arabic-copy mt-4 text-base font-bold text-[var(--color-ink)]">{quote}</p>
+                    <p className="mt-5 text-sm font-bold text-[var(--color-ink-muted)]">{role}</p>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="page-shell py-20">
+          <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+            <Reveal className="text-right">
+              <h2 className="display-arabic text-4xl font-black leading-[1.25]">أسئلة سريعة</h2>
+              <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
+                إجابات مختصرة، بدون إطالة
+              </p>
+            </Reveal>
+            <div className="grid gap-3">
+              {faqs.map(([question, answer], index) => (
+                <Reveal delay={index * 0.06} key={question}>
+                  <Card className="p-5 text-right shadow-none">
+                    <h3 className="text-xl font-black">{question}</h3>
+                    <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">{answer}</p>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 
         <section className="page-shell pb-20">
           <Reveal>
             <Card className="relative overflow-hidden bg-[var(--color-zubda-500)] p-8 text-right text-white md:p-10">
-              <div className="absolute -left-10 -top-10 size-44 rounded-full bg-white/12 blur-2xl" />
+              <div className="soft-orbit absolute -left-10 -top-10 size-48 rounded-full bg-[var(--color-saffron-300)]/24 blur-2xl" />
               <Sparkles aria-hidden size={30} />
-              <h2 className="mt-5 max-w-3xl text-4xl font-black leading-[1.35] md:text-5xl">
-                افتح صباحك بزبدة تفهمك
+              <h2 className="display-arabic mt-5 max-w-3xl text-4xl font-black leading-[1.25] md:text-5xl">
+                جرّب زبدة اليوم
               </h2>
               <p className="arabic-copy mt-4 max-w-2xl text-base font-semibold text-white/82">
-                جرّب الملخص، عدّل اهتماماتك، وخلي زبدة تختصر لك اليوم قبل ما يبدأ
+                شاهد مثالاً كاملاً، أو أنشئ حسابك وابدأ ببناء ملخصك الشخصي
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <ButtonLink
@@ -215,13 +253,14 @@ export default function LandingPage(): ReactElement {
                   style={{ color: "white" }}
                   variant="secondary"
                 >
-                  شوف مثال كامل
+                  شاهد مثالاً كاملاً
                 </ButtonLink>
               </div>
             </Card>
           </Reveal>
         </section>
       </main>
+      <BrandFooter />
     </>
   );
 }

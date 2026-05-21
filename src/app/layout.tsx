@@ -1,16 +1,22 @@
 import type { Metadata } from "next";
 import type { ReactElement, ReactNode } from "react";
-import { Noto_Kufi_Arabic, Readex_Pro, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Readex_Pro, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-const arabic = Noto_Kufi_Arabic({
+const arabic = Readex_Pro({
   subsets: ["arabic"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   variable: "--font-arabic"
 });
 
+const display = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display"
+});
+
 const latin = Readex_Pro({
-  subsets: ["arabic", "latin"],
+  subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-latin"
 });
@@ -32,7 +38,7 @@ export default function RootLayout({
   children: ReactNode;
 }>): ReactElement {
   return (
-    <html lang="ar" dir="rtl" className={`${arabic.variable} ${latin.variable} ${mono.variable}`}>
+    <html lang="ar" dir="rtl" className={`${arabic.variable} ${display.variable} ${latin.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

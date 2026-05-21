@@ -41,7 +41,7 @@ const plans: Plan[] = [
   {
     key: "pro_monthly",
     name: "برو",
-    title: "زبدة أعمق كل صباح",
+    title: "زبدة أعمق على وقتك",
     description: "للي يبغى تخصيص أقوى وقائمة متابعة أكبر",
     cta: "اشترك في برو",
     href: "/login?plan=pro_monthly",
@@ -71,10 +71,10 @@ export function PricingClient(): ReactElement {
       <section className="page-shell py-12 text-right lg:py-14">
         <div className="max-w-3xl">
           <h1 className="max-w-3xl text-5xl font-black leading-[1.35] tracking-[-0.04em] md:text-6xl">
-            اختر الخطة اللي تناسب صباحك
+            اختر الخطة اللي تناسب استخدامك
           </h1>
           <p className="arabic-copy mt-5 max-w-2xl text-lg font-semibold text-[var(--color-ink-muted)]">
-            ابدأ مجاناً، وإذا صارت زبدة جزء من صباحك فعّل برو
+            ابدأ مجاناً، وإذا صارت زبدة جزء من روتينك فعّل برو
           </p>
           <div className="mt-7 inline-flex items-center gap-3 rounded-full border border-[var(--color-line)] bg-white p-2 shadow-[var(--shadow-card)]">
             <label className="pr-4 text-sm font-black text-[var(--color-ink-muted)]" htmlFor="pricing-currency">

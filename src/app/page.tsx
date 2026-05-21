@@ -1,10 +1,11 @@
-import { ArrowLeft, CheckCircle2, MessageCircle, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, MessageCircle, Sparkles } from "lucide-react";
 import type { ReactElement } from "react";
 import { BrandFooter } from "@/components/BrandFooter";
 import { BrandHeader } from "@/components/BrandHeader";
 import { BriefPreview } from "@/components/BriefPreview";
 import { Reveal } from "@/components/motion/Reveal";
 import { SignalFlow } from "@/components/motion/SignalFlow";
+import { TrustTabs } from "@/components/landing/TrustTabs";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
@@ -18,20 +19,14 @@ const promiseCards = [
 
 const steps = [
   ["قل لنا عالمك", "اختَر دورك، بلدك، المواضيع اللي تهمك، وطريقة الكلام اللي تناسبك"],
-  ["أضف قائمتك", "شركات، أسواق، أصول، قطاعات، أو موضوعات تبغى ننتبه لها"],
-  ["نرتبها لك", "كل صباح نبدأ بالأقرب لشغلك وقراراتك، مو الأعلى صوتاً"]
+  ["أضف قائمة المتابعة", "شركات، أسواق، أصول، قطاعات، أو موضوعات تبغى ننتبه لها"],
+  ["نرتبها لك", "في وقتك المختار نبدأ بالأقرب لشغلك وقراراتك، مو الأعلى صوتاً"]
 ];
 
 const personalizationExamples = [
   ["لو أنت مستثمر", "نقرب لك الفائدة، النفط، السوق، وأثرها على محفظتك"],
   ["لو أنت مؤسس", "نركز على التمويل، المنافسين، التقنية، وتغييرات السوق"],
-  ["لو أنت مستشار", "نطلع لك نقاط تصلح لاجتماعك وكلام ينقال بثقة"]
-];
-
-const proofRows = [
-  ["المصدر", "رابط وتاريخ وسبب استخدامه"],
-  ["السياق", "ما علاقته بعملك أو سوقك أو اهتماماتك"],
-  ["المتابعة", "ما الذي يستحق المتابعة بدل متابعة كل شيء"]
+  ["لو أنت مستشار", "نطلع لك نقاط واضحة تستخدمها في اجتماعك بثقة"]
 ];
 
 const testimonials = [
@@ -41,9 +36,9 @@ const testimonials = [
 ];
 
 const faqs = [
-  ["هل هو تطبيق أخبار؟", "لا. الأخبار مادة خام، أما المنتج فهو ملخص شخصي يشرح ما يخصك"],
-  ["هل أستطيع اختيار الموضوعات؟", "نعم. تختار اهتماماتك، بلدك، قائمتك، وطريقة الكلام اللي تناسبك"],
-  ["هل المصادر ظاهرة؟", "كل نقطة مهمة تعرض مصدرها وسبب إدراجها في الملخص"]
+  ["هو تطبيق أخبار؟", "لا. الأخبار مادة خام. زبدة ترتبها لك وتشرح اللي يخصك منها"],
+  ["أقدر أختار اللي يهمني؟", "ايه. تختار اهتماماتك، منطقتك، أسلوب الكلام، وقائمة المتابعة"],
+  ["أشوف المصادر؟", "ايه. كل نقطة مهمة معها المصدر وسبب دخولها الملخص"]
 ];
 
 export default function LandingPage(): ReactElement {
@@ -54,12 +49,12 @@ export default function LandingPage(): ReactElement {
         <section className="page-shell grid items-center gap-12 pb-16 pt-8 lg:grid-cols-[0.92fr_1.08fr] lg:pb-24 lg:pt-12">
           <Reveal className="mx-auto max-w-2xl text-center lg:mx-0 lg:text-right">
             <h1 className="display-arabic text-[2.65rem] font-black leading-[1.22] tracking-[-0.04em] text-[var(--color-ink)] sm:text-6xl">
-              كل صباح،
+              في وقتك،
               <br />
               اعرف المهم قبل الزحمة
             </h1>
-            <p className="arabic-copy mx-auto mt-6 max-w-xl text-lg font-medium text-[var(--color-ink-muted)] sm:text-xl lg:mx-0">
-              زبدتك الصباحية حسب شغلك واهتماماتك وقائمتك. مختصرة، واضحة، ومو نفس الكلام اللي يوصل للجميع
+            <p className="arabic-copy mx-auto mt-6 max-w-lg text-lg font-medium text-[var(--color-ink-muted)] sm:text-xl lg:mx-0">
+              زبدتك حسب شغلك واهتماماتك وقائمة متابعتك. توصلك في الوقت اللي تختاره، مختصرة وواضحة ومو نفس الكلام للجميع
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3 lg:justify-start">
               <ButtonLink href="/login">
@@ -144,7 +139,7 @@ export default function LandingPage(): ReactElement {
                 نفس الخبر، زبدة مختلفة لكل شخص
               </h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                كل واحد له زاويته. المستثمر يهمه الأثر على محفظته، والمؤسس يهمه السوق والمنافسين، والمستشار يهمه الكلام اللي ينقال بثقة
+                كل واحد له زاويته. المستثمر يهمه الأثر على محفظته، والمؤسس يهمه السوق والمنافسين، والمستشار يهمه نقاط واضحة يقدر يستخدمها
               </p>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -187,50 +182,16 @@ export default function LandingPage(): ReactElement {
           </div>
         </section>
 
-        <section className="page-shell py-20" id="trust">
-          <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <Reveal>
-              <Card className="overflow-hidden text-right">
-                <div className="bg-[var(--color-ink-panel)] p-7 text-white">
-                  <ShieldCheck aria-hidden className="text-[var(--color-trust-100)]" size={32} />
-                  <h2 className="display-arabic mt-5 text-4xl font-black leading-[1.25]">الثقة ظاهرة</h2>
-                  <p className="arabic-copy mt-3 text-sm font-semibold text-white/72">
-                    المصدر والسبب واضحين من البداية
-                  </p>
-                </div>
-                <div className="grid gap-3 p-5">
-                  {proofRows.map(([title, text], index) => (
-                    <div
-                      className={`rounded-[26px] p-4 ${
-                        index === 1 ? "bg-[var(--color-saffron-50)]" : "bg-[var(--color-paper)]"
-                      }`}
-                      key={title}
-                    >
-                      <h3 className="text-lg font-black">{title}</h3>
-                      <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">{text}</p>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            </Reveal>
-            <Reveal delay={0.1} className="text-right">
-              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">اقرأ وأنت مطمئن</h2>
-              <p className="arabic-copy mt-4 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
-                نقول لك وش صار، وبعدها نعطيك الزبدة: ليش يهمك، وش تراقب، ومتى تتجاهله
-              </p>
-              <div className="mt-7 rounded-[32px] bg-[var(--color-trust-50)] p-5 text-sm font-bold text-[var(--color-trust-700)]">
-                المطلوب مو تعرف كل شيء. المطلوب تعرف الشيء اللي يستاهل وقتك
-              </div>
-            </Reveal>
-          </div>
-        </section>
+        <Reveal>
+          <TrustTabs />
+        </Reveal>
 
         <section className="bg-white/72 py-20">
           <div className="page-shell">
             <Reveal className="mx-auto max-w-3xl text-center">
-              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">مصمم كعادة صباحية</h2>
+              <h2 className="display-arabic text-4xl font-black leading-[1.25] md:text-5xl">مصمم كعادة على وقتك</h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                تقرأه، تفهم المهم، ثم تبدأ يومك
+                تقرأه وقت ما يناسبك، تفهم المهم، وتكمل يومك بدون زحمة
               </p>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -274,10 +235,10 @@ export default function LandingPage(): ReactElement {
               <div className="soft-orbit absolute -left-10 -top-10 size-48 rounded-full bg-[var(--color-saffron-300)]/24 blur-2xl" />
               <Sparkles aria-hidden size={30} />
               <h2 className="display-arabic mt-5 max-w-3xl text-4xl font-black leading-[1.25] md:text-5xl">
-                جرّب زبدة اليوم
+                شوف كيف تطلع زبدتك
               </h2>
-              <p className="arabic-copy mt-4 max-w-2xl text-base font-semibold text-white/82">
-                شاهد مثالاً كاملاً، أو أنشئ حسابك وابدأ ببناء ملخصك الشخصي
+              <p className="arabic-copy mt-4 max-w-2xl text-lg font-semibold text-white/84">
+                افتح مثال سريع، أو ابنِ ملخصك حسب دورك واهتماماتك وطريقة قراءتك
               </p>
               <div className="mt-7 flex flex-wrap gap-3">
                 <ButtonLink
@@ -294,7 +255,7 @@ export default function LandingPage(): ReactElement {
                   style={{ color: "white" }}
                   variant="secondary"
                 >
-                  شاهد مثالاً كاملاً
+                  شوف مثال سريع
                 </ButtonLink>
               </div>
             </Card>

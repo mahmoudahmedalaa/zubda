@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart3, CheckCircle2, ExternalLink, LineChart, ThumbsDown, ThumbsUp } from "lucide-react";
+import { BarChart3, CheckCircle2, ExternalLink, Info, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type ReactElement, useState } from "react";
 import type {
   BriefChartPoint,
@@ -31,6 +31,30 @@ const metricToneClasses: Record<BriefMetric["tone"], string> = {
   watch: "bg-[var(--color-saffron-50)] text-[var(--color-ink)]",
   risk: "bg-red-50 text-[var(--color-risk)]"
 };
+
+const metricHelp: Record<string, string> = {
+  "مزاج السوق": "قراءة سريعة لميل الأخبار اليوم: مطمئن، حذر، أو ضاغط",
+  "برنت": "سعر النفط يعطي إشارة مهمة للخليج والطاقة والتضخم",
+  "أسلوبك المفضل": "طريقة الشرح اللي اخترتها في ملفك الشخصي",
+  "إشارات من اختياراتك": "عدد المواضيع اللي ظهرت لأنها قريبة من اهتماماتك أو قائمة المتابعة"
+};
+
+function InfoTooltip({ text }: { text: string }): ReactElement {
+  return (
+    <span className="group relative inline-flex">
+      <button
+        aria-label={text}
+        className="grid size-6 cursor-help place-items-center rounded-full bg-white/72 text-[var(--color-ink-muted)] outline-none transition hover:bg-white hover:text-[var(--color-zubda-600)] focus-visible:ring-2 focus-visible:ring-[var(--color-zubda-300)]"
+        type="button"
+      >
+        <Info aria-hidden size={14} />
+      </button>
+      <span className="pointer-events-none absolute left-0 top-8 z-20 hidden w-64 rounded-[18px] border border-[var(--color-line)] bg-[var(--color-ink-panel)] p-3 text-right text-xs font-bold leading-6 text-white shadow-[var(--shadow-card)] group-hover:block group-focus-within:block">
+        {text}
+      </span>
+    </span>
+  );
+}
 
 function FeedbackButtons({
   briefId,
@@ -124,9 +148,12 @@ function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | n
           transition={{ delay: index * 0.07, duration: 0.4 }}
           key={metric.label}
         >
-          <p className="text-xs font-black opacity-70">{metric.label}</p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-sm font-black opacity-75">{metric.label}</p>
+            {metricHelp[metric.label] ? <InfoTooltip text={metricHelp[metric.label]} /> : null}
+          </div>
           <p className="mt-2 text-2xl font-black">{metric.value}</p>
-          <p className="mt-1 text-xs font-bold opacity-75">{metric.change}</p>
+          <p className="mt-1 text-sm font-bold opacity-78">{metric.change}</p>
         </motion.div>
       ))}
     </div>
@@ -148,15 +175,15 @@ function SignalChart({
         <div>
           <div className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-600)]">
             <BarChart3 aria-hidden size={18} />
-            إشاراتك
+            ليش ظهرت لك؟
+            <InfoTooltip text="هذه ليست درجة جودة للخبر. هي توضح لماذا رتبت زبدة هذه المواضيع لك بناءً على ملفك." />
           </div>
           <h2 className="mt-2 text-2xl font-black leading-[1.35]">{chart.title}</h2>
           <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">{chart.subtitle}</p>
         </div>
-        <LineChart aria-hidden className="text-[var(--color-saffron-500)]" size={28} />
       </div>
       <div className="mt-6 rounded-[24px] bg-[var(--color-zubda-50)] p-4 text-sm font-bold text-[var(--color-zubda-700)]">
-        المقصود هنا: قرب الموضوع من اهتماماتك وقائمتك، مو تقييم لجودة الخبر
+        المقصود هنا: نوضح سبب الترتيب، مو نقيم الخبر نفسه
       </div>
       <div className="mt-7 grid gap-4">
         {chart.points.map((point, index) => (
@@ -174,13 +201,13 @@ function SignalChart({
               />
             </div>
             <p className="text-xs font-semibold text-[var(--color-ink-muted)]">
-              {point.label === "التقنية"
-                ? "مرتبط بقائمة التقنية والأسهم"
-                : point.label === "النفط"
-                  ? "مرتبط بالخليج والتضخم"
-                  : point.label === "الخليج"
-                    ? "مرتبط بمنطقتك"
-                    : "متابعة أخف، لكن لا نتركه"}
+              {point.label === "اهتماماتك المختارة"
+                ? "المال، التقنية، الخليج، والطاقة قريبة من اختياراتك"
+                : point.label === "قائمة المتابعة"
+                  ? "فيها Oil وNvidia وUAE real estate"
+                  : point.label === "منطقتك"
+                    ? "الإمارات والخليج يغيرون ترتيب الخبر"
+                    : "المصدر واضح وحديث بما يكفي للاعتماد عليه"}
             </p>
           </div>
         ))}
@@ -198,15 +225,11 @@ function SentimentGauge({
     return null;
   }
 
-  const needleAngle = Math.PI - (sentiment.score / 100) * Math.PI;
-  const needleX = 160 + 82 * Math.cos(needleAngle);
-  const needleY = 150 - 82 * Math.sin(needleAngle);
-
   return (
     <Card className="overflow-hidden p-5 md:p-6">
       <div className="grid gap-6 lg:grid-cols-[320px_1fr] lg:items-center">
         <div className="relative mx-auto w-full max-w-[320px]">
-          <svg className="h-auto w-full" viewBox="0 0 320 180" role="img" aria-label={`مزاج السوق ${sentiment.score} من 100`}>
+          <svg className="h-auto w-full" viewBox="0 0 320 190" role="img" aria-label={`مزاج السوق ${sentiment.score} من 100`}>
             <path
               d="M50 150 A110 110 0 0 1 270 150"
               fill="none"
@@ -231,21 +254,13 @@ function SentimentGauge({
                 <stop offset="1" stopColor="var(--color-trust-500)" />
               </linearGradient>
             </defs>
-            <line
-              x1="160"
-              x2={needleX}
-              y1="150"
-              y2={needleY}
-              stroke="var(--color-ink)"
-              strokeLinecap="round"
-              strokeWidth="5"
-            />
-            <circle cx="160" cy="150" r="9" fill="var(--color-ink)" />
-            <circle cx={needleX} cy={needleY} r="7" fill="var(--color-ink)" />
           </svg>
-          <div className="absolute inset-x-0 bottom-0 text-center">
-            <p className="text-4xl font-black">{sentiment.score}/100</p>
-            <p className="text-sm font-bold text-[var(--color-ink-muted)]">مزاج السوق</p>
+          <div className="absolute inset-x-0 bottom-2 text-center">
+            <p className="tabular text-4xl font-black">{sentiment.score}/100</p>
+            <p className="mt-1 inline-flex items-center gap-2 rounded-full bg-[var(--color-paper)] px-3 py-1 text-sm font-bold text-[var(--color-ink-muted)]">
+              مزاج السوق
+              <InfoTooltip text="مؤشر مبسط يقرأ مزاج الأخبار المختارة. الرقم يساعدك تفهم الجو العام بسرعة، وليس توصية استثمارية." />
+            </p>
           </div>
         </div>
 
@@ -255,7 +270,10 @@ function SentimentGauge({
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">{sentiment.explanation}</p>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             <div className="rounded-[22px] bg-[var(--color-zubda-50)] p-4">
-              <p className="text-sm font-black text-[var(--color-zubda-700)]">القناعة</p>
+              <p className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-700)]">
+                وضوح الصورة
+                <InfoTooltip text="كلما ارتفع الرقم، كانت المصادر متقاربة أكثر في الاتجاه العام." />
+              </p>
               <p className="mt-1 text-2xl font-black">{sentiment.conviction}/10</p>
             </div>
             <div className="rounded-[22px] bg-[var(--color-saffron-50)] p-4">
@@ -278,7 +296,7 @@ function RiskPressureBars({ risks }: { risks?: BriefRiskFactor[] }): ReactElemen
     <Card className="p-5 md:p-6">
       <h2 className="text-3xl font-black">مؤشرات الضغط</h2>
       <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">
-        أين ممكن تضغط الأخبار على السوق أو قائمتك
+        وين ممكن تضغط الأخبار على السوق أو اهتماماتك المختارة
       </p>
       <div className="mt-6 grid gap-4">
         {risks.map((risk, index) => (
@@ -312,9 +330,9 @@ function PortfolioExposure({ exposure }: { exposure?: BriefPortfolioExposure[] }
 
   return (
     <Card className="p-5 md:p-6">
-      <h2 className="text-3xl font-black">أثرها على قائمتك</h2>
+      <h2 className="text-3xl font-black">أثرها على اهتماماتك</h2>
       <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">
-        توزيع تقريبي لما يستحق انتباهك بناءً على قائمتك
+        توزيع تقريبي لما يستحق انتباهك بناءً على اهتماماتك وقائمة المتابعة
       </p>
       <div className="mt-6 grid gap-4">
         {exposure.map((item, index) => (
@@ -357,7 +375,7 @@ function WatchboardCard({
     <Card className="p-5">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-extrabold text-[var(--color-zubda-600)]">راقب</p>
+          <p className="text-lg font-black text-[var(--color-zubda-600)]">راقب</p>
           <h3 className="mt-2 text-2xl font-black leading-[1.45]">{item.title}</h3>
         </div>
         <span className="rounded-full bg-[var(--color-zubda-50)] px-3 py-1 text-xs font-black text-[var(--color-zubda-700)]">
@@ -454,7 +472,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.85fr]">
         <Card className="p-5 md:p-6">
-          <h2 className="text-3xl font-black">كلام ينقال</h2>
+          <h2 className="text-3xl font-black">نقاط تستخدمها</h2>
           <div className="mt-5 grid gap-3">
             {structuredBrief.talkingPoints.map((point) => (
               <div

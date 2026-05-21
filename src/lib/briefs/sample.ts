@@ -143,7 +143,7 @@ function profileContextNote(profile: ProfilePayload): string {
     return profile.personalContext.slice(0, 160);
   }
 
-  return "ما أضفت تفاصيل شخصية بعد، فاعتمدنا على دورك واهتماماتك وقائمة المتابعة";
+  return "ما أضفت تفاصيل شخصية بعد، فاعتمدنا على دورك واهتماماتك المختارة وقائمة المتابعة";
 }
 
 export function selectStoriesForProfile(
@@ -176,22 +176,22 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
     headline: "زبدة جاهزة لك",
     executiveSnapshot: {
       title: "الملخص",
-      body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على ${watchlistText}.`
+      body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على اهتماماتك المختارة: ${focusText}.`
     },
     metrics: [
       { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
       { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" },
-      { label: "أسلوبك", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" },
-      { label: "إشارات مهمة", value: String(selectedStories.length), change: "حسب قائمتك", tone: "watch" }
+      { label: "أسلوبك المفضل", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" },
+      { label: "إشارات من اختياراتك", value: String(selectedStories.length), change: `من ${focusTags.length} اهتمامات`, tone: "watch" }
     ],
     chart: {
-      title: "قوة الإشارات حسب اهتمامك",
-      subtitle: "كلما ارتفع العمود، زادت صلة الموضوع بقائمتك",
+      title: "سبب ترتيب الملخص لك",
+      subtitle: "هذه العوامل تشرح ليش بدأنا بهذه المواضيع تحديداً",
       points: [
-        { label: "التقنية", value: 88 },
-        { label: "النفط", value: 76 },
-        { label: "الخليج", value: 68 },
-        { label: "العقار", value: 44 }
+        { label: "اهتماماتك المختارة", value: 88 },
+        { label: "قائمة المتابعة", value: 76 },
+        { label: "منطقتك", value: 68 },
+        { label: "قوة المصدر", value: 61 }
       ]
     },
     sentiment: {
@@ -258,19 +258,19 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       time: storyContext[story.id]?.time ?? "للمتابعة",
       why: storyContext[story.id]?.why ?? story.summary,
       impact: storyContext[story.id]?.metric ?? story.topicTags.slice(0, 1).join("، "),
-      plainArabic: storyContext[story.id]?.plainArabic ?? "الموضوع مهم لأنه مرتبط باهتماماتك أو قائمتك"
+      plainArabic: storyContext[story.id]?.plainArabic ?? "الموضوع مهم لأنه قريب من اهتماماتك المختارة أو قائمة المتابعة"
     })),
     personalImpact: {
       title: "وش يعني لك؟",
-      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. زبدة اليوم تقلل لك الزحمة وتطلع الإشارات الأقرب لقائمتك بدل الأخبار العامة.`
+      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. زبدة تقلل لك الزحمة وتطلع الإشارات الأقرب لاهتماماتك المختارة بدل الأخبار العامة.`
     },
     personalizationNotes: [
       `رتبنا الإشارات حسب منطقتك: ${profile.region}`,
       `قائمة متابعتك: ${watchlistText}`,
-      `طريقة الكلام: ${profileStyle(profile)}`,
+      `أسلوبك المفضل: ${profileStyle(profile)}`,
       `ملاحظتك عن نفسك: ${profileContextNote(profile)}`
     ],
-    talkingPoints: selectedStories.slice(0, 3).map((story) => `النقطة الذكية: ${story.title}`),
+    talkingPoints: selectedStories.slice(0, 3).map((story) => story.title),
     glossary: [
       {
         term: "عوائد السندات",
@@ -283,7 +283,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       publisher: story.publisher,
       url: story.sourceUrl,
       reliabilityLabel: story.reliabilityLabel,
-      whyIncluded: "اخترناه لأنه قريب من اهتماماتك أو منطقتك أو قائمة المتابعة."
+      whyIncluded: "اخترناه لأنه قريب من اهتماماتك المختارة أو منطقتك أو قائمة المتابعة."
     }))
   };
 }

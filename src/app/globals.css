@@ -2,28 +2,28 @@
 
 :root {
   color-scheme: light;
-  --color-paper: hsl(232 100% 99%);
-  --color-surface: hsl(235 72% 99.4%);
-  --color-surface-raised: hsl(235 90% 99.7%);
+  --color-paper: hsl(225 58% 97%);
+  --color-surface: hsl(224 52% 98.5%);
+  --color-surface-raised: hsl(224 58% 99%);
   --color-ink: hsl(231 26% 9%);
   --color-ink-panel: hsl(232 24% 13%);
-  --color-ink-muted: hsl(220 15% 42%);
-  --color-line: hsl(226 33% 91%);
-  --color-zubda-50: hsl(235 100% 97%);
-  --color-zubda-100: hsl(235 100% 94%);
-  --color-zubda-200: hsl(235 100% 88%);
-  --color-zubda-300: hsl(236 100% 78%);
-  --color-zubda-400: hsl(236 100% 67%);
-  --color-zubda-500: hsl(237 97% 61%);
-  --color-zubda-600: hsl(237 80% 55%);
-  --color-zubda-700: hsl(238 65% 45%);
-  --color-zubda-800: hsl(239 55% 34%);
-  --color-zubda-900: hsl(240 46% 24%);
-  --color-trust-50: hsl(188 78% 96%);
-  --color-trust-100: hsl(188 76% 90%);
-  --color-trust-500: hsl(190 91% 38%);
-  --color-trust-700: hsl(193 87% 25%);
-  --color-saffron-50: hsl(39 100% 95%);
+  --color-ink-muted: hsl(219 18% 34%);
+  --color-line: hsl(223 28% 84%);
+  --color-zubda-50: hsl(224 88% 95%);
+  --color-zubda-100: hsl(225 86% 91%);
+  --color-zubda-200: hsl(226 84% 84%);
+  --color-zubda-300: hsl(227 84% 73%);
+  --color-zubda-400: hsl(228 86% 62%);
+  --color-zubda-500: hsl(230 88% 56%);
+  --color-zubda-600: hsl(231 76% 48%);
+  --color-zubda-700: hsl(232 64% 39%);
+  --color-zubda-800: hsl(233 52% 30%);
+  --color-zubda-900: hsl(234 45% 22%);
+  --color-trust-50: hsl(187 56% 93%);
+  --color-trust-100: hsl(188 58% 84%);
+  --color-trust-500: hsl(190 78% 34%);
+  --color-trust-700: hsl(193 80% 22%);
+  --color-saffron-50: hsl(39 92% 92%);
   --color-saffron-300: hsl(39 95% 70%);
   --color-saffron-500: hsl(36 92% 42%);
   --color-fig-50: hsl(332 68% 96%);
@@ -51,9 +51,9 @@
     min-height: 100%;
     margin: 0;
     background:
-      radial-gradient(circle at top right, hsl(235 100% 93% / 0.78), transparent 28rem),
-      radial-gradient(circle at 10% 35%, hsl(190 80% 94% / 0.72), transparent 24rem),
-      linear-gradient(180deg, hsl(232 100% 99%), hsl(232 88% 97%));
+      radial-gradient(circle at top right, hsl(225 90% 90% / 0.46), transparent 28rem),
+      radial-gradient(circle at 10% 35%, hsl(190 62% 89% / 0.42), transparent 24rem),
+      linear-gradient(180deg, hsl(224 58% 98%), hsl(226 52% 95%));
     color: var(--color-ink);
     font-family: var(--font-arabic), var(--font-latin), system-ui, sans-serif;
     letter-spacing: 0;

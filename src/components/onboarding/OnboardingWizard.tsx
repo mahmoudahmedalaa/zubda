@@ -244,7 +244,7 @@ export function OnboardingWizard(): ReactElement {
 
       {step === "goal" ? (
         <section>
-          <h1 className="text-3xl font-black">ليش تبي زبدة كل صباح؟</h1>
+          <h1 className="text-3xl font-black">ليش تبي زبدة؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
             اختار أكثر من هدف عشان نعرف شكل “الفائدة” بالنسبة لك.
           </p>
@@ -406,7 +406,7 @@ export function OnboardingWizard(): ReactElement {
         <section>
           <h1 className="text-3xl font-black">متى توصلك الزبدة؟</h1>
           <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-            نرسلها لك الصباح بالإيميل، وتفتح الملخص في صفحة خاصة
+            نرسلها لك في الوقت اللي يناسبك، وتفتح الملخص في صفحة خاصة
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             {deliveryTimes.map((time) => (

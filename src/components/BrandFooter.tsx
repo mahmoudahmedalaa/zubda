@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import { BrandLogo } from "@/components/BrandLogo";
 
 const footerLinks = [
-  ["كيف تعمل", "/#how"],
+  ["كيف تشتغل؟", "/#how"],
   ["الثقة والمصادر", "/#trust"],
   ["مثال الملخص", "/brief/sample"],
   ["الأسعار", "/pricing"],
@@ -17,7 +17,7 @@ export function BrandFooter(): ReactElement {
         <div>
           <BrandLogo />
           <p className="arabic-copy mt-4 max-w-xl text-sm font-semibold text-[var(--color-ink-muted)]">
-            زبدة ملخص يومي عربي يختصر لك المهم من الأخبار والأسواق والموضوعات التي تتابعها، مع مصادر واضحة وسياق مختصر
+            زبدة ملخص عربي يوصلك في الوقت اللي تختاره، ويرتب لك المهم من الأخبار والأسواق والمواضيع اللي تتابعها مع مصادر واضحة وسياق مختصر
           </p>
           <p className="mt-4 text-xs font-bold text-[var(--color-ink-muted)]">morning@zubda.ai</p>
         </div>

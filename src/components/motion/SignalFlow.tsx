@@ -7,7 +7,7 @@ import { type ReactElement } from "react";
 const profileInputs = [
   { label: "دورك", value: "مستثمر", icon: BriefcaseBusiness },
   { label: "منطقتك", value: "الإمارات والخليج", icon: MapPin },
-  { label: "أسلوبك", value: "مختصر وعملي", icon: MessageCircle }
+  { label: "أسلوبك المفضل", value: "مختصر وعملي", icon: MessageCircle }
 ];
 
 const rankedSignals = [
@@ -81,7 +81,7 @@ export function SignalFlow(): ReactElement {
         <div className="rounded-[28px] bg-[var(--color-trust-50)] p-5 text-right">
           <p className="text-sm font-black text-[var(--color-trust-700)]">النتيجة</p>
           <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
-            بدل ملخص عام، تبدأ بالأشياء الأقرب لمحفظتك وشغلك والقرارات اللي قدامك
+            بدل ملخص عام، تبدأ بالأشياء الأقرب لاهتماماتك وشغلك والقرارات اللي قدامك
           </p>
         </div>
       </div>

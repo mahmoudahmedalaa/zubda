@@ -1,9 +1,9 @@
 "use client";
 
 import { onAuthStateChanged } from "firebase/auth";
-import { ArrowLeft, CheckCircle2, Lock, Plus, Sparkles, X } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Lock, Plus, SlidersHorizontal, Wand2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type ReactElement, useEffect, useMemo, useState } from "react";
+import { type ReactElement, type ReactNode, useEffect, useMemo, useState } from "react";
 import { authedFetch } from "@/lib/api/client";
 import { getFirebaseAuth, hasFirebaseClientConfig } from "@/lib/firebase/client";
 import { type PlanKey, planLimits } from "@/lib/plans";
@@ -17,21 +17,18 @@ import {
   regions,
   roles
 } from "@/data/onboarding";
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 
 const steps = [
-  "language",
-  "region",
   "role",
+  "region",
   "goal",
   "interests",
   "watchlist",
-  "decision",
-  "communication",
   "about",
-  "sources",
+  "communication",
   "depth",
   "delivery",
   "preview"
@@ -40,7 +37,9 @@ const steps = [
 type DraftProfile = {
   languageMode: "arabic" | "english" | "mixed";
   region: (typeof regions)[number];
+  regionFocus: string[];
   role: (typeof roles)[number];
+  roleOther: string;
   mainGoals: string[];
   interestModuleIds: string[];
   watchlist: string[];
@@ -62,11 +61,13 @@ type ProfileSuggestions = Partial<
 >;
 
 const initialDraft: DraftProfile = {
-  languageMode: "mixed",
-  region: "UAE",
+  languageMode: "arabic",
+  region: "الإمارات",
+  regionFocus: ["الإمارات", "السعودية"],
   role: "مستشار",
-  mainGoals: [mainGoals[0]],
-  interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
+  roleOther: "",
+  mainGoals: [],
+  interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية"],
   watchlist: [],
   sourcePreferences: [],
   avoidTopics: [],
@@ -74,7 +75,7 @@ const initialDraft: DraftProfile = {
   decisionContext: "",
   personalContext: "",
   briefDepth: "standard",
-  deliveryTime: "07:30",
+  deliveryTime: "09:00",
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dubai"
 };
 
@@ -109,16 +110,23 @@ function StepShell({
   eyebrow,
   title,
   body,
+  required = false,
   children
 }: {
   eyebrow: string;
   title: string;
   body: string;
-  children: ReactElement;
+  required?: boolean;
+  children: ReactNode;
 }): ReactElement {
   return (
     <section>
-      <p className="text-sm font-black text-[var(--color-zubda-600)]">{eyebrow}</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm font-black text-[var(--color-zubda-600)]">{eyebrow}</p>
+        <span className="rounded-full bg-[var(--color-surface)] px-3 py-1 text-xs font-black text-[var(--color-ink-muted)]">
+          {required ? "مطلوب" : "اختياري"}
+        </span>
+      </div>
       <h1 className="mt-2 text-3xl font-black leading-[1.35] md:text-4xl">{title}</h1>
       <p className="arabic-copy mt-3 text-base font-semibold text-[var(--color-ink-muted)]">{body}</p>
       <div className="mt-7">{children}</div>
@@ -142,6 +150,16 @@ export function OnboardingWizard(): ReactElement {
   const limits = planLimits[plan];
   const progress = Math.round(((stepIndex + 1) / steps.length) * 100);
   const isPaid = plan !== "free";
+  const canContinue =
+    step === "role"
+      ? draft.role !== "غير ذلك" || draft.roleOther.trim().length > 1
+      : step === "region"
+        ? draft.regionFocus.length > 0
+        : step === "goal"
+          ? draft.mainGoals.length > 0
+          : step === "interests"
+            ? draft.interestModuleIds.length > 0
+            : true;
 
   useEffect(() => {
     if (!hasFirebaseClientConfig()) {
@@ -175,11 +193,11 @@ export function OnboardingWizard(): ReactElement {
 
   const previewItems = useMemo(
     () => [
-      ["نرتب لك", draft.interestModuleIds.slice(0, 3).join("، ")],
-      ["نراقب", draft.watchlist.length ? draft.watchlist.slice(0, 4).join("، ") : "أضف شركات أو مواضيع"],
-      ["نشرح لك", draft.communicationStyle],
-      ["نراعي", draft.decisionContext || draft.personalContext || "دورك وأهدافك"],
-      ["نتجنب", draft.avoidTopics.length ? draft.avoidTopics.join("، ") : "ما حددت شيء"]
+      ["الدور", draft.role === "غير ذلك" ? draft.roleOther || "اكتب وصفك" : draft.role],
+      ["التركيز", draft.regionFocus.length ? draft.regionFocus.join("، ") : draft.region],
+      ["المواضيع", draft.interestModuleIds.length ? draft.interestModuleIds.slice(0, 4).join("، ") : "اختر موضوعين على الأقل"],
+      ["المتابعة", draft.watchlist.length ? draft.watchlist.slice(0, 4).join("، ") : "اختياري"],
+      ["الأسلوب", draft.communicationStyle]
     ],
     [draft]
   );
@@ -270,8 +288,8 @@ export function OnboardingWizard(): ReactElement {
   }
 
   return (
-    <div className="grid w-full max-w-5xl gap-5 lg:grid-cols-[1fr_320px]">
-      <Card className="p-6 text-right md:p-7">
+    <div className="grid w-full max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <Card className="p-6 text-right md:p-8">
         <div className="mb-7">
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs font-black text-[var(--color-ink-muted)]">
@@ -289,61 +307,68 @@ export function OnboardingWizard(): ReactElement {
           </div>
         </div>
 
-        {step === "language" ? (
+        {step === "role" ? (
           <StepShell
-            eyebrow="النبرة"
-            title="بأي لغة تبي الزبدة؟"
-            body="نضبط اللغة من البداية عشان الملخص ما يطلع مترجم أو غريب"
+            eyebrow="نبدأ منك"
+            title="وش أقرب وصف لك؟"
+            body="نفس الخبر يهم كل شخص بطريقة مختلفة. اختر الأقرب، وإذا ما لقيت نفسك اكتبها لنا"
+            required
           >
-            <div className="flex flex-wrap gap-3">
-              {languageModes.map((mode) => (
-                <Chip
-                  key={mode.value}
-                  onClick={() => setDraft((current) => ({ ...current, languageMode: mode.value }))}
-                  selected={draft.languageMode === mode.value}
-                >
-                  {mode.label}
-                </Chip>
-              ))}
-            </div>
+            <>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {roles.map((role) => (
+                  <button
+                    className={`rounded-[24px] border p-4 text-right font-black transition hover:-translate-y-0.5 ${
+                      draft.role === role
+                        ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]"
+                        : "border-[var(--color-line)] bg-white text-[var(--color-ink)] hover:border-[var(--color-zubda-200)]"
+                    }`}
+                    key={role}
+                    onClick={() => setDraft((current) => ({ ...current, role }))}
+                    type="button"
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+              {draft.role === "غير ذلك" ? (
+                <input
+                  className="mt-4 min-h-12 w-full rounded-[22px] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)]"
+                  onChange={(event) => setDraft((current) => ({ ...current, roleOther: event.target.value }))}
+                  placeholder="مثلاً: محامي، طبيب، مشتريات، موارد بشرية..."
+                  value={draft.roleOther}
+                />
+              ) : null}
+            </>
           </StepShell>
         ) : null}
 
         {step === "region" ? (
           <StepShell
-            eyebrow="المكان يغير الأولوية"
-            title="وين نركز لك؟"
-            body="نفس الخبر ممكن يكون عادي عالمياً، لكنه مهم جداً في الخليج أو مصر أو منطقتك"
+            eyebrow="المناطق اللي تهمك"
+            title="وين تبغى التركيز؟"
+            body="اختَر أكثر من منطقة إذا شغلك أو استثماراتك موزعة. نستخدمها لترتيب الأخبار، مو لحصر الملخص"
+            required
           >
-            <div className="flex flex-wrap gap-3">
+            <div className="grid gap-3 sm:grid-cols-3">
               {regions.map((region) => (
-                <Chip
+                <button
+                  className={`rounded-[22px] border px-4 py-3 text-right font-black transition hover:-translate-y-0.5 ${
+                    draft.regionFocus.includes(region)
+                      ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]"
+                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-zubda-200)]"
+                  }`}
                   key={region}
-                  onClick={() => setDraft((current) => ({ ...current, region }))}
-                  selected={draft.region === region}
+                  onClick={() =>
+                    setDraft((current) => {
+                      const regionFocus = toggleValue(current.regionFocus, region);
+                      return { ...current, region, regionFocus };
+                    })
+                  }
+                  type="button"
                 >
                   {region}
-                </Chip>
-              ))}
-            </div>
-          </StepShell>
-        ) : null}
-
-        {step === "role" ? (
-          <StepShell
-            eyebrow="زاويتك"
-            title="وش أقرب وصف لك؟"
-            body="المستثمر يقرأ الأثر غير المؤسس، والمستشار يحتاج زاوية تنفع في الاجتماع"
-          >
-            <div className="flex flex-wrap gap-3">
-              {roles.map((role) => (
-                <Chip
-                  key={role}
-                  onClick={() => setDraft((current) => ({ ...current, role }))}
-                  selected={draft.role === role}
-                >
-                  {role}
-                </Chip>
+                </button>
               ))}
             </div>
           </StepShell>
@@ -351,13 +376,19 @@ export function OnboardingWizard(): ReactElement {
 
         {step === "goal" ? (
           <StepShell
-            eyebrow="سبب الاستخدام"
-            title="وش تبغى زبدة تختصر عليك؟"
-            body="اختر اللي يهمك فعلاً. هذه الإجابة تحدد شكل الفائدة في الملخص"
+            eyebrow="ليش تستخدم زبدة؟"
+            title="وش تبغى تختصر عليك؟"
+            body="اختَر هدف أو أكثر. هذا يحدد نوع الزوايا اللي تظهر لك: قرار، اجتماع، سوق، أو متابعة عامة"
+            required
           >
-            <div className="flex flex-wrap gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {mainGoals.map((goal) => (
-                <Chip
+                <button
+                  className={`rounded-[24px] border p-4 text-right font-black transition hover:-translate-y-0.5 ${
+                    draft.mainGoals.includes(goal)
+                      ? "border-[var(--color-green-500)] bg-[var(--color-green-50)] text-[var(--color-trust-700)]"
+                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-green-500)]"
+                  }`}
                   key={goal}
                   onClick={() =>
                     setDraft((current) => ({
@@ -365,10 +396,10 @@ export function OnboardingWizard(): ReactElement {
                       mainGoals: toggleValue(current.mainGoals, goal)
                     }))
                   }
-                  selected={draft.mainGoals.includes(goal)}
+                  type="button"
                 >
                   {goal}
-                </Chip>
+                </button>
               ))}
             </div>
           </StepShell>
@@ -378,7 +409,8 @@ export function OnboardingWizard(): ReactElement {
           <StepShell
             eyebrow={`${draft.interestModuleIds.length}/${limits.maxInterestModules}`}
             title="وش المواضيع اللي تهمك؟"
-            body={isPaid ? "خذ راحتك. برو يعطيك مساحة أوسع للتخصيص" : "المجاني يبدأ بثلاث اهتمامات. خلك حاد في الاختيار"}
+            body={isPaid ? "اختر اللي يهمك فعلاً. كل ما زادت المواضيع صار الملخص أوسع، فخل اختياراتك مقصودة" : "الخطة المجانية تعطيك موضوعين فقط. اختَر أهم شيئين عشان تحس بقيمة التخصيص"}
+            required
           >
             <div className="flex flex-wrap gap-3">
               {interestModules.map((interest) => (
@@ -407,7 +439,7 @@ export function OnboardingWizard(): ReactElement {
           <StepShell
             eyebrow={`${draft.watchlist.length}/${limits.maxWatchlistItems}`}
             title="مين أو إيش نراقب لك؟"
-            body="اكتب الشركات، الأصول، الأسواق، المواضيع، الدول، أو العلامات اللي تبغى تظهر إذا صار حولها شيء مهم"
+            body="هذه القائمة تجعل الملخص شخصي فعلاً. اكتب أسماء واضحة، وفصل بينها بإدخال واحد كل مرة"
           >
             <>
               <div className="flex gap-2">
@@ -421,7 +453,7 @@ export function OnboardingWizard(): ReactElement {
                       setWatchInput("");
                     }
                   }}
-                  placeholder="أرامكو، النفط، السوق السعودي..."
+                  placeholder="مثلاً: أرامكو، Nvidia، أسعار النفط، سوق دبي العقاري، الفائدة الأمريكية"
                   aria-label="أضف عنصر لقائمة المتابعة"
                   value={watchInput}
                 />
@@ -456,141 +488,85 @@ export function OnboardingWizard(): ReactElement {
           </StepShell>
         ) : null}
 
-        {step === "decision" ? (
-          <StepShell
-            eyebrow="السياق الذكي"
-            title="وش القرارات اللي تبغى الزبدة تساعدك فيها؟"
-            body="جملة أو جملتين تكفي. هذا يخلي التحليل أقرب لحياتك بدل ما يكون كلام عام"
-          >
-            <textarea
-              className="arabic-copy min-h-32 w-full resize-y rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 py-4 outline-none focus:border-[var(--color-zubda-500)]"
-              maxLength={800}
-              onChange={(event) => setDraft((current) => ({ ...current, decisionContext: event.target.value }))}
-              placeholder="مثلاً: أحتاج أفهم أثر الأخبار على استثماراتي، اجتماعات العملاء، والفرص في الخليج..."
-              value={draft.decisionContext}
-            />
-          </StepShell>
-        ) : null}
-
-        {step === "communication" ? (
-          <StepShell
-            eyebrow="أسلوبك المفضل"
-            title="كيف تحب زبدة تكلمك؟"
-            body="هذا يغير طريقة الشرح، طول الجمل، ونوع النقاط اللي تطلع لك"
-          >
-            <div className="flex flex-wrap gap-3">
-              {communicationStyles.map((style) => (
-                <Chip
-                  key={style}
-                  onClick={() => setDraft((current) => ({ ...current, communicationStyle: style }))}
-                  selected={draft.communicationStyle === style}
-                >
-                  {style}
-                </Chip>
-              ))}
-            </div>
-          </StepShell>
-        ) : null}
-
         {step === "about" ? (
           <StepShell
-            eyebrow="خل زبدة تفهمك"
-            title="شيء لازم نعرفه عنك؟"
-            body="اكتبها بطريقتك. الذكاء في الخلفية يحولها لإشارات منظمة، بدون افتراضات زيادة"
+            eyebrow="نبذة تساعد التخصيص"
+            title="وش لازم زبدة تعرف عنك؟"
+            body="اختياري، لكنه أقوى جزء للتخصيص. اكتب بطريقتك: شغلك، قراراتك، الأشياء اللي تتابعها، والأشياء اللي ما تهمك"
           >
             <>
               <textarea
                 className="arabic-copy min-h-36 w-full resize-y rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 py-4 outline-none focus:border-[var(--color-zubda-500)]"
                 maxLength={1200}
                 onChange={(event) => setDraft((current) => ({ ...current, personalContext: event.target.value }))}
-                placeholder="مثلاً: أشتغل في الاستراتيجية، أتابع الاستثمار والتقنية، أحب المختصر العملي، وما أبي أخبار رياضية..."
+                placeholder="مثلاً: أنا مستثمر في التقنية والطاقة، أشتغل مع عملاء في السعودية والإمارات، أبي نقاط تنفعني في الاجتماعات، وما تهمني أخبار الرياضة أو الكريبتو..."
                 value={draft.personalContext}
               />
-              <div className="mt-4 flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-3 rounded-[24px] bg-[var(--color-trust-50)] p-4">
                 <Button
                   disabled={analyzing || draft.personalContext.trim().length < 20}
                   onClick={() => void analyzePersonalContext()}
                   variant="secondary"
                 >
-                  <Sparkles aria-hidden size={17} />
-                  {analyzing ? "نستخرج..." : "استخرج الإشارات"}
+                  <Wand2 aria-hidden size={17} />
+                  {analyzing ? "نرتب..." : "رتّبها لي"}
                 </Button>
-                <p className="text-xs font-bold text-[var(--color-ink-muted)]">
-                  تضيف اهتمامات وقائمة متابعة من كلامك، بدون ما تخترع شيء
+                <p className="arabic-copy text-sm font-bold text-[var(--color-trust-700)]">
+                  نقرأ كلامك ونقترح اهتمامات أو متابعة، بدون ما نخترع معلومات عنك
                 </p>
               </div>
-            </>
-          </StepShell>
-        ) : null}
-
-        {step === "sources" ? (
-          <StepShell
-            eyebrow={isPaid ? "مصادرك المفضلة" : "ميزة برو"}
-            title="في مصادر تحب ننتبه لها أو مواضيع نتجنبها؟"
-            body="هذه خطوة اختيارية، لكنها تمنع الملخص من الذهاب لأماكن ما تهمك"
-          >
-            <div className="grid gap-4">
-              {!isPaid ? (
-                <div className="rounded-[26px] border border-[var(--color-line)] bg-[var(--color-zubda-50)] p-5">
+              {isPaid ? (
+                <div className="mt-5 grid gap-3 md:grid-cols-2">
+                  <div>
+                    <p className="mb-2 text-sm font-black">مصادر تفضلها</p>
+                    <div className="flex gap-2">
+                      <input
+                        className="min-h-12 min-w-0 flex-1 rounded-[22px] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)]"
+                        onChange={(event) => setSourceInput(event.target.value)}
+                        placeholder="أرقام، Reuters، هيئة حكومية..."
+                        value={sourceInput}
+                      />
+                      <Button
+                        onClick={() => {
+                          updateList("sourcePreferences", sourceInput, 20);
+                          setSourceInput("");
+                        }}
+                        variant="secondary"
+                      >
+                        <Plus aria-hidden size={18} />
+                      </Button>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="mb-2 text-sm font-black">أشياء ما تهمك</p>
+                    <div className="flex gap-2">
+                      <input
+                        className="min-h-12 min-w-0 flex-1 rounded-[22px] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)]"
+                        onChange={(event) => setAvoidInput(event.target.value)}
+                        placeholder="رياضة، كريبتو، أخبار مشاهير..."
+                        value={avoidInput}
+                      />
+                      <Button
+                        onClick={() => {
+                          updateList("avoidTopics", avoidInput, 20);
+                          setAvoidInput("");
+                        }}
+                        variant="secondary"
+                      >
+                        <Plus aria-hidden size={18} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-5 rounded-[24px] border border-[var(--color-line)] bg-white p-4">
                   <div className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-700)]">
                     <Lock aria-hidden size={16} />
-                    تخصيص المصادر يتفعل مع برو
-                  </div>
-                  <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
-                    تقدر تكمل الآن. لما تفعل برو، تضيف مصادر مفضلة ومواضيع ما تبغى تشوفها
-                  </p>
-                  <ButtonLink className="mt-4" href="/pricing" variant="secondary">
-                    شوف برو
-                  </ButtonLink>
-                </div>
-              ) : null}
-              <div className="grid gap-3 md:grid-cols-2">
-                <div>
-                  <p className="mb-2 text-sm font-black">مصادر أو ناشرين تفضلهم</p>
-                  <div className="flex gap-2">
-                    <input
-                      className="min-h-12 min-w-0 flex-1 rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)] disabled:opacity-50"
-                      disabled={!isPaid}
-                      onChange={(event) => setSourceInput(event.target.value)}
-                      placeholder="Reuters، أرقام، بلومبرغ..."
-                      value={sourceInput}
-                    />
-                    <Button
-                      disabled={!isPaid}
-                      onClick={() => {
-                        updateList("sourcePreferences", sourceInput, 20);
-                        setSourceInput("");
-                      }}
-                      variant="secondary"
-                    >
-                      <Plus aria-hidden size={18} />
-                    </Button>
+                    مصادر مفضلة وتجنب مواضيع معينة ضمن برو
                   </div>
                 </div>
-                <div>
-                  <p className="mb-2 text-sm font-black">مواضيع ما تهمك</p>
-                  <div className="flex gap-2">
-                    <input
-                      className="min-h-12 min-w-0 flex-1 rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)] disabled:opacity-50"
-                      disabled={!isPaid}
-                      onChange={(event) => setAvoidInput(event.target.value)}
-                      placeholder="رياضة، كريبتو، سياسة داخلية..."
-                      value={avoidInput}
-                    />
-                    <Button
-                      disabled={!isPaid}
-                      onClick={() => {
-                        updateList("avoidTopics", avoidInput, 20);
-                        setAvoidInput("");
-                      }}
-                      variant="secondary"
-                    >
-                      <Plus aria-hidden size={18} />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2">
+              )}
+              <div className="mt-4 flex flex-wrap gap-2">
                 {[...draft.sourcePreferences, ...draft.avoidTopics].map((item) => (
                   <Chip
                     key={item}
@@ -608,7 +584,40 @@ export function OnboardingWizard(): ReactElement {
                   </Chip>
                 ))}
               </div>
-            </div>
+            </>
+          </StepShell>
+        ) : null}
+
+        {step === "communication" ? (
+          <StepShell
+            eyebrow="طريقة الملخص"
+            title="كيف تبي نكتب لك؟"
+            body="الواجهة عربية، والملخص عربي افتراضياً. تقدر تخلي المصطلحات الإنجليزية تظهر إذا هذا أقرب لطريقة شغلك"
+          >
+            <>
+              <div className="flex flex-wrap gap-3">
+                {communicationStyles.map((style) => (
+                  <Chip
+                    key={style}
+                    onClick={() => setDraft((current) => ({ ...current, communicationStyle: style }))}
+                    selected={draft.communicationStyle === style}
+                  >
+                    {style}
+                  </Chip>
+                ))}
+              </div>
+              <div className="mt-5 flex flex-wrap gap-3">
+                {languageModes.map((mode) => (
+                  <Chip
+                    key={mode.value}
+                    onClick={() => setDraft((current) => ({ ...current, languageMode: mode.value }))}
+                    selected={draft.languageMode === mode.value}
+                  >
+                    {mode.label}
+                  </Chip>
+                ))}
+              </div>
+            </>
           </StepShell>
         ) : null}
 
@@ -643,9 +652,10 @@ export function OnboardingWizard(): ReactElement {
             title="متى توصلك الزبدة؟"
             body="اختَر الوقت اللي فعلاً تقرأ فيه. المجاني يبدأ بوقت افتراضي، وبرو يفتح التخصيص"
           >
-            <div className="flex flex-wrap gap-3">
-              {deliveryTimes.map((time) => {
-                const locked = !limits.customDeliveryTime && time !== "07:30";
+            <>
+              <div className="flex flex-wrap gap-3">
+                {deliveryTimes.map((time) => {
+                const locked = !limits.customDeliveryTime && !["09:00", "13:00"].includes(time);
                 return (
                   <Chip
                     disabled={locked}
@@ -658,7 +668,23 @@ export function OnboardingWizard(): ReactElement {
                   </Chip>
                 );
               })}
-            </div>
+              </div>
+              {limits.customDeliveryTime ? (
+                <label className="mt-5 block rounded-[24px] border border-[var(--color-line)] bg-white p-4">
+                  <span className="text-sm font-black text-[var(--color-ink-muted)]">أو حدد وقتك بنفسك</span>
+                  <input
+                    className="mt-2 min-h-12 w-full rounded-[18px] bg-[var(--color-surface)] px-4 text-xl font-black outline-none focus:ring-2 focus:ring-[var(--color-zubda-200)]"
+                    onChange={(event) => setDraft((current) => ({ ...current, deliveryTime: event.target.value }))}
+                    type="time"
+                    value={draft.deliveryTime}
+                  />
+                </label>
+              ) : (
+                <p className="arabic-copy mt-4 text-sm font-bold text-[var(--color-ink-muted)]">
+                  المجاني يعطيك ٩ صباحاً أو ١ ظهراً. برو يفتح أي وقت يناسب روتينك
+                </p>
+              )}
+            </>
           </StepShell>
         ) : null}
 
@@ -666,7 +692,7 @@ export function OnboardingWizard(): ReactElement {
           <StepShell
             eyebrow="جاهزين"
             title="كذا بتطلع زبدتك"
-            body="هذه ليست إعدادات تقنية. هذه العدسة اللي بنقرأ فيها العالم لك"
+            body="إذا حسّيتها قريبة منك، نبدأ. تقدر تعدل كل شيء لاحقاً من ملفك"
           >
             <div className="grid gap-3">
               {previewItems.map(([label, value]) => (
@@ -697,7 +723,7 @@ export function OnboardingWizard(): ReactElement {
             رجوع
           </Button>
           <Button
-            disabled={saving || draft.mainGoals.length === 0 || draft.interestModuleIds.length === 0}
+            disabled={saving || !canContinue}
             onClick={() => {
               if (stepIndex === steps.length - 1) {
                 void saveProfile();
@@ -713,26 +739,26 @@ export function OnboardingWizard(): ReactElement {
         </div>
       </Card>
 
-      <aside className="h-fit rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-ink-panel)] p-5 text-right text-white shadow-[var(--shadow-card)]">
+      <aside className="h-fit rounded-[var(--radius-card)] border border-[var(--color-line)] bg-white p-5 text-right shadow-[var(--shadow-card)] lg:sticky lg:top-6">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-sm font-black text-[var(--color-saffron-300)]">ملفك الذكي</p>
-            <h2 className="mt-1 text-2xl font-black">زبدتك تتشكل</h2>
+            <p className="text-sm font-black text-[var(--color-zubda-600)]">ملخص اختياراتك</p>
+            <h2 className="mt-1 text-2xl font-black">كل إجابة تغيّر الزبدة</h2>
           </div>
-          <Sparkles aria-hidden className="text-[var(--color-saffron-300)]" size={24} />
+          <SlidersHorizontal aria-hidden className="text-[var(--color-zubda-500)]" size={24} />
         </div>
         <div className="mt-5 grid gap-3">
           {previewItems.map(([label, value]) => (
-            <div className="rounded-[22px] bg-white/8 p-3" key={label}>
-              <p className="text-xs font-black text-white/52">{label}</p>
-              <p className="arabic-copy mt-1 text-sm font-bold text-white/86">{value}</p>
+            <div className="rounded-[22px] bg-[var(--color-surface)] p-3" key={label}>
+              <p className="text-xs font-black text-[var(--color-ink-soft)]">{label}</p>
+              <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink)]">{value}</p>
             </div>
           ))}
         </div>
         <div className="mt-5 rounded-[22px] bg-[var(--color-trust-50)] p-4 text-[var(--color-trust-700)]">
           <CheckCircle2 aria-hidden size={18} />
           <p className="arabic-copy mt-2 text-sm font-black">
-            كل إجابة هنا تتحول لاحقاً لترتيب، تفسير، أو نقطة متابعة في الملخص
+            نستخدم هذا لترتيب الأخبار، اختيار الزوايا، وتحديد الكلام اللي يستاهل يدخل ملخصك
           </p>
         </div>
       </aside>

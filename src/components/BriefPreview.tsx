@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Bell, CheckCircle2, MessageCircle, RadioTower, Sparkles } from "lucide-react";
+import { Bell, CheckCircle2, Link2, MessageCircle, RadioTower } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import type { ReactElement } from "react";
 
@@ -96,7 +96,7 @@ export function BriefPreview(): ReactElement {
 
           <section className="rounded-[26px] bg-[var(--color-paper)] p-4">
             <div className="mb-3 flex items-center gap-2 text-sm font-black text-[var(--color-ink)]">
-              <Sparkles aria-hidden className="text-[var(--color-zubda-500)]" size={18} />
+              <Link2 aria-hidden className="text-[var(--color-zubda-500)]" size={18} />
               كيف وصلنا إليها
             </div>
             <div className="grid gap-2">

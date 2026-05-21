@@ -18,7 +18,7 @@ type ButtonLinkProps = BaseProps &
 
 const variants: Record<ButtonVariant, string> = {
   primary:
-    "bg-[var(--color-zubda-500)] text-white shadow-[0_14px_32px_hsl(237_97%_61%/0.24)] hover:bg-[var(--color-zubda-600)]",
+    "bg-[var(--color-zubda-500)] text-white shadow-[0_14px_32px_rgb(72_87_252/0.24)] hover:bg-[var(--color-zubda-600)]",
   secondary:
     "border border-[var(--color-line)] bg-[var(--color-surface)] text-[var(--color-zubda-600)] shadow-sm hover:border-[var(--color-zubda-300)] hover:bg-[var(--color-zubda-50)]",
   ghost: "text-[var(--color-ink-muted)] hover:bg-[var(--color-zubda-50)] hover:text-[var(--color-ink)]"

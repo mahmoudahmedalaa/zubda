@@ -10,7 +10,7 @@ import { getFirebaseAuth } from "@/lib/firebase/client";
 
 const links = [
   { href: "/app/today", label: "زبدة اليوم" },
-  { href: "/app/archive", label: "الأرشيف" },
+  { href: "/app/archive", label: "زبداتك السابقة" },
   { href: "/app/settings/profile", label: "ملفك" },
   { href: "/app/settings/billing", label: "الخطة" }
 ];

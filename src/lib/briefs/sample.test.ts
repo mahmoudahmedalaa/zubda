@@ -4,9 +4,11 @@ import type { ProfilePayload } from "@/lib/profile/schema";
 
 const profile: ProfilePayload = {
   languageMode: "mixed",
-  region: "UAE",
+  region: "الإمارات",
+  regionFocus: ["الإمارات", "السعودية"],
   role: "مستشار",
-  mainGoals: ["أكون مطّلع قبل الدوام"],
+  roleOther: "",
+  mainGoals: ["أبقى مطّلع بدون تصفح كثير"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia"],
   sourcePreferences: [],
@@ -15,7 +17,7 @@ const profile: ProfilePayload = {
   decisionContext: "مستشار يحتاج نقاط واضحة للاجتماعات",
   personalContext: "مستشار يحتاج نقاط واضحة للاجتماعات",
   briefDepth: "standard",
-  deliveryTime: "07:30",
+  deliveryTime: "09:00",
   timezone: "Asia/Dubai"
 };
 

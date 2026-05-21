@@ -36,7 +36,7 @@ const plans: Plan[] = [
     href: "/login?plan=free",
     checkoutPlan: null,
     prices: { USD: "$0", AED: "0 درهم", SAR: "0 ريال" },
-    features: ["ملخص يومي واحد", "٣ اهتمامات", "أرشيف قصير", "مصادر واضحة"]
+    features: ["ملخص يومي واحد", "موضوعان فقط", "أرشيف قصير", "مصادر واضحة"]
   },
   {
     key: "pro_monthly",
@@ -47,7 +47,7 @@ const plans: Plan[] = [
     href: "/login?plan=pro_monthly",
     checkoutPlan: "pro_monthly",
     featured: true,
-    prices: { USD: "$7.99 / شهر", AED: "29 درهم / شهر", SAR: "29 ريال / شهر" },
+    prices: { USD: "$7.99 / شهر", AED: "29 درهم / شهر", SAR: "30 ريال / شهر" },
     features: ["اهتمامات أكثر", "قائمة متابعة أكبر", "أرشيف كامل", "تحويل العملات داخل الملخص"]
   },
   {
@@ -55,10 +55,10 @@ const plans: Plan[] = [
     name: "المؤسس",
     title: "ادفع مرة وخلاص",
     description: "عرض مبكر لمن يريد برو مدى الحياة",
-    cta: "انضم للمؤسسين",
+    cta: "خذ العرض مدى الحياة",
     href: "/login?plan=founder_lifetime",
     checkoutPlan: "founder_lifetime",
-    prices: { USD: "$99 مرة واحدة", AED: "399 درهم مرة واحدة", SAR: "399 ريال مرة واحدة" },
+    prices: { USD: "$99 مرة واحدة", AED: "399 درهم مرة واحدة", SAR: "379 ريال مرة واحدة" },
     features: ["برو مدى الحياة", "عرض محدود", "أرشيف كامل", "أولوية في الميزات الجديدة"]
   }
 ];
@@ -109,7 +109,7 @@ export function PricingClient(): ReactElement {
             <Card
               className={`group relative flex min-h-[520px] flex-col overflow-hidden p-7 transition duration-300 hover:-translate-y-1 ${
                 plan.featured
-                  ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] shadow-[0_22px_60px_hsl(237_97%_61%/0.16)]"
+                  ? "border-[var(--color-zubda-500)] bg-white shadow-[0_22px_60px_rgb(72_87_252/0.14)]"
                   : ""
               }`}
               key={plan.key}
@@ -119,7 +119,7 @@ export function PricingClient(): ReactElement {
                   الأنسب للبداية
                 </div>
               ) : null}
-              <p className="text-sm font-black text-[var(--color-zubda-600)]">{plan.name}</p>
+              <p className="text-lg font-black text-[var(--color-zubda-600)]">{plan.name}</p>
               <h2 className="mt-5 text-3xl font-black leading-[1.35]">{plan.title}</h2>
               <p className="arabic-copy mt-3 min-h-16 text-sm font-semibold text-[var(--color-ink-muted)]">
                 {plan.description}
@@ -144,7 +144,7 @@ export function PricingClient(): ReactElement {
                     plan={plan.checkoutPlan}
                   />
                 ) : (
-                  <ButtonLink className="w-full" href={plan.href}>
+                  <ButtonLink className="w-full" href={plan.href} variant="secondary">
                     {plan.cta}
                   </ButtonLink>
                 )}

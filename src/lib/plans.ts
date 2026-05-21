@@ -15,7 +15,7 @@ export const planLimits: Record<
   }
 > = {
   free: {
-    maxInterestModules: 3,
+    maxInterestModules: 2,
     maxWatchlistItems: 5,
     archiveDays: 7,
     archiveSearch: false,

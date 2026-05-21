@@ -10,8 +10,10 @@ import { ensureUserFromToken } from "@/lib/users/ensureUser";
 
 const defaultSampleProfile: ProfilePayload = {
   languageMode: "mixed",
-  region: "UAE",
+  region: "الإمارات",
+  regionFocus: ["الإمارات", "السعودية"],
   role: "مستثمر",
+  roleOther: "",
   mainGoals: ["أتابع السوق والاستثمار"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["أسواق الخليج", "النفط", "الذكاء الاصطناعي"],
@@ -21,7 +23,7 @@ const defaultSampleProfile: ProfilePayload = {
   decisionContext: "أحتاج أفهم أثر الأخبار على الأسواق الخليجية والتقنية",
   personalContext: "مستثمر يتابع الأسواق الخليجية والتقنية ويحب الملخصات العملية قبل بداية اليوم",
   briefDepth: "standard",
-  deliveryTime: "07:30",
+  deliveryTime: "09:00",
   timezone: "Asia/Dubai"
 };
 

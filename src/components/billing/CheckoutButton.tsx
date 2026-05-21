@@ -69,7 +69,7 @@ export function CheckoutButton({ plan, label, currency, featured = false }: Chec
         className="w-full"
         disabled={loading}
         onClick={() => void startCheckout()}
-        variant={featured ? "primary" : "secondary"}
+        variant={featured ? "secondary" : "secondary"}
       >
         {loading ? "نفتح الدفع..." : label}
       </Button>

@@ -11,11 +11,16 @@ import { Card } from "@/components/ui/Card";
 type ProfileView = {
   languageMode?: string;
   region?: string;
+  regionFocus?: string[];
   role?: string;
+  roleOther?: string;
   mainGoals?: string[];
   interestModuleIds?: string[];
   watchlist?: string[];
+  sourcePreferences?: string[];
+  avoidTopics?: string[];
   communicationStyle?: string;
+  decisionContext?: string;
   personalContext?: string;
   briefDepth?: string;
   deliveryTime?: string;
@@ -146,7 +151,8 @@ export function ProfileSettingsClient(): ReactElement {
       <div className="grid gap-4 md:grid-cols-2">
         <Field label="اللغة" value={languageLabels[profile.languageMode ?? ""] ?? profile.languageMode} />
         <Field label="المنطقة" value={profile.region} />
-        <Field label="الدور" value={profile.role} />
+        <Field label="الدور" value={profile.role === "غير ذلك" ? profile.roleOther : profile.role} />
+        <Field label="مناطق التركيز" value={profile.regionFocus?.join("، ")} />
         <Field label="طريقة الكلام" value={profile.communicationStyle} />
         <Field label="عمق الملخص" value={depthLabels[profile.briefDepth ?? ""] ?? profile.briefDepth} />
         <Field label="وقت الوصول" value={profile.deliveryTime} />
@@ -173,10 +179,25 @@ export function ProfileSettingsClient(): ReactElement {
         </p>
       </Card>
 
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card className="p-5 md:p-6">
+          <h2 className="text-2xl font-black">مصادر مفضلة</h2>
+          <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
+            {profile.sourcePreferences?.length ? profile.sourcePreferences.join("، ") : "ما أضفت مصادر مفضلة بعد."}
+          </p>
+        </Card>
+        <Card className="p-5 md:p-6">
+          <h2 className="text-2xl font-black">أشياء ما تهمك</h2>
+          <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
+            {profile.avoidTopics?.length ? profile.avoidTopics.join("، ") : "ما حددت شيء بعد."}
+          </p>
+        </Card>
+      </div>
+
       <Card className="p-5 md:p-6">
         <h2 className="text-2xl font-black">عنّك</h2>
         <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
-          {profile.personalContext || "ما أضفت وصف شخصي بعد."}
+          {[profile.decisionContext, profile.personalContext].filter(Boolean).join(" ") || "ما أضفت وصف شخصي بعد."}
         </p>
       </Card>
     </div>

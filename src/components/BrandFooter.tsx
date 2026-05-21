@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import { BrandLogo } from "@/components/BrandLogo";
 
 const footerLinks = [
-  ["كيف تشتغل؟", "/#how"],
+  ["طريقة زبدة", "/#how"],
   ["الثقة والمصادر", "/#trust"],
   ["مثال الملخص", "/brief/sample"],
   ["الأسعار", "/pricing"],

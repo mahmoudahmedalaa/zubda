@@ -60,7 +60,7 @@ export async function PATCH(request: Request): Promise<Response> {
     return jsonError("FORBIDDEN", "Source preferences are available on Pro.", 402);
   }
 
-  if (!limits.customDeliveryTime && parsed.data.deliveryTime !== "07:30") {
+  if (!limits.customDeliveryTime && !["09:00", "13:00"].includes(parsed.data.deliveryTime)) {
     return jsonError("FORBIDDEN", "Custom delivery time is available on Pro.", 402);
   }
 

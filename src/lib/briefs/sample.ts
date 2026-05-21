@@ -130,6 +130,22 @@ function profileLens(profile: ProfilePayload): string {
   return "حسب شغلك واهتماماتك";
 }
 
+function normalizedRegions(profile: Pick<ProfilePayload, "region"> & Partial<Pick<ProfilePayload, "regionFocus">>): string[] {
+  const map: Record<string, string[]> = {
+    الإمارات: ["UAE", "GCC"],
+    السعودية: ["Saudi", "GCC"],
+    الخليج: ["GCC", "UAE", "Saudi"],
+    العالم: ["Global"],
+    مصر: ["MENA"],
+    قطر: ["GCC"],
+    الكويت: ["GCC"],
+    البحرين: ["GCC"],
+    "عُمان": ["GCC"]
+  };
+  const rawRegions = [profile.region, ...(profile.regionFocus ?? [])];
+  return Array.from(new Set(rawRegions.flatMap((region) => map[region] ?? [region])));
+}
+
 function profileStyle(profile: ProfilePayload): string {
   if (profile.communicationStyle) {
     return profile.communicationStyle;
@@ -151,12 +167,17 @@ function profileContextNote(profile: ProfilePayload): string {
 }
 
 export function selectStoriesForProfile(
-  profile: Pick<ProfilePayload, "interestModuleIds" | "region" | "watchlist" | "avoidTopics" | "sourcePreferences">,
+  profile: Pick<
+    ProfilePayload,
+    "interestModuleIds" | "region" | "watchlist" | "avoidTopics" | "sourcePreferences"
+  > &
+    Partial<Pick<ProfilePayload, "regionFocus">>,
   stories: SourceStorySeed[]
 ): SourceStorySeed[] {
   const watchlist = new Set(profile.watchlist.map((item) => item.toLowerCase()));
   const avoidTopics = new Set(profile.avoidTopics.map((item) => item.toLowerCase()));
   const sourcePreferences = new Set(profile.sourcePreferences.map((item) => item.toLowerCase()));
+  const regionFocus = new Set(normalizedRegions(profile));
 
   return stories
     .filter((story) => {
@@ -167,7 +188,7 @@ export function selectStoriesForProfile(
     })
     .map((story) => {
       const topicScore = story.topicTags.filter((tag) => profile.interestModuleIds.includes(tag)).length * 3;
-      const regionScore = story.regionTags.includes(profile.region) || story.regionTags.includes("GCC") ? 2 : 0;
+      const regionScore = story.regionTags.some((region) => regionFocus.has(region)) ? 2 : 0;
       const watchScore = story.entityTags.some((entity) => watchlist.has(entity.toLowerCase())) ? 4 : 0;
       const sourceScore = sourcePreferences.has(story.publisher.toLowerCase()) ? 2 : 0;
       return { story, score: topicScore + regionScore + watchScore + sourceScore };

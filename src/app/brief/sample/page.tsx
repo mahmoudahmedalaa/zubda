@@ -8,8 +8,10 @@ import type { ProfilePayload } from "@/lib/profile/schema";
 
 const sampleProfile: ProfilePayload = {
   languageMode: "mixed",
-  region: "UAE",
+  region: "الإمارات",
+  regionFocus: ["الإمارات", "السعودية"],
   role: "مستثمر",
+  roleOther: "",
   mainGoals: ["أتابع السوق بدون لفّة طويلة"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia", "Oil", "UAE real estate"],
@@ -19,7 +21,7 @@ const sampleProfile: ProfilePayload = {
   decisionContext: "أحتاج أفهم أثر الأخبار على استثماراتي واجتماعاتي في دبي",
   personalContext: "مستثمر في دبي يتابع التقنية والأسواق الخليجية ويحتاج نقاط سريعة تنفعه قبل الاجتماعات",
   briefDepth: "standard",
-  deliveryTime: "07:30",
+  deliveryTime: "09:00",
   timezone: "Asia/Dubai"
 };
 

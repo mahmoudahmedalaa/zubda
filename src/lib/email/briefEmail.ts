@@ -29,24 +29,27 @@ export function buildBriefEmail({
     .join("\n");
 
   return {
-    subject: "زبدة اليوم جاهزة",
-    text: `زبدتك وصلت.\n\n${textSummary}\n\nافتح الملخص الكامل:\n${briefUrl}`,
+    subject: "زبدتك جاهزة",
+    text: `زبدتك جاهزة.\n\n${textSummary}\n\nافتح الملخص الكامل:\n${briefUrl}`,
     html: `
-      <div dir="rtl" style="margin:0;background:#f7f8ff;padding:28px;font-family:Arial,'Tahoma',sans-serif;color:#101422;">
-        <div style="max-width:620px;margin:0 auto;background:#ffffff;border-radius:28px;padding:28px;border:1px solid #e4e7f5;">
-          <p style="margin:0 0 8px;color:#4857fc;font-weight:800;">زبدة / Zubda</p>
-          <h1 style="margin:0;font-size:30px;line-height:1.45;color:#101422;">زبدة اليوم جاهزة</h1>
-          <p style="margin:14px 0 22px;color:#586174;line-height:1.8;font-size:16px;">
+      <div dir="rtl" style="margin:0;background:#f9f9ff;padding:28px;font-family:Arial,'Tahoma',sans-serif;color:#05050b;">
+        <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:30px;padding:30px;border:1px solid #ebecf0;box-shadow:0 14px 42px rgba(27,32,86,0.08);">
+          <p style="margin:0 0 10px;color:#4857fc;font-weight:800;">زبدة / Zubda</p>
+          <h1 style="margin:0;font-size:32px;line-height:1.45;color:#05050b;">زبدتك جاهزة</h1>
+          <p style="margin:14px 0 22px;color:#566174;line-height:1.8;font-size:17px;">
             ${escapeHtml(brief.structuredBrief.executiveSnapshot.body)}
           </p>
-          <ul style="margin:0 0 24px;padding-right:22px;color:#101422;line-height:1.9;font-size:15px;">
+          <div style="background:#eff8ff;border-radius:22px;padding:18px;margin:0 0 22px;color:#276676;font-size:15px;line-height:1.8;font-weight:700;">
+            هذه نسخة سريعة. التفاصيل، الرسوم، المصادر، والتوضيحات داخل الرابط الخاص.
+          </div>
+          <ul style="margin:0 0 24px;padding-right:22px;color:#05050b;line-height:1.9;font-size:15px;">
             ${summaryItems}
           </ul>
-          <a href="${briefUrl}" style="display:inline-block;background:#4857fc;color:#ffffff;text-decoration:none;padding:14px 22px;border-radius:999px;font-weight:800;">
+          <a href="${briefUrl}" style="display:inline-block;background:#4857fc;color:#ffffff;text-decoration:none;padding:14px 24px;border-radius:999px;font-weight:800;">
             افتح الملخص الكامل
           </a>
-          <p style="margin:24px 0 0;color:#7a8397;font-size:13px;line-height:1.8;">
-            كل ملخص في زبدة يعتمد على مصادر واضحة وسبب ظهور كل معلومة لك.
+          <p style="margin:24px 0 0;color:#8993a4;font-size:13px;line-height:1.8;">
+            كل نقطة مهمة في زبدة معها مصدر وسبب واضح لظهورها لك.
           </p>
         </div>
       </div>

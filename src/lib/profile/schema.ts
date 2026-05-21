@@ -4,7 +4,9 @@ import { communicationStyles, interestModules, regions, roles } from "@/data/onb
 export const profilePayloadSchema = z.object({
   languageMode: z.enum(["arabic", "english", "mixed"]),
   region: z.enum(regions),
+  regionFocus: z.array(z.enum(regions)).min(1).max(9).default([]),
   role: z.enum(roles),
+  roleOther: z.string().trim().max(120).default(""),
   mainGoals: z.array(z.string().min(1)).min(1).max(5),
   interestModuleIds: z.array(z.enum(interestModules)).min(1).max(15),
   watchlist: z.array(z.string().trim().min(1).max(80)).max(50).default([]),

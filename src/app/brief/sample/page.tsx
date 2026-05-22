@@ -34,17 +34,36 @@ const sampleBrief: BriefDocument = {
   structuredBrief: buildStructuredBrief(sampleProfile, sourceStorySeeds)
 };
 
+const sampleSelections = [
+  { label: "الدور", value: sampleProfile.role },
+  { label: "المنطقة", value: sampleProfile.region },
+  { label: "الاهتمامات", value: "المال، التقنية، أعمال الخليج" },
+  { label: "يتابع", value: "Nvidia، النفط، عقار الإمارات" }
+];
+
 export default function SampleBriefPage(): ReactElement {
   return (
     <>
       <BrandHeader />
       <main className="page-shell py-10 text-right">
-        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <div>
+        <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
+          <div className="max-w-4xl">
             <h1 className="text-4xl font-black leading-[1.35]">مثال على زبدة مخصصة</h1>
-            <p className="arabic-copy mt-3 max-w-2xl font-semibold text-[var(--color-ink-muted)]">
-              شوف كيف يتغير الملخص لما تكون مهتم بـ Nvidia، النفط، وأسواق الخليج
+            <p className="arabic-copy mt-3 max-w-3xl font-semibold text-[var(--color-ink-muted)]">
+              هذا المثال مبني على اختيارات مستخدم واحد، عشان تشوف كيف يتغير الملخص حسب شغله واهتماماته وقائمة متابعته
             </p>
+            <div className="mt-5 flex flex-wrap gap-2.5" aria-label="اختيارات مستخدم المثال">
+              {sampleSelections.map((selection) => (
+                <span
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--color-line)] bg-white px-4 py-2 text-sm font-black shadow-sm"
+                  key={selection.label}
+                >
+                  <span className="text-[var(--color-ink-soft)]">{selection.label}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-zubda-500)]" aria-hidden="true" />
+                  <span className="text-[var(--color-ink)]">{selection.value}</span>
+                </span>
+              ))}
+            </div>
           </div>
           <ButtonLink href="/login">ابدأ زبدتك</ButtonLink>
         </div>

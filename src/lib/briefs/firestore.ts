@@ -1,6 +1,7 @@
 import { FieldValue, Timestamp, type DocumentData } from "firebase-admin/firestore";
 import { sourceStorySeeds, buildStructuredBrief, type SourceStorySeed } from "@/lib/briefs/sample";
 import type { BriefDocument } from "@/lib/briefs/types";
+import { collectAndStoreSourceStories } from "@/lib/data/sourceCollector";
 import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
@@ -62,26 +63,7 @@ function stripDemoMarketMetrics(brief: BriefDocument): BriefDocument {
 }
 
 export async function seedSourceStories(): Promise<number> {
-  const db = getAdminDb();
-  const batch = db.batch();
-
-  for (const story of sourceStorySeeds) {
-    const ref = db.collection(collections.sourceStories).doc(story.id);
-    batch.set(
-      ref,
-      {
-        ...story,
-        collectedAt: FieldValue.serverTimestamp(),
-        publishedAt: Timestamp.fromDate(new Date()),
-        createdAt: FieldValue.serverTimestamp(),
-        updatedAt: FieldValue.serverTimestamp()
-      },
-      { merge: true }
-    );
-  }
-
-  await batch.commit();
-  return sourceStorySeeds.length;
+  return collectAndStoreSourceStories();
 }
 
 export async function getCachedStories(): Promise<SourceStorySeed[]> {

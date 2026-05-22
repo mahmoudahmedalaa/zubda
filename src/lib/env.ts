@@ -36,7 +36,10 @@ const serverEnvSchema = z.object({
   AI_SUMMARY_MODEL: z.string().optional(),
   AI_CLASSIFICATION_MODEL: z.string().optional(),
   AI_FINAL_BRIEF_MODEL: z.string().optional(),
-  AI_QUALITY_CHECK_MODEL: z.string().optional()
+  AI_QUALITY_CHECK_MODEL: z.string().optional(),
+  FMP_API_KEY: z.string().optional(),
+  BRAVE_SEARCH_API_KEY: z.string().optional(),
+  TAVILY_API_KEY: z.string().optional()
 });
 
 export const clientEnv = clientEnvSchema.parse({
@@ -75,5 +78,8 @@ export const serverEnv = serverEnvSchema.parse({
   AI_SUMMARY_MODEL: process.env.AI_SUMMARY_MODEL,
   AI_CLASSIFICATION_MODEL: process.env.AI_CLASSIFICATION_MODEL,
   AI_FINAL_BRIEF_MODEL: process.env.AI_FINAL_BRIEF_MODEL,
-  AI_QUALITY_CHECK_MODEL: process.env.AI_QUALITY_CHECK_MODEL
+  AI_QUALITY_CHECK_MODEL: process.env.AI_QUALITY_CHECK_MODEL,
+  FMP_API_KEY: process.env.FMP_API_KEY,
+  BRAVE_SEARCH_API_KEY: process.env.BRAVE_SEARCH_API_KEY,
+  TAVILY_API_KEY: process.env.TAVILY_API_KEY
 });

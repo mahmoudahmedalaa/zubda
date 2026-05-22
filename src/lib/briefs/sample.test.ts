@@ -32,7 +32,7 @@ describe("brief sample pipeline", () => {
   it("builds a sourced Arabic structured brief", () => {
     const brief = buildStructuredBrief(profile, sourceStorySeeds);
 
-    expect(brief.headline).toContain("زبدة");
+    expect(brief.headline).toBe("الخلاصة");
     expect(brief.watchboard[0].sourceStoryId).toBeTruthy();
     expect(brief.sources[0].id).toBeTruthy();
     expect(brief.glossary[0].explanation).toContain("السندات");

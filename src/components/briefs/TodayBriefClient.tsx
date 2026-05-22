@@ -88,11 +88,7 @@ export function TodayBriefClient(): ReactElement {
 
   return (
     <>
-      <header className="mb-8 flex flex-col justify-between gap-4 text-right md:flex-row md:items-end">
-        <div>
-          <p className="text-sm font-bold text-[var(--color-ink-muted)]">ملخصك اليومي</p>
-          <h1 className="mt-2 text-4xl font-black leading-[1.45]">زبدة اليوم جاهزة</h1>
-        </div>
+      <header className="mb-5 flex justify-end text-right">
         <Link
           className="font-bold text-[var(--color-zubda-600)] underline-offset-4 hover:underline"
           href="/app/archive"

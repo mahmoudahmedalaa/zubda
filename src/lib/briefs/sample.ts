@@ -216,7 +216,6 @@ export function buildStructuredBrief(
   const decisionText = profile.decisionContext || profile.personalContext;
   const isDemo = options.mode === "demo";
   const metrics = [
-    { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" as const },
     { label: "أسلوبك المفضل", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" as const },
     {
       label: "إشارات من اختياراتك",
@@ -227,84 +226,93 @@ export function buildStructuredBrief(
   ];
 
   if (isDemo) {
+    metrics.unshift({ label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" });
     metrics.splice(1, 0, { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" });
   }
 
   return {
-    headline: "زبدة جاهزة لك",
+    headline: "الخلاصة",
     executiveSnapshot: {
       title: "الملخص",
       body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على اهتماماتك المختارة: ${focusText}.`
     },
     metrics,
-    chart: {
-      title: "سبب ترتيب الملخص لك",
-      subtitle: "هذه العوامل تشرح ليش بدأنا بهذه المواضيع تحديداً",
-      points: [
-        { label: "اهتماماتك المختارة", value: 88 },
-        { label: "قائمة المتابعة", value: 76 },
-        { label: "منطقتك", value: 68 },
-        { label: "قوة المصدر", value: 61 }
-      ]
-    },
-    sentiment: {
-      label: "إيجابي بحذر",
-      score: 64,
-      conviction: 7,
-      explanation: "الذكاء الاصطناعي يدعم المزاج العام، لكن الفائدة والنفط يخلون السوق حساس."
-    },
-    riskFactors: [
-      {
-        label: "الفائدة",
-        score: 8,
-        note: "أكبر ضغط على أسهم النمو والتقنية"
-      },
-      {
-        label: "نتائج التقنية",
-        score: 7,
-        note: "توقعات السوق عالية، خصوصاً حول Nvidia"
-      },
-      {
-        label: "النفط",
-        score: 6,
-        note: "مهم للخليج ولتوقعات التضخم"
-      },
-      {
-        label: "العقار",
-        score: 5,
-        note: "يتأثر إذا زادت تكلفة التمويل"
-      }
-    ],
-    portfolioExposure: [
-      {
-        symbol: "NVDA",
-        label: "Nvidia",
-        weight: 38,
-        bias: "فرصة عالية وتقلب عال",
-        note: "أقرب مؤشر على إنفاق الذكاء الاصطناعي"
-      },
-      {
-        symbol: "Oil",
-        label: "النفط",
-        weight: 28,
-        bias: "مهم للخليج",
-        note: "يرفع أو يهدئ مزاج أسواق المنطقة"
-      },
-      {
-        symbol: "QQQ",
-        label: "ناسداك",
-        weight: 24,
-        bias: "حساس للفائدة",
-        note: "يستفيد من التقنية ويتأثر بالعوائد"
-      },
-      {
-        symbol: "UAE RE",
-        label: "عقار الإمارات",
-        weight: 10,
-        bias: "متابعة هادئة",
-        note: "التمويل والسيولة هما المفتاح"
-      }
-    ],
+    chart: isDemo
+      ? {
+          title: "سبب ترتيب الملخص لك",
+          subtitle: "هذه العوامل تشرح ليش بدأنا بهذه المواضيع تحديداً",
+          points: [
+            { label: "اهتماماتك المختارة", value: 88 },
+            { label: "قائمة المتابعة", value: 76 },
+            { label: "منطقتك", value: 68 },
+            { label: "قوة المصدر", value: 61 }
+          ]
+        }
+      : undefined,
+    sentiment: isDemo
+      ? {
+          label: "إيجابي بحذر",
+          score: 64,
+          conviction: 7,
+          explanation: "الذكاء الاصطناعي يدعم المزاج العام، لكن الفائدة والنفط يخلون السوق حساس."
+        }
+      : undefined,
+    riskFactors: isDemo
+      ? [
+          {
+            label: "الفائدة",
+            score: 8,
+            note: "أكبر ضغط على أسهم النمو والتقنية"
+          },
+          {
+            label: "نتائج التقنية",
+            score: 7,
+            note: "توقعات السوق عالية، خصوصاً حول Nvidia"
+          },
+          {
+            label: "النفط",
+            score: 6,
+            note: "مهم للخليج ولتوقعات التضخم"
+          },
+          {
+            label: "العقار",
+            score: 5,
+            note: "يتأثر إذا زادت تكلفة التمويل"
+          }
+        ]
+      : undefined,
+    portfolioExposure: isDemo
+      ? [
+          {
+            symbol: "NVDA",
+            label: "Nvidia",
+            weight: 38,
+            bias: "فرصة عالية وتقلب عال",
+            note: "أقرب مؤشر على إنفاق الذكاء الاصطناعي"
+          },
+          {
+            symbol: "Oil",
+            label: "النفط",
+            weight: 28,
+            bias: "مهم للخليج",
+            note: "يرفع أو يهدئ مزاج أسواق المنطقة"
+          },
+          {
+            symbol: "QQQ",
+            label: "ناسداك",
+            weight: 24,
+            bias: "حساس للفائدة",
+            note: "يستفيد من التقنية ويتأثر بالعوائد"
+          },
+          {
+            symbol: "UAE RE",
+            label: "عقار الإمارات",
+            weight: 10,
+            bias: "متابعة هادئة",
+            note: "التمويل والسيولة هما المفتاح"
+          }
+        ]
+      : undefined,
     watchboard: selectedStories.map((story) => ({
       sourceStoryId: story.id,
       title: story.title,

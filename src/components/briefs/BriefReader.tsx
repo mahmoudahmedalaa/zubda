@@ -1,10 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BarChart3, CheckCircle2, ExternalLink, Info, ThumbsDown, ThumbsUp } from "lucide-react";
+import { CheckCircle2, ExternalLink, Info, ThumbsDown, ThumbsUp } from "lucide-react";
 import { type ReactElement, useState } from "react";
 import type {
-  BriefChartPoint,
   BriefDocument,
   BriefMetric,
   BriefPortfolioExposure,
@@ -38,6 +37,14 @@ const metricHelp: Record<string, string> = {
   "أسلوبك المفضل": "طريقة الشرح اللي اخترتها في ملفك الشخصي",
   "إشارات من اختياراتك": "عدد المواضيع اللي ظهرت لأنها قريبة من اهتماماتك أو قائمة المتابعة"
 };
+
+function snapshotBullets(body: string): string[] {
+  return body
+    .split(/(?<=[.!؟۔])\s+|(?<=،)\s+/u)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 3);
+}
 
 function InfoTooltip({ text }: { text: string }): ReactElement {
   return (
@@ -139,7 +146,7 @@ function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | n
   }
 
   return (
-    <div className="grid gap-3 md:grid-cols-4">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {metrics.map((metric, index) => (
         <motion.div
           className={`rounded-[24px] p-4 ${metricToneClasses[metric.tone]}`}
@@ -160,60 +167,20 @@ function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | n
   );
 }
 
-function SignalChart({
-  chart
-}: {
-  chart?: { title: string; subtitle: string; points: BriefChartPoint[] };
-}): ReactElement | null {
-  if (!chart) {
-    return null;
+function sentimentTone(score: number): { stroke: string; labelTone: string } {
+  if (score >= 72) {
+    return { stroke: "var(--color-trust-500)", labelTone: "bg-[var(--color-trust-50)] text-[var(--color-trust-700)]" };
   }
 
-  return (
-    <Card className="p-6 md:p-7">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 text-sm font-black text-[var(--color-zubda-600)]">
-            <BarChart3 aria-hidden size={18} />
-            ليش ظهرت لك؟
-            <InfoTooltip text="هذه ليست درجة جودة للخبر. هي توضح لماذا رتبت زبدة هذه المواضيع لك بناءً على ملفك." />
-          </div>
-          <h2 className="mt-2 text-2xl font-black leading-[1.35]">{chart.title}</h2>
-          <p className="arabic-copy mt-1 text-sm font-semibold text-[var(--color-ink-muted)]">{chart.subtitle}</p>
-        </div>
-      </div>
-      <div className="mt-6 rounded-[24px] bg-[var(--color-zubda-50)] p-4 text-sm font-bold text-[var(--color-zubda-700)]">
-        المقصود هنا: نوضح سبب الترتيب، مو نقيم الخبر نفسه
-      </div>
-      <div className="mt-7 grid gap-4">
-        {chart.points.map((point, index) => (
-          <div className="grid gap-2" key={point.label}>
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-black">{point.label}</span>
-              <span className="text-xs font-black text-[var(--color-ink-muted)]">{point.value}/100</span>
-            </div>
-            <div className="h-4 overflow-hidden rounded-full bg-[var(--color-paper)]">
-              <motion.span
-                className="block h-full rounded-full bg-[var(--color-zubda-500)]"
-                initial={{ width: 0 }}
-                animate={{ width: `${point.value}%` }}
-                transition={{ delay: 0.16 + index * 0.08, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              />
-            </div>
-            <p className="text-xs font-semibold text-[var(--color-ink-muted)]">
-              {point.label === "اهتماماتك المختارة"
-                ? "المال، التقنية، الخليج، والطاقة قريبة من اختياراتك"
-                : point.label === "قائمة المتابعة"
-                  ? "فيها Oil وNvidia وUAE real estate"
-                  : point.label === "منطقتك"
-                    ? "الإمارات والخليج يغيرون ترتيب الخبر"
-                    : "المصدر واضح وحديث بما يكفي للاعتماد عليه"}
-            </p>
-          </div>
-        ))}
-      </div>
-    </Card>
-  );
+  if (score >= 55) {
+    return { stroke: "var(--color-trust-500)", labelTone: "bg-[var(--color-trust-50)] text-[var(--color-trust-700)]" };
+  }
+
+  if (score >= 40) {
+    return { stroke: "var(--color-saffron-500)", labelTone: "bg-[var(--color-saffron-50)] text-[var(--color-ink)]" };
+  }
+
+  return { stroke: "var(--color-risk)", labelTone: "bg-red-50 text-[var(--color-risk)]" };
 }
 
 function SentimentGauge({
@@ -224,6 +191,7 @@ function SentimentGauge({
   if (!sentiment) {
     return null;
   }
+  const tone = sentimentTone(sentiment.score);
 
   return (
     <Card className="overflow-hidden p-5 md:p-6">
@@ -242,22 +210,15 @@ function SentimentGauge({
               fill="none"
               initial={{ pathLength: 0 }}
               animate={{ pathLength: sentiment.score / 100 }}
-              stroke="url(#sentimentGradient)"
+              stroke={tone.stroke}
               strokeLinecap="round"
               strokeWidth="24"
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             />
-            <defs>
-              <linearGradient id="sentimentGradient" x1="50" x2="270" y1="150" y2="150">
-                <stop stopColor="var(--color-risk)" />
-                <stop offset="0.5" stopColor="var(--color-saffron-500)" />
-                <stop offset="1" stopColor="var(--color-trust-500)" />
-              </linearGradient>
-            </defs>
           </svg>
           <div className="absolute inset-x-0 bottom-2 text-center">
             <p className="tabular text-4xl font-black">{sentiment.score}/100</p>
-            <p className="mt-1 inline-flex items-center gap-2 rounded-full bg-[var(--color-paper)] px-3 py-1 text-sm font-bold text-[var(--color-ink-muted)]">
+            <p className={`mt-1 inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-bold ${tone.labelTone}`}>
               مزاج السوق
               <InfoTooltip text="مؤشر مبسط يقرأ مزاج الأخبار المختارة. الرقم يساعدك تفهم الجو العام بسرعة، وليس توصية استثمارية." />
             </p>
@@ -402,18 +363,28 @@ function WatchboardCard({
 
 export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps): ReactElement {
   const { structuredBrief } = brief;
+  const bullets = snapshotBullets(structuredBrief.executiveSnapshot.body);
+  const hasExposure = Boolean(structuredBrief.portfolioExposure?.length);
+  const hasTalkingPoints = structuredBrief.talkingPoints.length > 0;
 
   return (
     <div className="grid gap-7">
       <Card className="overflow-hidden border-[var(--color-zubda-200)]">
-        <div className="bg-[var(--color-zubda-500)] p-6 text-white md:p-8">
-          <p className="text-sm font-black text-white/80">زبدتك</p>
-          <h1 className="mt-2 text-4xl font-black leading-[1.45] md:text-5xl">
+        <div className="bg-[var(--color-zubda-500)] p-7 text-white md:p-10">
+          <p className="text-base font-black text-white/82">الخلاصة السريعة</p>
+          <h1 className="mt-3 text-4xl font-black leading-[1.3] md:text-5xl">
             {structuredBrief.headline}
           </h1>
-          <p className="arabic-copy mt-4 max-w-3xl text-lg font-medium text-white/88">
-            {structuredBrief.executiveSnapshot.body}
-          </p>
+          <ul className="mt-6 grid w-full gap-3 text-right">
+            {bullets.map((bullet) => (
+              <li
+                className="arabic-copy rounded-[22px] bg-white/10 px-4 py-3 text-lg font-bold leading-9 text-white/92 md:text-xl md:leading-10"
+                key={bullet}
+              >
+                {bullet}
+              </li>
+            ))}
+          </ul>
         </div>
         <div className="grid gap-4 p-5 md:grid-cols-3 md:p-6">
           <div className="rounded-[24px] bg-[var(--color-zubda-50)] p-4">
@@ -433,11 +404,8 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
 
       <MetricStrip metrics={structuredBrief.metrics} />
       <SentimentGauge sentiment={structuredBrief.sentiment} />
-      <div className="grid gap-6 lg:grid-cols-[0.92fr_1.08fr]">
-        <RiskPressureBars risks={structuredBrief.riskFactors} />
-        <SignalChart chart={structuredBrief.chart} />
-      </div>
-      <PortfolioExposure exposure={structuredBrief.portfolioExposure} />
+      {structuredBrief.riskFactors?.length ? <RiskPressureBars risks={structuredBrief.riskFactors} /> : null}
+      {hasExposure ? <PortfolioExposure exposure={structuredBrief.portfolioExposure} /> : null}
 
       <section className="grid gap-4">
         {structuredBrief.watchboard.map((item) => (
@@ -468,23 +436,46 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
             ))}
           </div>
         ) : null}
+        {structuredBrief.chart ? (
+          <details className="mt-5 rounded-[22px] bg-[var(--color-zubda-50)] p-4">
+            <summary className="cursor-pointer text-sm font-black text-[var(--color-zubda-700)]">
+              ليش ظهرت لك هالمواضيع؟
+            </summary>
+            <div className="mt-3 grid gap-2">
+              {structuredBrief.chart.points.map((point) => (
+                <p className="text-sm font-bold text-[var(--color-ink-muted)]" key={point.label}>
+                  {point.label}: {point.value}/100
+                </p>
+              ))}
+            </div>
+          </details>
+        ) : null}
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.85fr]">
-        <Card className="p-5 md:p-6">
-          <h2 className="text-3xl font-black">نقاط تستخدمها</h2>
-          <div className="mt-5 grid gap-3">
-            {structuredBrief.talkingPoints.map((point) => (
-              <div
-                className="flex gap-3 rounded-[22px] border border-[var(--color-line)] bg-white p-4"
-                key={point}
-              >
-                <CheckCircle2 aria-hidden className="mt-1 shrink-0 text-[var(--color-trust-500)]" size={18} />
-                <p className="arabic-copy font-medium text-[var(--color-ink-muted)]">{point}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
+        {hasTalkingPoints ? (
+          <Card className="p-5 md:p-6">
+            <p className="text-sm font-black text-[var(--color-trust-700)]">لو بتتكلم عنه</p>
+            <h2 className="mt-2 text-3xl font-black">قولها كذا</h2>
+            <p className="arabic-copy mt-2 text-sm font-semibold text-[var(--color-ink-muted)]">
+              نقاط مختصرة للاجتماعات أو السوالف المهنية، من غير مبالغة أو ادعاء يقين
+            </p>
+            <div className="mt-5 grid gap-3">
+              {structuredBrief.talkingPoints.map((point) => (
+                <div
+                  className="flex gap-3 rounded-[22px] border border-[var(--color-line)] bg-white p-4"
+                  key={point}
+                >
+                  <CheckCircle2 aria-hidden className="mt-1 shrink-0 text-[var(--color-trust-500)]" size={18} />
+                  <div>
+                    <p className="arabic-copy font-bold text-[var(--color-ink-muted)]">{point}</p>
+                    <p className="mt-2 text-xs font-black text-[var(--color-risk)]">لا تحولها لتوصية أو توقع مؤكد</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        ) : null}
 
         <Card className="p-5 md:p-6">
           <h2 className="text-3xl font-black">بالعربي البسيط</h2>

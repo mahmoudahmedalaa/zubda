@@ -6,8 +6,13 @@ import { collections } from "@/lib/firebase/collections";
 import { getAdminDb } from "@/lib/firebase/admin";
 import type { ProfilePayload } from "@/lib/profile/schema";
 
-function dateKey(date = new Date()): string {
-  return date.toISOString().slice(0, 10);
+export function dateKey(date = new Date(), timeZone = "Asia/Dubai"): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).format(date);
 }
 
 function serializeDate(value: unknown): string | undefined {
@@ -65,70 +70,92 @@ export async function getCachedStories(): Promise<SourceStorySeed[]> {
   return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as SourceStorySeed);
 }
 
+export async function generateBriefForProfile({
+  userId,
+  profileId,
+  profile,
+  date = new Date()
+}: {
+  userId: string;
+  profileId: string;
+  profile: ProfilePayload;
+  date?: Date;
+}): Promise<BriefDocument> {
+  const db = getAdminDb();
+  const cachedStories = await getCachedStories();
+  const structuredBrief = buildStructuredBrief(profile, cachedStories);
+  const key = dateKey(date, profile.timezone);
+  const briefRef = db.collection(collections.briefs).doc(`${userId}_${key}`);
+
+  const briefPayload = {
+    userId,
+    profileId,
+    dateKey: key,
+    status: "ready",
+    languageMode: profile.languageMode,
+    depth: profile.briefDepth,
+    sourceStoryIds: structuredBrief.sources.map((source) => source.id),
+    structuredBrief,
+    emailSummary: [
+      structuredBrief.executiveSnapshot.body,
+      structuredBrief.watchboard[0]?.title ?? "لا توجد إشارة قوية الآن",
+      structuredBrief.personalImpact.body
+    ],
+    generatedAt: FieldValue.serverTimestamp(),
+    createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp()
+  };
+
+  const batch = db.batch();
+  batch.set(briefRef, briefPayload, { merge: true });
+
+  for (const source of structuredBrief.sources) {
+    const sourceLogRef = db.collection(collections.sourceLogs).doc(`${briefRef.id}_${source.id}`);
+    batch.set(
+      sourceLogRef,
+      {
+        userId,
+        profileId,
+        briefId: briefRef.id,
+        sourceStoryId: source.id,
+        sourceTitle: source.title,
+        publisher: source.publisher,
+        sourceUrl: source.url,
+        reliabilityLabel: source.reliabilityLabel,
+        whyIncluded: source.whyIncluded,
+        createdAt: FieldValue.serverTimestamp()
+      },
+      { merge: true }
+    );
+  }
+
+  await batch.commit();
+  await trackServerEvent("brief_generated", {
+    userId,
+    properties: {
+      briefId: briefRef.id,
+      profileId,
+      dateKey: key,
+      sourceCount: structuredBrief.sources.length
+    }
+  });
+
+  const snapshot = await briefRef.get();
+  return serializeBrief(snapshot.id, snapshot.data() ?? briefPayload);
+}
+
 export async function generateBriefsForProfiles(): Promise<number> {
   const db = getAdminDb();
   const profiles = await db.collection(collections.profiles).where("isPrimary", "==", true).get();
-  const cachedStories = await getCachedStories();
   let count = 0;
 
   for (const doc of profiles.docs) {
     const profile = doc.data() as ProfilePayload & { userId: string };
-    const structuredBrief = buildStructuredBrief(profile, cachedStories);
-    const briefRef = db.collection(collections.briefs).doc(`${profile.userId}_${dateKey()}`);
-
-    const briefPayload = {
+    await generateBriefForProfile({
       userId: profile.userId,
       profileId: doc.id,
-      dateKey: dateKey(),
-      status: "ready",
-      languageMode: profile.languageMode,
-      depth: profile.briefDepth,
-      sourceStoryIds: structuredBrief.sources.map((source) => source.id),
-      structuredBrief,
-      emailSummary: [
-        structuredBrief.executiveSnapshot.body,
-        structuredBrief.watchboard[0]?.title ?? "لا توجد إشارة قوية الآن",
-        structuredBrief.personalImpact.body
-      ],
-      generatedAt: FieldValue.serverTimestamp(),
-      createdAt: FieldValue.serverTimestamp(),
-      updatedAt: FieldValue.serverTimestamp()
-    };
-
-    const batch = db.batch();
-    batch.set(briefRef, briefPayload, { merge: true });
-
-    for (const source of structuredBrief.sources) {
-      const sourceLogRef = db.collection(collections.sourceLogs).doc(`${briefRef.id}_${source.id}`);
-      batch.set(
-        sourceLogRef,
-        {
-          userId: profile.userId,
-          profileId: doc.id,
-          briefId: briefRef.id,
-          sourceStoryId: source.id,
-          sourceTitle: source.title,
-          publisher: source.publisher,
-          sourceUrl: source.url,
-          reliabilityLabel: source.reliabilityLabel,
-          whyIncluded: source.whyIncluded,
-          createdAt: FieldValue.serverTimestamp()
-        },
-        { merge: true }
-      );
-    }
-
-    await batch.commit();
-    await trackServerEvent("brief_generated", {
-      userId: profile.userId,
-      properties: {
-        briefId: briefRef.id,
-        profileId: doc.id,
-        dateKey: dateKey(),
-        sourceCount: structuredBrief.sources.length
-      }
+      profile
     });
-
     count += 1;
   }
 
@@ -139,11 +166,15 @@ export async function getLatestBriefForUser(userId: string): Promise<BriefDocume
   const snapshot = await getAdminDb()
     .collection(collections.briefs)
     .where("userId", "==", userId)
-    .orderBy("dateKey", "desc")
-    .limit(1)
     .get();
 
-  return snapshot.empty ? null : serializeBrief(snapshot.docs[0].id, snapshot.docs[0].data());
+  if (snapshot.empty) {
+    return null;
+  }
+
+  return snapshot.docs
+    .map((doc) => serializeBrief(doc.id, doc.data()))
+    .sort((a, b) => b.dateKey.localeCompare(a.dateKey))[0];
 }
 
 export async function listBriefsForUser(
@@ -153,21 +184,20 @@ export async function listBriefsForUser(
   const snapshot = await getAdminDb()
     .collection(collections.briefs)
     .where("userId", "==", userId)
-    .orderBy("dateKey", "desc")
-    .limit(options.limit ?? 20)
     .get();
 
-  const briefs = snapshot.docs.map((doc) => serializeBrief(doc.id, doc.data()));
+  let briefs = snapshot.docs
+    .map((doc) => serializeBrief(doc.id, doc.data()))
+    .sort((a, b) => b.dateKey.localeCompare(a.dateKey));
 
-  if (!options.archiveDays) {
-    return briefs;
+  if (options.archiveDays) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - options.archiveDays);
+    const cutoffKey = dateKey(cutoff);
+    briefs = briefs.filter((brief) => brief.dateKey >= cutoffKey);
   }
 
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - options.archiveDays);
-  const cutoffKey = cutoff.toISOString().slice(0, 10);
-
-  return briefs.filter((brief) => brief.dateKey >= cutoffKey);
+  return briefs.slice(0, options.limit ?? 20);
 }
 
 export async function getBriefForUser(userId: string, briefId: string): Promise<BriefDocument | null> {

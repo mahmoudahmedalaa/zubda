@@ -1,5 +1,5 @@
 import { buildStructuredBrief, sourceStorySeeds } from "@/lib/briefs/sample";
-import { getLatestBriefForUser } from "@/lib/briefs/firestore";
+import { dateKey, generateBriefForProfile, getLatestBriefForUser } from "@/lib/briefs/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
 import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
@@ -53,6 +53,7 @@ export async function GET(request: Request): Promise<Response> {
 
   const user = await ensureUserFromToken(auth.token);
   const profile = await getPrimaryProfile(user.primaryProfileId);
+  const todayKey = dateKey(new Date(), profile.timezone);
   let brief = null;
 
   try {
@@ -61,7 +62,7 @@ export async function GET(request: Request): Promise<Response> {
     brief = null;
   }
 
-  if (brief) {
+  if (brief?.dateKey === todayKey) {
     await trackServerEvent("brief_opened", {
       userId: auth.token.uid,
       properties: { briefId: brief.id, dateKey: brief.dateKey, source: "today" }
@@ -69,9 +70,24 @@ export async function GET(request: Request): Promise<Response> {
     return jsonOk({ brief });
   }
 
+  if (user.primaryProfileId) {
+    const generatedBrief = await generateBriefForProfile({
+      userId: auth.token.uid,
+      profileId: user.primaryProfileId,
+      profile
+    });
+
+    await trackServerEvent("brief_opened", {
+      userId: auth.token.uid,
+      properties: { briefId: generatedBrief.id, dateKey: generatedBrief.dateKey, source: "generated_on_demand" }
+    });
+
+    return jsonOk({ brief: generatedBrief });
+  }
+
   const sampleBrief = {
     id: "sample",
-    dateKey: new Date().toISOString().slice(0, 10),
+    dateKey: todayKey,
     status: "sample",
     structuredBrief: buildStructuredBrief(profile, sourceStorySeeds)
   };

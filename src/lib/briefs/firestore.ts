@@ -28,12 +28,36 @@ function serializeDate(value: unknown): string | undefined {
 }
 
 function serializeBrief(id: string, data: DocumentData): BriefDocument {
-  return {
+  const brief = {
     ...(data as Omit<BriefDocument, "id">),
     id,
     generatedAt: serializeDate(data.generatedAt),
     createdAt: serializeDate(data.createdAt),
     updatedAt: serializeDate(data.updatedAt)
+  };
+
+  return stripDemoMarketMetrics(brief);
+}
+
+export function hasDemoMarketMetrics(brief: BriefDocument): boolean {
+  return Boolean(
+    brief.structuredBrief.metrics?.some((metric) => metric.label === "برنت" && metric.value === "$84.2")
+  );
+}
+
+function stripDemoMarketMetrics(brief: BriefDocument): BriefDocument {
+  if (!hasDemoMarketMetrics(brief)) {
+    return brief;
+  }
+
+  return {
+    ...brief,
+    structuredBrief: {
+      ...brief.structuredBrief,
+      metrics: brief.structuredBrief.metrics?.filter(
+        (metric) => !(metric.label === "برنت" && metric.value === "$84.2")
+      )
+    }
   };
 }
 

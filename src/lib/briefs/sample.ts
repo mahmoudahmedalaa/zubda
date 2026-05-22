@@ -16,6 +16,10 @@ export type SourceStorySeed = {
   language: "ar" | "en";
 };
 
+type BuildStructuredBriefOptions = {
+  mode?: "demo" | "production";
+};
+
 export const sourceStorySeeds: SourceStorySeed[] = [
   {
     id: "fed-yields-tech-watch",
@@ -198,7 +202,11 @@ export function selectStoriesForProfile(
     .map(({ story }) => story);
 }
 
-export function buildStructuredBrief(profile: ProfilePayload, stories: SourceStorySeed[]): StructuredBrief {
+export function buildStructuredBrief(
+  profile: ProfilePayload,
+  stories: SourceStorySeed[],
+  options: BuildStructuredBriefOptions = {}
+): StructuredBrief {
   const selectedStories = selectStoriesForProfile(profile, stories);
   const lead = selectedStories[0] ?? sourceStorySeeds[0];
   const focusTags = Array.from(new Set(selectedStories.flatMap((story) => story.topicTags))).slice(0, 3);
@@ -206,6 +214,21 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
   const watchlistText = formatArabicList(watchlistFocus);
   const focusText = formatArabicList(focusTags);
   const decisionText = profile.decisionContext || profile.personalContext;
+  const isDemo = options.mode === "demo";
+  const metrics = [
+    { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" as const },
+    { label: "أسلوبك المفضل", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" as const },
+    {
+      label: "إشارات من اختياراتك",
+      value: String(selectedStories.length),
+      change: `من ${focusTags.length} اهتمامات`,
+      tone: "watch" as const
+    }
+  ];
+
+  if (isDemo) {
+    metrics.splice(1, 0, { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" });
+  }
 
   return {
     headline: "زبدة جاهزة لك",
@@ -213,12 +236,7 @@ export function buildStructuredBrief(profile: ProfilePayload, stories: SourceSto
       title: "الملخص",
       body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على اهتماماتك المختارة: ${focusText}.`
     },
-    metrics: [
-      { label: "مزاج السوق", value: "حذر", change: "أسهم النمو تحت الضغط", tone: "watch" },
-      { label: "برنت", value: "$84.2", change: "+1.1%", tone: "good" },
-      { label: "أسلوبك المفضل", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" },
-      { label: "إشارات من اختياراتك", value: String(selectedStories.length), change: `من ${focusTags.length} اهتمامات`, tone: "watch" }
-    ],
+    metrics,
     chart: {
       title: "سبب ترتيب الملخص لك",
       subtitle: "هذه العوامل تشرح ليش بدأنا بهذه المواضيع تحديداً",

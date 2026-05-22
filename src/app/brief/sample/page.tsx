@@ -31,7 +31,7 @@ const sampleBrief: BriefDocument = {
   status: "ready",
   languageMode: "mixed",
   depth: "standard",
-  structuredBrief: buildStructuredBrief(sampleProfile, sourceStorySeeds)
+  structuredBrief: buildStructuredBrief(sampleProfile, sourceStorySeeds, { mode: "demo" })
 };
 
 const sampleSelections = [

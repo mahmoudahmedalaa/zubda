@@ -1,5 +1,5 @@
 import { buildStructuredBrief, sourceStorySeeds } from "@/lib/briefs/sample";
-import { dateKey, generateBriefForProfile, getLatestBriefForUser } from "@/lib/briefs/firestore";
+import { dateKey, generateBriefForProfile, getLatestBriefForUser, hasDemoMarketMetrics } from "@/lib/briefs/firestore";
 import { verifyFirebaseRequest } from "@/lib/auth/server";
 import { trackServerEvent } from "@/lib/events/server";
 import { collections } from "@/lib/firebase/collections";
@@ -62,7 +62,7 @@ export async function GET(request: Request): Promise<Response> {
     brief = null;
   }
 
-  if (brief?.dateKey === todayKey) {
+  if (brief?.dateKey === todayKey && !hasDemoMarketMetrics(brief)) {
     await trackServerEvent("brief_opened", {
       userId: auth.token.uid,
       properties: { briefId: brief.id, dateKey: brief.dateKey, source: "today" }

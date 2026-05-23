@@ -437,9 +437,9 @@ export function OnboardingWizard(): ReactElement {
 
         {step === "goal" ? (
           <StepShell
-            eyebrow="ليش تستخدم زبدة؟"
-            title="وش تبغى تختصر عليك؟"
-            body="اختَر هدف أو أكثر. هذا يحدد نوع الزوايا اللي تظهر لك: قرار، اجتماع، سوق، أو متابعة عامة"
+            eyebrow="هدفك من زبدة"
+            title="وش تبغى زبدة تساعدك فيه؟"
+            body="اختَر سبب أو أكثر. هنا نحدد طريقة قراءة الملخص: سرعة، اجتماعات، قرارات، سوق، أو متابعة مجال"
             required
           >
             <div className="grid gap-3 sm:grid-cols-2">

@@ -8,7 +8,7 @@ const profile: ProfilePayload = {
   regionFocus: ["الإمارات", "السعودية"],
   role: "استشاري إدارة أو استراتيجية",
   roleOther: "",
-  mainGoals: ["أبقى مطّلع بدون تصفح كثير"],
+  mainGoals: ["أفهم المهم بسرعة"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia"],
   sourcePreferences: [],

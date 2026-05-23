@@ -12,7 +12,7 @@ const sampleProfile: ProfilePayload = {
   regionFocus: ["الإمارات", "السعودية"],
   role: "مستثمر أو مدير محفظة",
   roleOther: "",
-  mainGoals: ["أتابع السوق بدون لفّة طويلة"],
+  mainGoals: ["أتابع السوق والاستثمار"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],
   watchlist: ["Nvidia", "Oil", "UAE real estate"],
   sourcePreferences: ["Federal Reserve", "OPEC"],

@@ -1,6 +1,6 @@
 import type { ProfilePayload } from "@/lib/profile/schema";
 import type { InterestModule } from "@/data/onboarding";
-import type { StructuredBrief } from "@/lib/briefs/types";
+import type { BriefMetric, StructuredBrief } from "@/lib/briefs/types";
 
 export type SourceStorySeed = {
   id: string;
@@ -215,13 +215,18 @@ export function buildStructuredBrief(
   const focusText = formatArabicList(focusTags);
   const decisionText = profile.decisionContext || profile.personalContext;
   const isDemo = options.mode === "demo";
-  const metrics = [
-    { label: "أسلوبك المفضل", value: profileStyle(profile), change: "طريقة الشرح", tone: "good" as const },
+  const metrics: BriefMetric[] = [
     {
-      label: "إشارات من اختياراتك",
+      label: "إشارات مهمة",
       value: String(selectedStories.length),
-      change: `من ${focusTags.length} اهتمامات`,
+      change: "حسب اهتماماتك",
       tone: "watch" as const
+    },
+    {
+      label: "أهم ملف",
+      value: focusTags[0] ?? "حسب اهتمامك",
+      change: "أقرب موضوع لك",
+      tone: "good" as const
     }
   ];
 

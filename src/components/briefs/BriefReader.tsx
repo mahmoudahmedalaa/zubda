@@ -32,11 +32,13 @@ const metricToneClasses: Record<BriefMetric["tone"], string> = {
 };
 
 const metricHelp: Record<string, string> = {
-  "مزاج السوق": "قراءة سريعة لميل الأخبار اليوم: مطمئن، حذر، أو ضاغط",
+  "مزاج السوق": "قراءة سريعة مبنية على الأخبار والأرقام المختارة في هذا الملخص",
   "برنت": "سعر النفط يعطي إشارة مهمة للخليج والطاقة والتضخم",
-  "أسلوبك المفضل": "طريقة الشرح اللي اخترتها في ملفك الشخصي",
-  "إشارات من اختياراتك": "عدد المواضيع اللي ظهرت لأنها قريبة من اهتماماتك أو قائمة المتابعة"
+  "إشارات مهمة": "عدد النقاط التي دخلت الملخص لأنها قريبة من اهتماماتك أو قائمة المتابعة",
+  "أهم ملف": "الموضوع الأقرب لاهتماماتك اليوم"
 };
+
+const hiddenMetricLabels = new Set(["أسلوبك المفضل"]);
 
 function snapshotBullets(body: string): string[] {
   return body
@@ -141,15 +143,17 @@ function FeedbackButtons({
 }
 
 function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | null {
-  if (!metrics?.length) {
+  const visibleMetrics = metrics?.filter((metric) => !hiddenMetricLabels.has(metric.label));
+
+  if (!visibleMetrics?.length) {
     return null;
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {metrics.map((metric, index) => (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      {visibleMetrics.map((metric, index) => (
         <motion.div
-          className={`rounded-[24px] p-4 ${metricToneClasses[metric.tone]}`}
+          className={`min-h-32 rounded-[24px] p-4 ${metricToneClasses[metric.tone]}`}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.07, duration: 0.4 }}

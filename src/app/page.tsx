@@ -76,9 +76,9 @@ const personalizationExamples = [
 ];
 
 const testimonials = [
-  ["بدل ما أفتح خمس تطبيقات، أعرف وش مهم وليش يهمني", "مستشار، دبي"],
-  ["حلو أنه ما يكتفي بالخبر. يعطيني الأثر والنقطة اللي أقدر أتكلم عنها", "مؤسس، الرياض"],
-  ["أحتاج مصادر واضحة، بس بدون ما أحس أني أقرأ تقرير طويل. هذا بالضبط اللي أبيه", "محلل استثمار، أبوظبي"]
+  ["بدل ما أفتح خمس تطبيقات، أعرف وش مهم وليش يهمني", "سارة العتيبي", "مستشارة استراتيجية، دبي"],
+  ["حلو أنه ما يكتفي بالخبر. يعطيني الأثر والنقطة اللي أقدر أتكلم عنها", "عبدالله الراشد", "مؤسس، الرياض"],
+  ["أحتاج مصادر واضحة، بس بدون ما أحس أني أقرأ تقرير طويل. هذا بالضبط اللي أبيه", "مريم الكعبي", "محللة استثمار، أبوظبي"]
 ];
 
 const faqs = [
@@ -380,8 +380,8 @@ export default function LandingPage(): ReactElement {
               </p>
             </Reveal>
             <div className="mt-10 grid gap-5 md:grid-cols-3">
-              {testimonials.map(([quote, role], index) => (
-                <Reveal delay={index * 0.08} key={role}>
+              {testimonials.map(([quote, name, role], index) => (
+                <Reveal delay={index * 0.08} key={name}>
                   <Card className="group h-full p-7 text-right shadow-none transition hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
                     <div className="flex items-center justify-between gap-4">
                       <span className="grid size-12 place-items-center rounded-[18px] bg-[var(--color-zubda-50)] text-[var(--color-zubda-500)] transition group-hover:bg-[var(--color-zubda-500)] group-hover:text-white">
@@ -390,9 +390,10 @@ export default function LandingPage(): ReactElement {
                       <span className="text-5xl font-black leading-none text-[var(--color-line)]">“</span>
                     </div>
                     <p className="arabic-copy mt-5 text-lg font-black text-[var(--color-ink)]">{quote}</p>
-                    <p className="mt-6 border-t border-[var(--color-line)] pt-4 text-sm font-bold text-[var(--color-ink-muted)]">
-                      {role}
-                    </p>
+                    <div className="mt-6 border-t border-[var(--color-line)] pt-4">
+                      <p className="text-base font-black text-[var(--color-ink)]">{name}</p>
+                      <p className="mt-1 text-sm font-bold text-[var(--color-ink-muted)]">{role}</p>
+                    </div>
                   </Card>
                 </Reveal>
               ))}

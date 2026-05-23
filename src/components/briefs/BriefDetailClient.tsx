@@ -25,16 +25,24 @@ export function BriefDetailClient({ briefId }: { briefId: string }): ReactElemen
       return;
     }
 
+    let requestId = 0;
+
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), async (user) => {
+      const currentRequest = ++requestId;
+      setBrief(null);
+
       if (!user) {
         setStatus("signed_out");
         return;
       }
 
+      setStatus("loading");
+
       try {
         const response = await authedFetch(`/api/briefs/${briefId}`);
 
         if (response.status === 404) {
+          if (currentRequest !== requestId) return;
           setStatus("not_found");
           return;
         }
@@ -44,14 +52,19 @@ export function BriefDetailClient({ briefId }: { briefId: string }): ReactElemen
         }
 
         const data = (await response.json()) as BriefDetailResponse;
+        if (currentRequest !== requestId) return;
         setBrief(data.brief);
         setStatus("ready");
       } catch {
+        if (currentRequest !== requestId) return;
         setStatus("error");
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      requestId += 1;
+      unsubscribe();
+    };
   }, [briefId]);
 
   if (status === "loading") {

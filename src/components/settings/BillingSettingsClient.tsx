@@ -48,11 +48,18 @@ export function BillingSettingsClient(): ReactElement {
       return;
     }
 
+    let requestId = 0;
+
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), async (user) => {
+      const currentRequest = ++requestId;
+      setData(null);
+
       if (!user) {
         setStatus("signed_out");
         return;
       }
+
+      setStatus("loading");
 
       try {
         const response = await authedFetch("/api/me");
@@ -61,14 +68,19 @@ export function BillingSettingsClient(): ReactElement {
           throw new Error("Could not load billing.");
         }
 
+        if (currentRequest !== requestId) return;
         setData((await response.json()) as MeResponse);
         setStatus("ready");
       } catch {
+        if (currentRequest !== requestId) return;
         setStatus("error");
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      requestId += 1;
+      unsubscribe();
+    };
   }, []);
 
   if (status === "loading") {

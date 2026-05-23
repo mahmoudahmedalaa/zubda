@@ -27,11 +27,18 @@ export function ArchiveClient(): ReactElement {
       return;
     }
 
+    let requestId = 0;
+
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), async (user) => {
+      const currentRequest = ++requestId;
+      setBriefs([]);
+
       if (!user) {
         setStatus("signed_out");
         return;
       }
+
+      setStatus("loading");
 
       try {
         const response = await authedFetch("/api/briefs");
@@ -41,14 +48,19 @@ export function ArchiveClient(): ReactElement {
         }
 
         const data = (await response.json()) as ArchiveResponse;
+        if (currentRequest !== requestId) return;
         setBriefs(data.briefs);
         setStatus("ready");
       } catch {
+        if (currentRequest !== requestId) return;
         setStatus("error");
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      requestId += 1;
+      unsubscribe();
+    };
   }, []);
 
   if (status === "loading") {

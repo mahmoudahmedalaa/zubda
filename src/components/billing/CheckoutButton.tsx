@@ -31,6 +31,8 @@ export function CheckoutButton({ plan, label, currency, featured = false }: Chec
 
     const unsubscribe = onAuthStateChanged(getFirebaseAuth(), (user) => {
       setSignedIn(Boolean(user));
+      setLoading(false);
+      setError(null);
     });
 
     return unsubscribe;

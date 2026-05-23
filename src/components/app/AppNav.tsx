@@ -1,12 +1,11 @@
 "use client";
 
-import { signOut } from "firebase/auth";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactElement } from "react";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/Button";
-import { getFirebaseAuth } from "@/lib/firebase/client";
+import { signOutCurrentUser } from "@/lib/auth/session";
 
 const links = [
   { href: "/app/today", label: "زبدة اليوم" },
@@ -20,8 +19,8 @@ export function AppNav(): ReactElement {
   const router = useRouter();
 
   async function handleSignOut(): Promise<void> {
-    await signOut(getFirebaseAuth());
-    router.push("/login");
+    await signOutCurrentUser();
+    router.replace("/login");
   }
 
   return (

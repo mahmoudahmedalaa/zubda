@@ -3,10 +3,11 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { ArrowLeft, CheckCircle2, Lock, Plus, SlidersHorizontal, Wand2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type ReactElement, type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactElement, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { authedFetch } from "@/lib/api/client";
 import { getFirebaseAuth, hasFirebaseClientConfig } from "@/lib/firebase/client";
 import { type PlanKey, planLimits } from "@/lib/plans";
+import type { ProfilePayload } from "@/lib/profile/schema";
 import {
   briefDepths,
   communicationStyles,
@@ -35,23 +36,26 @@ const steps = [
 ] as const;
 
 type DraftProfile = {
-  languageMode: "arabic" | "english" | "mixed";
-  region: (typeof regions)[number];
-  regionFocus: string[];
-  role: (typeof roles)[number];
+  languageMode: "" | "arabic" | "english" | "mixed";
+  region: "" | Region;
+  regionFocus: Region[];
+  role: "" | (typeof roles)[number];
   roleOther: string;
   mainGoals: string[];
-  interestModuleIds: string[];
+  interestModuleIds: InterestModule[];
   watchlist: string[];
   sourcePreferences: string[];
   avoidTopics: string[];
-  communicationStyle: (typeof communicationStyles)[number];
+  communicationStyle: "" | (typeof communicationStyles)[number];
   decisionContext: string;
   personalContext: string;
-  briefDepth: "quick" | "standard" | "deep";
+  briefDepth: "" | "quick" | "standard" | "deep";
   deliveryTime: string;
   timezone: string;
 };
+
+type Region = (typeof regions)[number];
+type InterestModule = (typeof interestModules)[number];
 
 type ProfileSuggestions = Partial<
   Pick<
@@ -60,26 +64,28 @@ type ProfileSuggestions = Partial<
   >
 >;
 
-const initialDraft: DraftProfile = {
-  languageMode: "arabic",
-  region: "الإمارات",
-  regionFocus: ["الإمارات", "السعودية"],
-  role: "مستشار",
-  roleOther: "",
-  mainGoals: [],
-  interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية"],
-  watchlist: [],
-  sourcePreferences: [],
-  avoidTopics: [],
-  communicationStyle: "مختصر ومباشر",
-  decisionContext: "",
-  personalContext: "",
-  briefDepth: "standard",
-  deliveryTime: "09:00",
-  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dubai"
-};
+function createInitialDraft(): DraftProfile {
+  return {
+    languageMode: "",
+    region: "",
+    regionFocus: [],
+    role: "",
+    roleOther: "",
+    mainGoals: [],
+    interestModuleIds: [],
+    watchlist: [],
+    sourcePreferences: [],
+    avoidTopics: [],
+    communicationStyle: "",
+    decisionContext: "",
+    personalContext: "",
+    briefDepth: "",
+    deliveryTime: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dubai"
+  };
+}
 
-function toggleValue(list: string[], value: string, max?: number): string[] {
+function toggleValue<T extends string>(list: T[], value: T, max?: number): T[] {
   if (list.includes(value)) {
     return list.filter((item) => item !== value);
   }
@@ -104,6 +110,34 @@ function planLabel(plan: PlanKey): string {
   if (plan === "founder_lifetime") return "المؤسس";
   if (plan === "pro_monthly") return "برو";
   return "مجاني";
+}
+
+function createProfilePayload(draft: DraftProfile): ProfilePayload {
+  const fallbackRegion: Region = "الإمارات";
+  const region = draft.region || draft.regionFocus[0] || fallbackRegion;
+
+  return {
+    languageMode: draft.languageMode || "arabic",
+    region,
+    regionFocus: draft.regionFocus.length ? draft.regionFocus : [region],
+    role: draft.role || "غير ذلك",
+    roleOther: draft.roleOther,
+    mainGoals: draft.mainGoals,
+    interestModuleIds: draft.interestModuleIds,
+    watchlist: draft.watchlist,
+    sourcePreferences: draft.sourcePreferences,
+    avoidTopics: draft.avoidTopics,
+    communicationStyle: draft.communicationStyle || "مختصر ومباشر",
+    decisionContext: draft.decisionContext,
+    personalContext: draft.personalContext,
+    briefDepth: draft.briefDepth || "standard",
+    deliveryTime: draft.deliveryTime || "09:00",
+    timezone: draft.timezone
+  };
+}
+
+function compactPreviewItem(item: [string, string] | null): item is [string, string] {
+  return Boolean(item?.[1]);
 }
 
 function StepShell({
@@ -136,10 +170,11 @@ function StepShell({
 
 export function OnboardingWizard(): ReactElement {
   const router = useRouter();
+  const activeUidRef = useRef<string | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [plan, setPlan] = useState<PlanKey>("free");
-  const [draft, setDraft] = useState<DraftProfile>(initialDraft);
+  const [draft, setDraft] = useState<DraftProfile>(() => createInitialDraft());
   const [watchInput, setWatchInput] = useState("");
   const [sourceInput, setSourceInput] = useState("");
   const [avoidInput, setAvoidInput] = useState("");
@@ -152,7 +187,7 @@ export function OnboardingWizard(): ReactElement {
   const isPaid = plan !== "free";
   const canContinue =
     step === "role"
-      ? draft.role !== "غير ذلك" || draft.roleOther.trim().length > 1
+      ? Boolean(draft.role) && (draft.role !== "غير ذلك" || draft.roleOther.trim().length > 1)
       : step === "region"
         ? draft.regionFocus.length > 0
         : step === "goal"
@@ -160,6 +195,18 @@ export function OnboardingWizard(): ReactElement {
           : step === "interests"
             ? draft.interestModuleIds.length > 0
             : true;
+
+  const resetOnboardingState = useCallback(() => {
+    setStepIndex(0);
+    setPlan("free");
+    setDraft(createInitialDraft());
+    setWatchInput("");
+    setSourceInput("");
+    setAvoidInput("");
+    setAnalyzing(false);
+    setSaving(false);
+    setError(null);
+  }, []);
 
   useEffect(() => {
     if (!hasFirebaseClientConfig()) {
@@ -174,8 +221,15 @@ export function OnboardingWizard(): ReactElement {
       setAuthReady(true);
 
       if (!user) {
+        activeUidRef.current = null;
+        resetOnboardingState();
         router.replace("/login");
         return;
+      }
+
+      if (activeUidRef.current !== user.uid) {
+        activeUidRef.current = user.uid;
+        resetOnboardingState();
       }
 
       void authedFetch("/api/me")
@@ -189,18 +243,25 @@ export function OnboardingWizard(): ReactElement {
     });
 
     return unsubscribe;
-  }, [router]);
+  }, [resetOnboardingState, router]);
 
-  const previewItems = useMemo(
-    () => [
-      ["الدور", draft.role === "غير ذلك" ? draft.roleOther || "اكتب وصفك" : draft.role],
-      ["التركيز", draft.regionFocus.length ? draft.regionFocus.join("، ") : draft.region],
-      ["المواضيع", draft.interestModuleIds.length ? draft.interestModuleIds.slice(0, 4).join("، ") : "اختر موضوعين على الأقل"],
-      ["المتابعة", draft.watchlist.length ? draft.watchlist.slice(0, 4).join("، ") : "اختياري"],
-      ["الأسلوب", draft.communicationStyle]
-    ],
-    [draft]
-  );
+  const previewItems = useMemo(() => {
+    const items: Array<[string, string] | null> = [
+      draft.role ? ["الدور", draft.role === "غير ذلك" ? draft.roleOther.trim() : draft.role] : null,
+      draft.regionFocus.length ? ["التركيز", draft.regionFocus.join("، ")] : null,
+      draft.mainGoals.length ? ["الهدف", draft.mainGoals.slice(0, 3).join("، ")] : null,
+      draft.interestModuleIds.length ? ["المواضيع", draft.interestModuleIds.slice(0, 4).join("، ")] : null,
+      draft.watchlist.length ? ["المتابعة", draft.watchlist.slice(0, 4).join("، ")] : null,
+      draft.personalContext.trim() ? ["نبذة عنك", draft.personalContext.trim().slice(0, 90)] : null,
+      draft.communicationStyle ? ["الأسلوب", draft.communicationStyle] : null,
+      draft.briefDepth
+        ? ["العمق", briefDepths.find((depth) => depth.value === draft.briefDepth)?.label ?? draft.briefDepth]
+        : null,
+      draft.deliveryTime ? ["وقت الوصول", draft.deliveryTime] : null
+    ];
+
+    return items.filter(compactPreviewItem);
+  }, [draft]);
 
   function updateList(field: "watchlist" | "sourcePreferences" | "avoidTopics", value: string, max: number): void {
     setDraft((current) => ({ ...current, [field]: addUniqueItem(current[field], value, max) }));
@@ -213,7 +274,7 @@ export function OnboardingWizard(): ReactElement {
     try {
       const response = await authedFetch("/api/profile", {
         method: "PATCH",
-        body: JSON.stringify(draft)
+        body: JSON.stringify(createProfilePayload(draft))
       });
 
       if (!response.ok) {
@@ -324,7 +385,7 @@ export function OnboardingWizard(): ReactElement {
                         : "border-[var(--color-line)] bg-white text-[var(--color-ink)] hover:border-[var(--color-zubda-200)]"
                     }`}
                     key={role}
-                    onClick={() => setDraft((current) => ({ ...current, role }))}
+                    onClick={() => setDraft((current) => ({ ...current, role, roleOther: role === "غير ذلك" ? current.roleOther : "" }))}
                     type="button"
                   >
                     {role}
@@ -362,7 +423,7 @@ export function OnboardingWizard(): ReactElement {
                   onClick={() =>
                     setDraft((current) => {
                       const regionFocus = toggleValue(current.regionFocus, region);
-                      return { ...current, region, regionFocus };
+                      return { ...current, region: regionFocus[0] ?? "", regionFocus };
                     })
                   }
                   type="button"
@@ -748,19 +809,30 @@ export function OnboardingWizard(): ReactElement {
           <SlidersHorizontal aria-hidden className="text-[var(--color-zubda-500)]" size={24} />
         </div>
         <div className="mt-5 grid gap-3">
-          {previewItems.map(([label, value]) => (
-            <div className="rounded-[22px] bg-[var(--color-surface)] p-3" key={label}>
-              <p className="text-xs font-black text-[var(--color-ink-soft)]">{label}</p>
-              <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink)]">{value}</p>
+          {previewItems.length ? (
+            previewItems.map(([label, value]) => (
+              <div className="rounded-[22px] bg-[var(--color-surface)] p-3" key={label}>
+                <p className="text-xs font-black text-[var(--color-ink-soft)]">{label}</p>
+                <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink)]">{value}</p>
+              </div>
+            ))
+          ) : (
+            <div className="rounded-[22px] border border-dashed border-[var(--color-line)] bg-[var(--color-surface)] p-5">
+              <p className="text-base font-black">لسه فاضية</p>
+              <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
+                أول اختيار تسويه بيظهر هنا مباشرة، عشان تشوف كيف زبدتك تتشكل خطوة بخطوة
+              </p>
             </div>
-          ))}
+          )}
         </div>
-        <div className="mt-5 rounded-[22px] bg-[var(--color-trust-50)] p-4 text-[var(--color-trust-700)]">
-          <CheckCircle2 aria-hidden size={18} />
-          <p className="arabic-copy mt-2 text-sm font-black">
-            نستخدم هذا لترتيب الأخبار، اختيار الزوايا، وتحديد الكلام اللي يستاهل يدخل ملخصك
-          </p>
-        </div>
+        {previewItems.length ? (
+          <div className="mt-5 rounded-[22px] bg-[var(--color-trust-50)] p-4 text-[var(--color-trust-700)]">
+            <CheckCircle2 aria-hidden size={18} />
+            <p className="arabic-copy mt-2 text-sm font-black">
+              نستخدم اختياراتك لترتيب الأخبار وتخفيف الوشوشة، مو عشان نحشو الملخص بإعداداتك
+            </p>
+          </div>
+        ) : null}
       </aside>
     </div>
   );

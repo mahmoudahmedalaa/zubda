@@ -119,15 +119,15 @@ function formatArabicList(items: string[]): string {
 }
 
 function profileLens(profile: ProfilePayload): string {
-  if (profile.role === "مستثمر") {
+  if (profile.role === "مستثمر" || profile.role === "مستثمر أو مدير محفظة") {
     return "كمستثمر";
   }
 
-  if (profile.role === "مؤسس") {
+  if (profile.role === "مؤسس" || profile.role === "مؤسس أو رائد أعمال") {
     return "كمؤسس";
   }
 
-  if (profile.role === "مستشار") {
+  if (profile.role === "مستشار" || profile.role === "استشاري إدارة أو استراتيجية") {
     return "كمستشار";
   }
 

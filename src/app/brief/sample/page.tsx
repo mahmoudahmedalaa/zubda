@@ -10,7 +10,7 @@ const sampleProfile: ProfilePayload = {
   languageMode: "mixed",
   region: "الإمارات",
   regionFocus: ["الإمارات", "السعودية"],
-  role: "مستثمر",
+  role: "مستثمر أو مدير محفظة",
   roleOther: "",
   mainGoals: ["أتابع السوق بدون لفّة طويلة"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],

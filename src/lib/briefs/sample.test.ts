@@ -6,7 +6,7 @@ const profile: ProfilePayload = {
   languageMode: "mixed",
   region: "الإمارات",
   regionFocus: ["الإمارات", "السعودية"],
-  role: "مستشار",
+  role: "استشاري إدارة أو استراتيجية",
   roleOther: "",
   mainGoals: ["أبقى مطّلع بدون تصفح كثير"],
   interestModuleIds: ["المال والاستثمار", "الذكاء الاصطناعي والتقنية", "أعمال الخليج"],

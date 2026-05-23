@@ -1,4 +1,15 @@
-import { ArrowLeft, CheckCircle2, MessageCircle, RadioTower } from "lucide-react";
+import {
+  ArrowLeft,
+  BarChart3,
+  CheckCircle2,
+  Clock3,
+  FileCheck2,
+  MessageCircle,
+  RadioTower,
+  SearchCheck,
+  ShieldCheck,
+  Target
+} from "lucide-react";
 import type { ReactElement } from "react";
 import { BrandFooter } from "@/components/BrandFooter";
 import { BrandHeader } from "@/components/BrandHeader";
@@ -14,6 +25,42 @@ const promiseCards = [
   ["يلخص", "أهم ما تغيّر بدون رمي عشرات العناوين عليك"],
   ["يوضح", "يعطيك السبب، من يتأثر، وش تتابع بعدها"],
   ["يرتب", "المعلومة حسب دورك، مناطق اهتمامك، والجهات اللي تتابعها"]
+];
+
+const noisySources = ["واتساب", "لينكدإن", "X", "نشرات", "أخبار", "تقارير"];
+
+const zubdaOutcome = [
+  ["خلاصة قصيرة", "ثلاث نقاط تعرف منها وش صار وليش يهمك"],
+  ["إشارات مهمة", "أرقام وأحداث تستاهل عينك اليوم"],
+  ["مصادر واضحة", "كل نقطة معها رابط وسبب دخولها"]
+];
+
+const briefModules = [
+  {
+    title: "الخلاصة السريعة",
+    text: "أهم ثلاث نقاط بدون لف ودوران",
+    icon: FileCheck2
+  },
+  {
+    title: "راقب",
+    text: "حدث أو رقم ممكن يغيّر الصورة",
+    icon: Target
+  },
+  {
+    title: "وش أثرها عليك؟",
+    text: "نربط الخبر بدورك واهتماماتك",
+    icon: BarChart3
+  },
+  {
+    title: "قولها كذا",
+    text: "نقطة واضحة تنقال في اجتماع أو سالفة",
+    icon: MessageCircle
+  },
+  {
+    title: "من وين جبناها؟",
+    text: "مصادر وروابط وثقة بدون إزعاج",
+    icon: SearchCheck
+  }
 ];
 
 const steps = [
@@ -105,6 +152,58 @@ export default function LandingPage(): ReactElement {
           </div>
         </section>
 
+        <section className="page-shell py-24">
+          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+            <Reveal className="flex flex-col justify-center text-right">
+              <p className="text-base font-black text-[var(--color-trust-700)]">بدل التنقل بين سبع أماكن</p>
+              <h2 className="display-arabic mt-3 text-4xl font-black leading-[1.25] md:text-5xl">
+                زحمة تدخل، زبدة تطلع
+              </h2>
+              <p className="arabic-copy mt-5 max-w-xl text-lg font-semibold text-[var(--color-ink-muted)]">
+                الفكرة مو إننا نجيب لك أخبار أكثر. الفكرة إنك تخلص أسرع، وتعرف الشيء اللي يستاهل وقتك
+              </p>
+            </Reveal>
+            <Reveal delay={0.08}>
+              <div className="rounded-[38px] border border-[var(--color-line)] bg-white p-5 shadow-[var(--shadow-card)]">
+                <div className="grid gap-5 md:grid-cols-[0.92fr_1.08fr]">
+                  <div className="rounded-[30px] bg-[var(--color-surface)] p-5 text-right">
+                    <p className="text-sm font-black text-[var(--color-ink-muted)]">قبل زبدة</p>
+                    <div className="mt-4 grid gap-3">
+                      {noisySources.map((source) => (
+                        <span
+                          className="rounded-[20px] border border-[var(--color-line)] bg-white px-4 py-3 text-lg font-black text-[var(--color-ink-muted)]"
+                          key={source}
+                        >
+                          {source}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rounded-[30px] bg-[var(--color-zubda-500)] p-6 text-right text-white">
+                    <p className="text-sm font-black text-white/72">مع زبدة</p>
+                    <h3 className="display-arabic mt-3 text-4xl font-black leading-[1.18]">ملخص واحد يفهمك</h3>
+                    <div className="mt-6 grid gap-3">
+                      {zubdaOutcome.map(([title, text], index) => (
+                        <div
+                          className="rounded-[22px] bg-white/12 p-4 backdrop-blur-sm"
+                          key={title}
+                        >
+                          <p className="text-xl font-black">{title}</p>
+                          <p className="arabic-copy mt-1 text-sm font-bold text-white/78">{text}</p>
+                          <div
+                            className="mt-3 h-1.5 rounded-full bg-white/70"
+                            style={{ width: `${68 + index * 12}%` }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
         <section className="page-shell py-20" id="how">
           <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal className="text-right">
@@ -127,6 +226,78 @@ export default function LandingPage(): ReactElement {
                   </div>
                 </Reveal>
               ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white/74 py-24">
+          <div className="page-shell">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <p className="text-base font-black text-[var(--color-trust-700)]">وش داخل زبدتك؟</p>
+              <h2 className="display-arabic mt-3 text-4xl font-black leading-[1.25] md:text-5xl">
+                كل جزء له وظيفة واضحة
+              </h2>
+              <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
+                ما نحط قسم لأنه شكله حلو. كل جزء يساعدك تفهم، تقرر، أو تعرف وش تتابع بعدها
+              </p>
+            </Reveal>
+            <div className="mt-12 grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+              <Reveal className="rounded-[38px] border border-[var(--color-line)] bg-[var(--color-paper)] p-5 shadow-[var(--shadow-card)]">
+                <div className="rounded-[30px] bg-white p-5 text-right">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-black text-[var(--color-zubda-600)]">مثال ملخص</p>
+                      <h3 className="display-arabic mt-2 text-3xl font-black">زبدة جاهزة لك</h3>
+                    </div>
+                    <span className="grid size-14 place-items-center rounded-[20px] bg-[var(--color-trust-50)] text-[var(--color-trust-700)]">
+                      <ShieldCheck aria-hidden size={25} />
+                    </span>
+                  </div>
+                  <div className="mt-6 grid gap-3">
+                    <div className="rounded-[24px] bg-[var(--color-zubda-50)] p-4">
+                      <p className="text-xl font-black">الخلاصة</p>
+                      <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink-muted)]">
+                        الفائدة والنفط يضغطون على أسهم النمو، لكن إشارات التقنية ما زالت قوية
+                      </p>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-[24px] bg-[var(--color-saffron-50)] p-4">
+                        <p className="text-lg font-black">راقب</p>
+                        <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink-muted)]">تصريحات الفيدرالي</p>
+                      </div>
+                      <div className="rounded-[24px] bg-[var(--color-trust-50)] p-4">
+                        <p className="text-lg font-black">الأثر عليك</p>
+                        <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink-muted)]">قرارك الاستثماري يحتاج هدوء</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between gap-3 rounded-[24px] border border-[var(--color-line)] p-4">
+                      <span className="text-sm font-black text-[var(--color-ink-muted)]">مدة القراءة</span>
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[var(--color-surface)] px-4 py-2 text-sm font-black">
+                        <Clock3 aria-hidden size={16} />
+                        ٥ دقائق
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Reveal>
+              <div className="grid gap-3">
+                {briefModules.map((module, index) => {
+                  const Icon = module.icon;
+                  return (
+                    <Reveal delay={index * 0.06} key={module.title}>
+                      <div className="group flex items-center gap-4 rounded-[28px] border border-[var(--color-line)] bg-white p-5 text-right shadow-sm transition hover:-translate-y-1 hover:shadow-[var(--shadow-card)]">
+                        <span className="grid size-14 shrink-0 place-items-center rounded-[20px] bg-[var(--color-zubda-50)] text-[var(--color-zubda-500)] transition group-hover:bg-[var(--color-zubda-500)] group-hover:text-white">
+                          <Icon aria-hidden size={24} />
+                        </span>
+                        <div>
+                          <h3 className="text-2xl font-black">{module.title}</h3>
+                          <p className="arabic-copy mt-1 text-sm font-bold text-[var(--color-ink-muted)]">{module.text}</p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>

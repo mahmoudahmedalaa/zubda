@@ -423,37 +423,11 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
       </section>
 
       <Card className="p-5 md:p-6">
-        <p className="text-sm font-black text-[var(--color-zubda-600)]">مخصص لك</p>
+        <p className="text-sm font-black text-[var(--color-zubda-600)]">الأثر عليك</p>
         <h2 className="mt-2 text-3xl font-black leading-[1.45]">{structuredBrief.personalImpact.title}</h2>
         <p className="arabic-copy mt-3 text-[var(--color-ink-muted)]">
           {structuredBrief.personalImpact.body}
         </p>
-        {structuredBrief.personalizationNotes?.length ? (
-          <div className="mt-5 grid gap-2 md:grid-cols-3">
-            {structuredBrief.personalizationNotes.map((note) => (
-              <span
-                className="rounded-[20px] bg-[var(--color-paper)] px-4 py-3 text-sm font-bold text-[var(--color-ink-muted)]"
-                key={note}
-              >
-                {note}
-              </span>
-            ))}
-          </div>
-        ) : null}
-        {structuredBrief.chart ? (
-          <details className="mt-5 rounded-[22px] bg-[var(--color-zubda-50)] p-4">
-            <summary className="cursor-pointer text-sm font-black text-[var(--color-zubda-700)]">
-              ليش ظهرت لك هالمواضيع؟
-            </summary>
-            <div className="mt-3 grid gap-2">
-              {structuredBrief.chart.points.map((point) => (
-                <p className="text-sm font-bold text-[var(--color-ink-muted)]" key={point.label}>
-                  {point.label}: {point.value}/100
-                </p>
-              ))}
-            </div>
-          </details>
-        ) : null}
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.85fr]">

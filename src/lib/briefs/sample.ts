@@ -242,18 +242,6 @@ export function buildStructuredBrief(
       body: `${lead.summary} رتّبنا الباقي ${profileLens(profile)} وبناءً على اهتماماتك المختارة: ${focusText}.`
     },
     metrics,
-    chart: isDemo
-      ? {
-          title: "سبب ترتيب الملخص لك",
-          subtitle: "هذه العوامل تشرح ليش بدأنا بهذه المواضيع تحديداً",
-          points: [
-            { label: "اهتماماتك المختارة", value: 88 },
-            { label: "قائمة المتابعة", value: 76 },
-            { label: "منطقتك", value: 68 },
-            { label: "قوة المصدر", value: 61 }
-          ]
-        }
-      : undefined,
     sentiment: isDemo
       ? {
           label: "إيجابي بحذر",
@@ -328,9 +316,9 @@ export function buildStructuredBrief(
     })),
     personalImpact: {
       title: "وش يعني لك؟",
-      body: `${profileLens(profile)}، أهم شيء تركز عليه الآن هو ${focusText}. ${
-        decisionText ? `أخذنا في الحسبان: ${decisionText.slice(0, 180)}. ` : ""
-      }زبدة تقلل لك الزحمة وتطلع الإشارات الأقرب لاهتماماتك المختارة بدل الأخبار العامة.`
+      body: `${profileLens(profile)}، ركز اليوم على ${focusText}. ${
+        watchlistText ? `إذا تتابع ${watchlistText}، خذ الأخبار كإشارات تحتاج متابعة لا كقرار جاهز. ` : ""
+      }${decisionText ? `السياق اللي ذكرته لنا يخلي الأثر العملي أهم من الخبر نفسه. ` : ""}الزبدة: لا تطارد كل العناوين، راقب المحركات اللي ممكن تغير الصورة.`
     },
     personalizationNotes: [
       `رتبنا الإشارات حسب منطقتك: ${profile.region}`,

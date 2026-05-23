@@ -34,11 +34,10 @@ const metricToneClasses: Record<BriefMetric["tone"], string> = {
 const metricHelp: Record<string, string> = {
   "مزاج السوق": "قراءة سريعة مبنية على الأخبار والأرقام المختارة في هذا الملخص",
   "برنت": "سعر النفط يعطي إشارة مهمة للخليج والطاقة والتضخم",
-  "إشارات مهمة": "عدد النقاط التي دخلت الملخص لأنها قريبة من اهتماماتك أو قائمة المتابعة",
   "أهم ملف": "الموضوع الأقرب لاهتماماتك اليوم"
 };
 
-const hiddenMetricLabels = new Set(["أسلوبك المفضل"]);
+const hiddenMetricLabels = new Set(["أسلوبك المفضل", "إشارات مهمة", "إشارات من اختياراتك"]);
 
 function snapshotBullets(body: string): string[] {
   return body
@@ -150,7 +149,7 @@ function MetricStrip({ metrics }: { metrics?: BriefMetric[] }): ReactElement | n
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {visibleMetrics.map((metric, index) => (
         <motion.div
           className={`min-h-32 rounded-[24px] p-4 ${metricToneClasses[metric.tone]}`}

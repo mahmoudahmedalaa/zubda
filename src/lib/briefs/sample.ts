@@ -217,12 +217,6 @@ export function buildStructuredBrief(
   const isDemo = options.mode === "demo";
   const metrics: BriefMetric[] = [
     {
-      label: "إشارات مهمة",
-      value: String(selectedStories.length),
-      change: "حسب اهتماماتك",
-      tone: "watch" as const
-    },
-    {
       label: "أهم ملف",
       value: focusTags[0] ?? "حسب اهتمامك",
       change: "أقرب موضوع لك",

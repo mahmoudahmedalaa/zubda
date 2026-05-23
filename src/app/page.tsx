@@ -406,7 +406,7 @@ export default function LandingPage(): ReactElement {
             <Reveal className="text-right">
               <h2 className="display-arabic text-4xl font-black leading-[1.25]">أسئلة سريعة</h2>
               <p className="arabic-copy mt-4 text-lg font-semibold text-[var(--color-ink-muted)]">
-                إجابات مختصرة، بدون إطالة
+                الأشياء اللي غالباً بتسأل عنها قبل ما تبدأ
               </p>
             </Reveal>
             <div className="grid gap-3">

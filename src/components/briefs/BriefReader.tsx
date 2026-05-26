@@ -66,34 +66,34 @@ const readerModes: Array<{
 }> = [
   {
     id: "bottomLine",
-    label: "الزبدة",
+    label: "افهم بسرعة",
     description: "أهم شيء أولاً",
     icon: Target
   },
   {
     id: "meeting",
-    label: "اجتماع",
-    description: "نقاط تنقال",
+    label: "جهزني لاجتماع",
+    description: "نقاط جاهزة تنقال",
     icon: MessageSquareText
   },
   {
     id: "investment",
-    label: "استثمار",
-    description: "سوق ومخاطر",
+    label: "اقرأها كمستثمر",
+    description: "سوق، مخاطر، أثر",
     icon: Gauge
   },
   {
     id: "watchlist",
-    label: "المتابعة",
-    description: "وش تراقب",
+    label: "راقب قائمتي",
+    description: "المتابعة قبل الزحمة",
     icon: BookmarkCheck
   }
 ];
 
 const detailLevels: Array<{ id: DetailLevel; label: string; description: string }> = [
-  { id: "quick", label: "سريع", description: "أخف عرض" },
-  { id: "standard", label: "متوازن", description: "الوضع الطبيعي" },
-  { id: "deep", label: "تعمّق", description: "افتح التفاصيل" }
+  { id: "quick", label: "دقيقتين", description: "أخف قراءة" },
+  { id: "standard", label: "٥ دقائق", description: "الأنسب غالباً" },
+  { id: "deep", label: "تعمّق", description: "تفاصيل ومصادر" }
 ];
 
 const sectionControls: Array<{ id: SectionKey; label: string }> = [
@@ -105,11 +105,62 @@ const sectionControls: Array<{ id: SectionKey; label: string }> = [
   { id: "sources", label: "المصادر" }
 ];
 
-function modeHint(mode: ReaderMode): string {
-  if (mode === "meeting") return "رتبنا القراءة حول الكلام الجاهز وما تحتاج تقوله بثقة";
-  if (mode === "investment") return "رفعنا السوق، المخاطر، وأثر المتابعة قبل التفاصيل العامة";
-  if (mode === "watchlist") return "بدأنا بما يستحق المتابعة قبل باقي الزبدة";
-  return "أهم شيء أولاً، وبعدها تفتح اللي تحتاجه";
+function readingPlan(mode: ReaderMode, detailLevel: DetailLevel): {
+  label: string;
+  title: string;
+  subtitle: string;
+  order: string[];
+  summaryLabel: string;
+  summaryTitle: string;
+  summaryNote: string;
+} {
+  const depth = detailLevels.find((item) => item.id === detailLevel)?.label ?? "٥ دقائق";
+
+  if (mode === "meeting") {
+    return {
+      label: `جاهز في ${depth}`,
+      title: "تطلع بنقاط تستخدمها",
+      subtitle: "نرتب الملخص حول الكلام اللي ينقال بثقة، ثم نفتح التفاصيل لو احتجتها",
+      order: ["نقاط الكلام", "وش تراقب؟", "الخلاصة"],
+      summaryLabel: "وضع الاجتماع",
+      summaryTitle: "النقاط الجاهزة",
+      summaryNote: "مختصر يصلح قبل اجتماع أو مكالمة"
+    };
+  }
+
+  if (mode === "investment") {
+    return {
+      label: `قراءة ${depth}`,
+      title: "تشوف السوق قبل التفاصيل",
+      subtitle: "نبدأ بالمزاج، المخاطر، والأثر المحتمل على اهتماماتك وقائمة المتابعة",
+      order: ["مزاج السوق", "المخاطر", "الأثر عليك"],
+      summaryLabel: "قراءة المستثمر",
+      summaryTitle: "وش يعني للسوق؟",
+      summaryNote: "ترتيب يرفع الأرقام والمخاطر أولاً"
+    };
+  }
+
+  if (mode === "watchlist") {
+    return {
+      label: `متابعة ${depth}`,
+      title: "قائمتك تطلع أول",
+      subtitle: "نبدأ بالشركات والمواضيع اللي تتابعها، ثم نشرح ليش تستاهل انتباهك",
+      order: ["قائمة المتابعة", "سبب الأهمية", "السوق"],
+      summaryLabel: "قائمتك أولاً",
+      summaryTitle: "وش تراقب الآن؟",
+      summaryNote: "كل شيء يبدأ من اختياراتك"
+    };
+  }
+
+  return {
+    label: `زبدة ${depth}`,
+    title: "أهم شيء أولاً",
+    subtitle: "نرتب القراءة عشان تاخذ الصورة بسرعة، وبعدها تفتح اللي يهمك فقط",
+    order: ["الخلاصة", "وش تراقب؟", "الأثر عليك"],
+    summaryLabel: "الخلاصة السريعة",
+    summaryTitle: "زبدة اليوم",
+    summaryNote: "أسرع قراءة بدون ما تضيع في التفاصيل"
+  };
 }
 
 function snapshotBullets(body: string): string[] {
@@ -118,6 +169,41 @@ function snapshotBullets(body: string): string[] {
     .map((item) => item.trim())
     .filter(Boolean)
     .slice(0, 3);
+}
+
+function heroBulletsForMode(
+  structuredBrief: BriefDocument["structuredBrief"],
+  mode: ReaderMode,
+  detailLevel: DetailLevel
+): string[] {
+  const limit = detailLevel === "quick" ? 2 : 3;
+  const snapshot = snapshotBullets(structuredBrief.executiveSnapshot.body);
+
+  if (mode === "meeting" && structuredBrief.talkingPoints.length) {
+    return [...structuredBrief.talkingPoints.slice(0, 2), snapshot[0]].filter(Boolean).slice(0, limit);
+  }
+
+  if (mode === "investment") {
+    return [
+      structuredBrief.sentiment
+        ? `${structuredBrief.sentiment.label}: ${structuredBrief.sentiment.explanation}`
+        : snapshot[0],
+      structuredBrief.riskFactors?.[0]
+        ? `${structuredBrief.riskFactors[0].label}: ${structuredBrief.riskFactors[0].note}`
+        : snapshot[1],
+      structuredBrief.personalImpact.body
+    ]
+      .filter(Boolean)
+      .slice(0, limit);
+  }
+
+  if (mode === "watchlist" && structuredBrief.watchboard.length) {
+    return structuredBrief.watchboard
+      .slice(0, limit)
+      .map((item) => `${item.title}: ${item.why}`);
+  }
+
+  return snapshot.slice(0, limit);
 }
 
 function InfoTooltip({ text }: { text: string }): ReactElement {
@@ -235,49 +321,32 @@ function BriefControlPanel({
   sourceCount: number;
   talkingCount: number;
 }): ReactElement {
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const plan = readingPlan(mode, detailLevel);
+
   return (
-    <Card className="overflow-hidden p-5 md:p-6">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-xl text-right">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[var(--color-zubda-50)] px-3 py-1 text-sm font-black text-[var(--color-zubda-700)]">
+    <Card className="overflow-hidden p-5 md:p-7">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)] lg:items-stretch">
+        <section className="rounded-[32px] bg-[var(--color-surface)] p-4 md:p-5">
+          <div className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-black text-[var(--color-zubda-700)] shadow-sm">
             <SlidersHorizontal aria-hidden size={16} />
-            لوحة التحكم
+            أنت تتحكم بالقراءة
           </div>
-          <h2 className="mt-3 text-3xl font-black leading-[1.35]">اقرأها بطريقتك</h2>
+          <h2 className="mt-3 text-3xl font-black leading-[1.35] md:text-4xl">وش تبي من الزبدة الآن؟</h2>
           <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
-            {modeHint(mode)}
+            اختار النية والوقت، والملخص يعيد ترتيب نفسه حول اللي تحتاجه
           </p>
-        </div>
 
-        <div className="grid grid-cols-3 gap-2 rounded-[24px] bg-[var(--color-surface)] p-2 text-center">
-          <div className="rounded-[18px] bg-white px-3 py-2">
-            <p className="tabular text-xl font-black">{watchCount}</p>
-            <p className="text-xs font-bold text-[var(--color-ink-muted)]">للمتابعة</p>
-          </div>
-          <div className="rounded-[18px] bg-white px-3 py-2">
-            <p className="tabular text-xl font-black">{talkingCount}</p>
-            <p className="text-xs font-bold text-[var(--color-ink-muted)]">نقاط كلام</p>
-          </div>
-          <div className="rounded-[18px] bg-white px-3 py-2">
-            <p className="tabular text-xl font-black">{sourceCount}</p>
-            <p className="text-xs font-bold text-[var(--color-ink-muted)]">مصادر</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-6 grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-        <div>
-          <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">غيّر طريقة القراءة</p>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-2">
+          <div className="mt-5 grid gap-2 sm:grid-cols-2">
             {readerModes.map((item) => {
               const Icon = item.icon;
               const active = mode === item.id;
 
               return (
                 <button
-                  className={`flex min-h-20 items-center gap-3 rounded-[22px] border px-4 py-3 text-right transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] ${
+                  className={`flex min-h-24 items-center gap-3 rounded-[24px] border px-4 py-3 text-right transition hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-zubda-500)] ${
                     active
-                      ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]"
+                      ? "border-[var(--color-zubda-500)] bg-white text-[var(--color-zubda-700)] shadow-sm"
                       : "border-[var(--color-line)] bg-white text-[var(--color-ink)] hover:border-[var(--color-zubda-200)]"
                   }`}
                   key={item.id}
@@ -299,11 +368,9 @@ function BriefControlPanel({
               );
             })}
           </div>
-        </div>
 
-        <div className="grid gap-4">
-          <div>
-            <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">عمق العرض</p>
+          <div className="mt-5 rounded-[26px] border border-[var(--color-line)] bg-white p-3">
+            <p className="mb-3 px-1 text-sm font-black text-[var(--color-ink-muted)]">كم عندك وقت؟</p>
             <div className="grid grid-cols-3 gap-2 rounded-full bg-[var(--color-surface)] p-1">
               {detailLevels.map((item) => {
                 const active = detailLevel === item.id;
@@ -325,31 +392,95 @@ function BriefControlPanel({
               })}
             </div>
           </div>
+        </section>
 
+        <motion.section
+          animate={{ opacity: 1, y: 0 }}
+          className="flex min-h-[420px] flex-col justify-between rounded-[32px] bg-[var(--color-ink-panel)] p-5 text-white md:p-6"
+          initial={{ opacity: 0, y: 8 }}
+          key={`${mode}-${detailLevel}`}
+          transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+        >
           <div>
-            <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">اظهر أو اخفِ</p>
-            <div className="flex flex-wrap gap-2">
-              {sectionControls.map((section) => {
-                const active = visibleSections[section.id];
-
-                return (
-                  <button
-                    className={`min-h-10 rounded-full border px-4 py-2 text-sm font-black transition ${
-                      active
-                        ? "border-[var(--color-trust-500)] bg-[var(--color-trust-50)] text-[var(--color-trust-700)]"
-                        : "border-[var(--color-line)] bg-white text-[var(--color-ink-muted)] hover:border-[var(--color-zubda-200)]"
-                    }`}
-                    key={section.id}
-                    onClick={() => onSectionToggle(section.id)}
-                    type="button"
-                  >
-                    {section.label}
-                  </button>
-                );
-              })}
+            <div className="flex items-center justify-between gap-4">
+              <p className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white/82">{plan.label}</p>
+              <CheckCircle2 aria-hidden className="text-[var(--color-trust-300)]" size={20} />
+            </div>
+            <h3 className="mt-5 text-3xl font-black leading-[1.35]">{plan.title}</h3>
+            <p className="arabic-copy mt-3 text-base font-bold leading-8 text-white/74">{plan.subtitle}</p>
+            <div className="mt-6 grid gap-2">
+              {plan.order.map((item, index) => (
+                <div className="flex items-center gap-3 rounded-[18px] bg-white/8 px-3 py-2" key={item}>
+                  <span className="grid size-8 place-items-center rounded-full bg-white text-sm font-black text-[var(--color-ink)]">
+                    {index + 1}
+                  </span>
+                  <span className="text-sm font-black">{item}</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+
+          <div className="mt-6 grid grid-cols-3 gap-2 text-center">
+            <div className="rounded-[18px] bg-white/10 px-3 py-2">
+              <p className="tabular text-xl font-black">{watchCount}</p>
+              <p className="text-xs font-bold text-white/65">للمتابعة</p>
+            </div>
+            <div className="rounded-[18px] bg-white/10 px-3 py-2">
+              <p className="tabular text-xl font-black">{talkingCount}</p>
+              <p className="text-xs font-bold text-white/65">نقاط كلام</p>
+            </div>
+            <div className="rounded-[18px] bg-white/10 px-3 py-2">
+              <p className="tabular text-xl font-black">{sourceCount}</p>
+              <p className="text-xs font-bold text-white/65">مصادر</p>
+            </div>
+          </div>
+        </motion.section>
+      </div>
+
+      <div className="mt-4 rounded-[26px] border border-[var(--color-line)] bg-white/70 p-3">
+        <button
+          className="flex w-full items-center justify-between gap-3 rounded-[20px] px-2 py-2 text-right"
+          onClick={() => setAdvancedOpen((current) => !current)}
+          type="button"
+        >
+          <span>
+            <span className="block text-sm font-black">تخصيص إضافي</span>
+            <span className="mt-1 block text-xs font-bold text-[var(--color-ink-muted)]">
+              لو تبغى تخفي جزء معين من الملخص
+            </span>
+          </span>
+          <span className="grid size-10 place-items-center rounded-full bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]">
+            {advancedOpen ? <ChevronUp aria-hidden size={18} /> : <ChevronDown aria-hidden size={18} />}
+          </span>
+        </button>
+
+        {advancedOpen ? (
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-3 flex flex-wrap gap-2"
+            initial={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {sectionControls.map((section) => {
+              const active = visibleSections[section.id];
+
+              return (
+                <button
+                  className={`min-h-10 rounded-full border px-4 py-2 text-sm font-black transition ${
+                    active
+                      ? "border-[var(--color-trust-500)] bg-[var(--color-trust-50)] text-[var(--color-trust-700)]"
+                      : "border-[var(--color-line)] bg-white text-[var(--color-ink-muted)] hover:border-[var(--color-zubda-200)]"
+                  }`}
+                  key={section.id}
+                  onClick={() => onSectionToggle(section.id)}
+                  type="button"
+                >
+                  {section.label}
+                </button>
+              );
+            })}
+          </motion.div>
+        ) : null}
       </div>
     </Card>
   );
@@ -729,11 +860,12 @@ function SourcesDrawer({
 
 export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps): ReactElement {
   const { structuredBrief } = brief;
-  const bullets = snapshotBullets(structuredBrief.executiveSnapshot.body);
   const hasExposure = Boolean(structuredBrief.portfolioExposure?.length);
   const hasTalkingPoints = structuredBrief.talkingPoints.length > 0;
   const [readerMode, setReaderMode] = useState<ReaderMode>("bottomLine");
   const [detailLevel, setDetailLevel] = useState<DetailLevel>(brief.depth === "deep" ? "deep" : "standard");
+  const plan = readingPlan(readerMode, detailLevel);
+  const bullets = heroBulletsForMode(structuredBrief, readerMode, detailLevel);
   const [visibleSections, setVisibleSections] = useState<SectionVisibility>({
     market: true,
     watchboard: true,
@@ -834,9 +966,14 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
 
       <Card className="overflow-hidden border-[var(--color-zubda-200)]">
         <div className="bg-[var(--color-zubda-500)] p-7 text-white md:p-10">
-          <p className="text-base font-black text-white/82">الخلاصة السريعة</p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="rounded-full bg-white/12 px-4 py-2 text-base font-black text-white/86">
+              {plan.summaryLabel}
+            </p>
+            <p className="text-sm font-black text-white/70">{plan.summaryNote}</p>
+          </div>
           <h1 className="mt-3 text-4xl font-black leading-[1.3] md:text-5xl">
-            {structuredBrief.headline}
+            {readerMode === "bottomLine" ? structuredBrief.headline : plan.summaryTitle}
           </h1>
           <ul className="mt-6 grid w-full gap-3 text-right">
             {bullets.map((bullet) => (

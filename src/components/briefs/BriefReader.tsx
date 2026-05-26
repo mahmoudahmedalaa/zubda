@@ -84,8 +84,8 @@ const readerModes: Array<{
   },
   {
     id: "watchlist",
-    label: "راقب قائمتي",
-    description: "المتابعة قبل الزحمة",
+    label: "ركّز على متابعتي",
+    description: "شركات ومواضيع أتابعها",
     icon: BookmarkCheck
   }
 ];
@@ -104,6 +104,13 @@ const sectionControls: Array<{ id: SectionKey; label: string }> = [
   { id: "glossary", label: "التبسيط" },
   { id: "sources", label: "المصادر" }
 ];
+
+const modeHelp: Record<ReaderMode, string> = {
+  bottomLine: "يرتب الصفحة كقراءة سريعة: أهم خلاصة، ثم ما يستحق المتابعة، ثم أثرها عليك.",
+  meeting: "يرفع نقاط الكلام والأشياء اللي ممكن تستخدمها في اجتماع أو مكالمة.",
+  investment: "يركز على المزاج، المخاطر، والأثر المحتمل على السوق أو محفظتك.",
+  watchlist: "يبدأ بالشركات والمواضيع اللي أضفتها أنت للمتابعة بدل ترتيب عام."
+};
 
 function readingPlan(mode: ReaderMode, detailLevel: DetailLevel): {
   label: string;
@@ -142,11 +149,11 @@ function readingPlan(mode: ReaderMode, detailLevel: DetailLevel): {
 
   if (mode === "watchlist") {
     return {
-      label: `متابعة ${depth}`,
-      title: "قائمتك تطلع أول",
+      label: `متابعتك في ${depth}`,
+      title: "متابعتك أولاً",
       subtitle: "نبدأ بالشركات والمواضيع اللي تتابعها، ثم نشرح ليش تستاهل انتباهك",
-      order: ["قائمة المتابعة", "سبب الأهمية", "السوق"],
-      summaryLabel: "قائمتك أولاً",
+      order: ["اختياراتك", "سبب الأهمية", "السوق"],
+      summaryLabel: "متابعتك أولاً",
       summaryTitle: "وش تراقب الآن؟",
       summaryNote: "كل شيء يبدأ من اختياراتك"
     };
@@ -306,10 +313,7 @@ function BriefControlPanel({
   visibleSections,
   onModeChange,
   onDetailChange,
-  onSectionToggle,
-  watchCount,
-  sourceCount,
-  talkingCount
+  onSectionToggle
 }: {
   mode: ReaderMode;
   detailLevel: DetailLevel;
@@ -317,9 +321,6 @@ function BriefControlPanel({
   onModeChange: (mode: ReaderMode) => void;
   onDetailChange: (level: DetailLevel) => void;
   onSectionToggle: (section: SectionKey) => void;
-  watchCount: number;
-  sourceCount: number;
-  talkingCount: number;
 }): ReactElement {
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const plan = readingPlan(mode, detailLevel);
@@ -336,6 +337,12 @@ function BriefControlPanel({
           <p className="arabic-copy mt-2 text-sm font-bold text-[var(--color-ink-muted)]">
             اختار النية والوقت، والملخص يعيد ترتيب نفسه حول اللي تحتاجه
           </p>
+          <div className="mt-4 flex items-start gap-2 rounded-[22px] bg-[var(--color-trust-50)] p-3 text-[var(--color-trust-700)]">
+            <Info aria-hidden className="mt-1 shrink-0" size={16} />
+            <p className="arabic-copy text-sm font-bold leading-7">
+              هذه ليست فلاتر بحث. هذه أوضاع قراءة تغير ترتيب الزبدة وطريقة عرضها.
+            </p>
+          </div>
 
           <div className="mt-5 grid gap-2 sm:grid-cols-2">
             {readerModes.map((item) => {
@@ -361,7 +368,15 @@ function BriefControlPanel({
                     <Icon aria-hidden size={18} />
                   </span>
                   <span>
-                    <span className="block font-black">{item.label}</span>
+                    <span className="flex items-center gap-2 font-black">
+                      {item.label}
+                      <span
+                        className="grid size-5 place-items-center rounded-full bg-[var(--color-surface)] text-[10px] text-[var(--color-ink-muted)]"
+                        title={modeHelp[item.id]}
+                      >
+                        ؟
+                      </span>
+                    </span>
                     <span className="mt-1 block text-xs font-bold opacity-75">{item.description}</span>
                   </span>
                 </button>
@@ -370,7 +385,10 @@ function BriefControlPanel({
           </div>
 
           <div className="mt-5 rounded-[26px] border border-[var(--color-line)] bg-white p-3">
-            <p className="mb-3 px-1 text-sm font-black text-[var(--color-ink-muted)]">كم عندك وقت؟</p>
+            <div className="mb-3 flex items-center gap-2 px-1">
+              <p className="text-sm font-black text-[var(--color-ink-muted)]">كم عندك وقت؟</p>
+              <InfoTooltip text="هذا يغير طول الملخص وكمية التفاصيل، لكنه لا يغير اهتماماتك أو مصادر زبدتك." />
+            </div>
             <div className="grid grid-cols-3 gap-2 rounded-full bg-[var(--color-surface)] p-1">
               {detailLevels.map((item) => {
                 const active = detailLevel === item.id;
@@ -419,20 +437,11 @@ function BriefControlPanel({
               ))}
             </div>
           </div>
-
-          <div className="mt-6 grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-[18px] bg-white/10 px-3 py-2">
-              <p className="tabular text-xl font-black">{watchCount}</p>
-              <p className="text-xs font-bold text-white/65">للمتابعة</p>
-            </div>
-            <div className="rounded-[18px] bg-white/10 px-3 py-2">
-              <p className="tabular text-xl font-black">{talkingCount}</p>
-              <p className="text-xs font-bold text-white/65">نقاط كلام</p>
-            </div>
-            <div className="rounded-[18px] bg-white/10 px-3 py-2">
-              <p className="tabular text-xl font-black">{sourceCount}</p>
-              <p className="text-xs font-bold text-white/65">مصادر</p>
-            </div>
+          <div className="mt-6 rounded-[22px] bg-white/10 p-4">
+            <p className="text-sm font-black text-white/70">وش بيتغير؟</p>
+            <p className="arabic-copy mt-2 text-sm font-bold leading-7 text-white/82">
+              الترتيب، الخلاصة الزرقاء، وأول الأقسام اللي تظهر لك. التفاصيل الأصلية تبقى موجودة لو احتجتها.
+            </p>
           </div>
         </motion.section>
       </div>
@@ -444,9 +453,9 @@ function BriefControlPanel({
           type="button"
         >
           <span>
-            <span className="block text-sm font-black">تخصيص إضافي</span>
+            <span className="block text-sm font-black">إخفاء أقسام</span>
             <span className="mt-1 block text-xs font-bold text-[var(--color-ink-muted)]">
-              لو تبغى تخفي جزء معين من الملخص
+              اختياري، يخفي جزء من الصفحة ولا يغير طريقة القراءة
             </span>
           </span>
           <span className="grid size-10 place-items-center rounded-full bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]">
@@ -958,10 +967,7 @@ export function BriefReader({ brief, enableFeedback = true }: BriefReaderProps):
         onDetailChange={setDetailLevel}
         onModeChange={changeMode}
         onSectionToggle={toggleSection}
-        sourceCount={structuredBrief.sources.length}
-        talkingCount={structuredBrief.talkingPoints.length}
         visibleSections={visibleSections}
-        watchCount={structuredBrief.watchboard.length}
       />
 
       <Card className="overflow-hidden border-[var(--color-zubda-200)]">

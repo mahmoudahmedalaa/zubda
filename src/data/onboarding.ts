@@ -65,15 +65,11 @@ export const briefDepths = [
 export const deliveryTimes = ["09:00", "13:00", "18:00", "21:00"] as const;
 
 export const onboardingSteps = [
-  "role",
-  "region",
-  "goal",
+  "basics",
+  "goals",
   "interests",
-  "watchlist",
-  "about",
-  "communication",
-  "depth",
-  "delivery",
+  "context",
+  "style",
   "preview"
 ] as const;
 

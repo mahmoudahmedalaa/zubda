@@ -69,10 +69,6 @@ export function LoginForm(): ReactElement {
       return requestedNextPath;
     }
 
-    if (mode === "signup") {
-      return "/onboarding";
-    }
-
     const response = await authedFetch("/api/me");
 
     if (!response.ok) {

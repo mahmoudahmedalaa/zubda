@@ -23,15 +23,11 @@ import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
 
 const steps = [
-  "role",
-  "region",
-  "goal",
+  "basics",
+  "goals",
   "interests",
-  "watchlist",
-  "about",
-  "communication",
-  "depth",
-  "delivery",
+  "context",
+  "style",
   "preview"
 ] as const;
 
@@ -186,15 +182,15 @@ export function OnboardingWizard(): ReactElement {
   const progress = Math.round(((stepIndex + 1) / steps.length) * 100);
   const isPaid = plan !== "free";
   const canContinue =
-    step === "role"
-      ? Boolean(draft.role) && (draft.role !== "غير ذلك" || draft.roleOther.trim().length > 1)
-      : step === "region"
-        ? draft.regionFocus.length > 0
-        : step === "goal"
-          ? draft.mainGoals.length > 0
-          : step === "interests"
-            ? draft.interestModuleIds.length > 0
-            : true;
+    step === "basics"
+      ? Boolean(draft.role) &&
+        (draft.role !== "غير ذلك" || draft.roleOther.trim().length > 1) &&
+        draft.regionFocus.length > 0
+      : step === "goals"
+        ? draft.mainGoals.length > 0
+        : step === "interests"
+          ? draft.interestModuleIds.length > 0
+          : true;
 
   const resetOnboardingState = useCallback(() => {
     setStepIndex(0);
@@ -290,6 +286,10 @@ export function OnboardingWizard(): ReactElement {
     }
   }
 
+  function skipOnboarding(): void {
+    router.push("/app/today");
+  }
+
   async function analyzePersonalContext(): Promise<void> {
     if (draft.personalContext.trim().length < 20) {
       setError("اكتب تفاصيل أكثر شوي عشان نطلع إشارات مفيدة.");
@@ -368,14 +368,15 @@ export function OnboardingWizard(): ReactElement {
           </div>
         </div>
 
-        {step === "role" ? (
+        {step === "basics" ? (
           <StepShell
             eyebrow="نبدأ منك"
-            title="وش مهنتك الأقرب؟"
-            body="اختَر المهنة الأقرب لشغلك اليومي. إذا ما لقيت نفسك، اكتب مسماك الوظيفي عشان نضبط الزوايا عليك"
+            title="مين أنت ووين تركيزك؟"
+            body="اختَر المهنة الأقرب لك، وبعدها المناطق اللي تهمك. هذا يكفي عشان نبدأ نرتب الزوايا عليك"
             required
           >
             <>
+              <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">مهنتك</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {roles.map((role) => (
                   <button
@@ -400,46 +401,38 @@ export function OnboardingWizard(): ReactElement {
                   value={draft.roleOther}
                 />
               ) : null}
+
+              <p className="mb-3 mt-7 text-sm font-black text-[var(--color-ink-muted)]">المناطق اللي تهمك</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {regions.map((region) => (
+                  <button
+                    className={`rounded-[22px] border px-4 py-3 text-right font-black transition hover:-translate-y-0.5 ${
+                      draft.regionFocus.includes(region)
+                        ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]"
+                        : "border-[var(--color-line)] bg-white hover:border-[var(--color-zubda-200)]"
+                    }`}
+                    key={region}
+                    onClick={() =>
+                      setDraft((current) => {
+                        const regionFocus = toggleValue(current.regionFocus, region);
+                        return { ...current, region: regionFocus[0] ?? "", regionFocus };
+                      })
+                    }
+                    type="button"
+                  >
+                    {region}
+                  </button>
+                ))}
+              </div>
             </>
           </StepShell>
         ) : null}
 
-        {step === "region" ? (
-          <StepShell
-            eyebrow="المناطق اللي تهمك"
-            title="وين تبغى التركيز؟"
-            body="اختَر أكثر من منطقة إذا شغلك أو استثماراتك موزعة. نستخدمها لترتيب الأخبار، مو لحصر الملخص"
-            required
-          >
-            <div className="grid gap-3 sm:grid-cols-3">
-              {regions.map((region) => (
-                <button
-                  className={`rounded-[22px] border px-4 py-3 text-right font-black transition hover:-translate-y-0.5 ${
-                    draft.regionFocus.includes(region)
-                      ? "border-[var(--color-zubda-500)] bg-[var(--color-zubda-50)] text-[var(--color-zubda-700)]"
-                      : "border-[var(--color-line)] bg-white hover:border-[var(--color-zubda-200)]"
-                  }`}
-                  key={region}
-                  onClick={() =>
-                    setDraft((current) => {
-                      const regionFocus = toggleValue(current.regionFocus, region);
-                      return { ...current, region: regionFocus[0] ?? "", regionFocus };
-                    })
-                  }
-                  type="button"
-                >
-                  {region}
-                </button>
-              ))}
-            </div>
-          </StepShell>
-        ) : null}
-
-        {step === "goal" ? (
+        {step === "goals" ? (
           <StepShell
             eyebrow="هدفك من زبدة"
-            title="وش تبغى زبدة تساعدك فيه؟"
-            body="اختَر سبب أو أكثر. هنا نحدد طريقة قراءة الملخص: سرعة، اجتماعات، قرارات، سوق، أو متابعة مجال"
+            title="وش تبغى تطلع منه؟"
+            body="اختَر أكثر من سبب. هذا يحدد إذا نرفع الخلاصة، الاجتماعات، السوق، أو أثر الأخبار على قراراتك"
             required
           >
             <div className="grid gap-3 sm:grid-cols-2">
@@ -469,40 +462,36 @@ export function OnboardingWizard(): ReactElement {
         {step === "interests" ? (
           <StepShell
             eyebrow={`${draft.interestModuleIds.length}/${limits.maxInterestModules}`}
-            title="وش المواضيع اللي تهمك؟"
-            body={isPaid ? "اختر اللي يهمك فعلاً. كل ما زادت المواضيع صار الملخص أوسع، فخل اختياراتك مقصودة" : "الخطة المجانية تعطيك موضوعين فقط. اختَر أهم شيئين عشان تحس بقيمة التخصيص"}
+            title="وش يهمك ونراقب لك؟"
+            body={isPaid ? "اختَر المواضيع، وأضف شركات أو جهات أو كلمات محددة تبيها تطلع قبل الزحمة" : "المجاني يعطيك موضوعين وقائمة متابعة محدودة. اختَر أهم شيء الآن وتقدر توسع لاحقاً"}
             required
           >
-            <div className="flex flex-wrap gap-3">
-              {interestModules.map((interest) => (
-                <Chip
-                  key={interest}
-                  onClick={() =>
-                    setDraft((current) => ({
-                      ...current,
-                      interestModuleIds: toggleValue(
-                        current.interestModuleIds,
-                        interest,
-                        limits.maxInterestModules
-                      )
-                    }))
-                  }
-                  selected={draft.interestModuleIds.includes(interest)}
-                >
-                  {interest}
-                </Chip>
-              ))}
-            </div>
-          </StepShell>
-        ) : null}
-
-        {step === "watchlist" ? (
-          <StepShell
-            eyebrow={`${draft.watchlist.length}/${limits.maxWatchlistItems}`}
-            title="مين أو إيش نراقب لك؟"
-            body="هذه القائمة تجعل الملخص شخصي فعلاً. اكتب أسماء واضحة، وفصل بينها بإدخال واحد كل مرة"
-          >
             <>
+              <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">المواضيع</p>
+              <div className="flex flex-wrap gap-3">
+                {interestModules.map((interest) => (
+                  <Chip
+                    key={interest}
+                    onClick={() =>
+                      setDraft((current) => ({
+                        ...current,
+                        interestModuleIds: toggleValue(
+                          current.interestModuleIds,
+                          interest,
+                          limits.maxInterestModules
+                        )
+                      }))
+                    }
+                    selected={draft.interestModuleIds.includes(interest)}
+                  >
+                    {interest}
+                  </Chip>
+                ))}
+              </div>
+
+              <p className="mb-3 mt-7 text-sm font-black text-[var(--color-ink-muted)]">
+                قائمة المتابعة، اختياري
+              </p>
               <div className="flex gap-2">
                 <input
                   className="min-h-12 min-w-0 flex-1 rounded-[var(--radius-card)] border border-[var(--color-line)] bg-[var(--color-surface)] px-4 outline-none focus:border-[var(--color-zubda-500)]"
@@ -545,15 +534,18 @@ export function OnboardingWizard(): ReactElement {
                   </Chip>
                 ))}
               </div>
+              <p className="arabic-copy mt-3 text-xs font-bold text-[var(--color-ink-muted)]">
+                مثال جيد: أرامكو، Nvidia، أسعار النفط، سوق دبي العقاري. لا تحتاج تكتب جملة طويلة.
+              </p>
             </>
           </StepShell>
         ) : null}
 
-        {step === "about" ? (
+        {step === "context" ? (
           <StepShell
-            eyebrow="نبذة تساعد التخصيص"
-            title="وش لازم زبدة تعرف عنك؟"
-            body="اختياري، لكنه أقوى جزء للتخصيص. اكتب بطريقتك: شغلك، قراراتك، الأشياء اللي تتابعها، والأشياء اللي ما تهمك"
+            eyebrow="اختياري، لكنه قوي"
+            title="قل لنا الزبدة عنك"
+            body="اكتب سطرين عن شغلك وقراراتك. إذا ما عندك وقت، تخطَّ هذه الخطوة"
           >
             <>
               <textarea
@@ -649,13 +641,14 @@ export function OnboardingWizard(): ReactElement {
           </StepShell>
         ) : null}
 
-        {step === "communication" ? (
+        {step === "style" ? (
           <StepShell
-            eyebrow="طريقة الملخص"
-            title="كيف تبي نكتب لك؟"
-            body="الواجهة عربية، والملخص عربي افتراضياً. تقدر تخلي المصطلحات الإنجليزية تظهر إذا هذا أقرب لطريقة شغلك"
+            eyebrow="طريقة القراءة"
+            title="كيف ووقت زبدتك؟"
+            body="نضبط الأسلوب، اللغة، الطول، ووقت الوصول في خطوة واحدة"
           >
             <>
+              <p className="mb-3 text-sm font-black text-[var(--color-ink-muted)]">الأسلوب</p>
               <div className="flex flex-wrap gap-3">
                 {communicationStyles.map((style) => (
                   <Chip
@@ -667,6 +660,7 @@ export function OnboardingWizard(): ReactElement {
                   </Chip>
                 ))}
               </div>
+              <p className="mb-3 mt-6 text-sm font-black text-[var(--color-ink-muted)]">اللغة</p>
               <div className="mt-5 flex flex-wrap gap-3">
                 {languageModes.map((mode) => (
                   <Chip
@@ -678,42 +672,25 @@ export function OnboardingWizard(): ReactElement {
                   </Chip>
                 ))}
               </div>
-            </>
-          </StepShell>
-        ) : null}
 
-        {step === "depth" ? (
-          <StepShell
-            eyebrow="طول القراءة"
-            title="قد إيش تبيها مختصرة؟"
-            body="المتوازن هو الأفضل للبداية. العميق مناسب إذا تبي سياق أكثر ومصادر أكثر"
-          >
-            <div className="flex flex-wrap gap-3">
-              {briefDepths.map((depth) => {
-                const locked = depth.value === "deep" && !limits.deeperBrief;
-                return (
-                  <Chip
-                    disabled={locked}
-                    key={depth.value}
-                    onClick={() => setDraft((current) => ({ ...current, briefDepth: depth.value }))}
-                    selected={draft.briefDepth === depth.value}
-                  >
-                    {locked ? <Lock aria-hidden size={14} /> : null}
-                    {depth.label}
-                  </Chip>
-                );
-              })}
-            </div>
-          </StepShell>
-        ) : null}
-
-        {step === "delivery" ? (
-          <StepShell
-            eyebrow="مو شرط الصباح"
-            title="متى توصلك الزبدة؟"
-            body="اختَر الوقت اللي فعلاً تقرأ فيه. المجاني يبدأ بوقت افتراضي، وبرو يفتح التخصيص"
-          >
-            <>
+              <p className="mb-3 mt-6 text-sm font-black text-[var(--color-ink-muted)]">طول القراءة</p>
+              <div className="flex flex-wrap gap-3">
+                {briefDepths.map((depth) => {
+                  const locked = depth.value === "deep" && !limits.deeperBrief;
+                  return (
+                    <Chip
+                      disabled={locked}
+                      key={depth.value}
+                      onClick={() => setDraft((current) => ({ ...current, briefDepth: depth.value }))}
+                      selected={draft.briefDepth === depth.value}
+                    >
+                      {locked ? <Lock aria-hidden size={14} /> : null}
+                      {depth.label}
+                    </Chip>
+                  );
+                })}
+              </div>
+              <p className="mb-3 mt-6 text-sm font-black text-[var(--color-ink-muted)]">وقت الوصول</p>
               <div className="flex flex-wrap gap-3">
                 {deliveryTimes.map((time) => {
                 const locked = !limits.customDeliveryTime && !["09:00", "13:00"].includes(time);
@@ -775,14 +752,21 @@ export function OnboardingWizard(): ReactElement {
           </p>
         ) : null}
 
-        <div className="mt-8 flex justify-between gap-3">
-          <Button
-            disabled={saving}
-            onClick={() => setStepIndex((current) => Math.max(current - 1, 0))}
-            variant="secondary"
-          >
-            رجوع
-          </Button>
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex gap-2">
+            <Button
+              disabled={saving}
+              onClick={() => setStepIndex((current) => Math.max(current - 1, 0))}
+              variant="secondary"
+            >
+              رجوع
+            </Button>
+            {stepIndex < steps.length - 1 ? (
+              <Button disabled={saving} onClick={skipOnboarding} variant="secondary">
+                تخطّي الآن
+              </Button>
+            ) : null}
+          </div>
           <Button
             disabled={saving || !canContinue}
             onClick={() => {

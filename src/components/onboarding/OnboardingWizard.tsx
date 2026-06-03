@@ -545,7 +545,7 @@ export function OnboardingWizard(): ReactElement {
           <StepShell
             eyebrow="اختياري، لكنه قوي"
             title="قل لنا الزبدة عنك"
-            body="اكتب سطرين عن شغلك وقراراتك. إذا ما عندك وقت، تخطَّ هذه الخطوة"
+            body="اكتب سطرين عن شغلك وقراراتك. وإذا ما عندك وقت، كمّل الآن وعدّلها لاحقًا"
           >
             <>
               <textarea
@@ -763,7 +763,7 @@ export function OnboardingWizard(): ReactElement {
             </Button>
             {stepIndex < steps.length - 1 ? (
               <Button disabled={saving} onClick={skipOnboarding} variant="secondary">
-                تخطّي الآن
+                كمّل لاحقًا
               </Button>
             ) : null}
           </div>
